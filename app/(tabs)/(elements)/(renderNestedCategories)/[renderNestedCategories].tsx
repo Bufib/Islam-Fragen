@@ -2,22 +2,39 @@ import { View } from "components/Themed";
 import { StyleSheet } from "react-native";
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
-import fetchTable from "components/fetchTable";
-import { Stack } from "expo-router";
 import RenderNestedItems from "components/RenderNestedItems";
+import useFetchCategory from "components/useFetchCategory";
+import { Stack } from "expo-router";
 
-export default function renderCategory() {
-  const { category } = useLocalSearchParams<{
-    category: string;
-  }>();
+export default function RenderCategory() {
+  const { category } = useLocalSearchParams<{ category: string }>();
 
-  const { items, fetchError, table } = fetchTable(category);
+  const encodeTable = (title: string) => {
+    // Clean the title by trimming and removing new lines
+    // Encode all characters with encodeURIComponent and manually encode parentheses since the cause trouble in the url
+    const cleanTable = title.trim().replace(/\n/g, "");
+    return encodeURIComponent(cleanTable)
+      .replace(/\(/g, "%28")
+      .replace(/\)/g, "%29");
+  };
+
+  const categories = ["Rechtsfragen", "Glaubensfragen", "Quran", "Ethik", "Historie", "Ratschläge"];
+  const { fetchError, items } = useFetchCategory(categories);
+
+  if (!category || !categories.includes(category)) {
+    return <View style={styles.container}><RenderNestedItems items={[]} fetchError="Invalid category" table="" /></View>;
+  }
 
   return (
     <View style={styles.container}>
       {/* Change header Title */}
       <Stack.Screen options={{ headerTitle: category }} />
-      <RenderNestedItems items={items} fetchError={fetchError} table={table} />
+
+      <RenderNestedItems
+        items={items[category] || []}
+        fetchError={fetchError}
+        table={encodeTable(category)}
+      />
     </View>
   );
 }

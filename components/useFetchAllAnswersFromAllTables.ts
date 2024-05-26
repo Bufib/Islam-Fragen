@@ -10,7 +10,7 @@ interface SupabaseData<T> {
 }
 
 // Function to create a unique storage key for each table item
-const createStorageKey = (tableName: string, id: string | number) => `${tableName}-${id}`;
+const createStorageKey = (tableName: string, id: string | number) => `supabaseData-${tableName}-${id}`;
 const INITIAL_FETCH_KEY = "initialFetchDone";
 
 export const useFetchAllAnswersFromAllTables = <T extends { id: string | number }>(): SupabaseData<T> => {
