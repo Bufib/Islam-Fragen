@@ -5,6 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import RenderItems from "components/RenderItems";
 import { Stack } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFetchAllAnswersFromAllTables } from "components/useFetchAllAnswersFromAllTables";
 
 export default function RenderCategory() {
   const { subCategory, id, fetchError } = useLocalSearchParams<{ subCategory: string, id: string, fetchError: string; }>();
@@ -18,11 +19,14 @@ export default function RenderCategory() {
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-
+  const {data} = useFetchAllAnswersFromAllTables();
+  
   useEffect(() => {
     const fetchSubCategory = async () => {
       try {
         const storedData = await AsyncStorage.getItem(`supabaseData-${subCategory}-${id}`);
+        console.log(storedData)
+        console.log(subCategory, id)
         if (storedData) {
           setSubCategoryElements(JSON.parse(storedData));
         }
