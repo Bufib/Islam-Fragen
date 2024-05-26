@@ -126,7 +126,6 @@ export default function renderText() {
     await Clipboard.setStringAsync(text.replace(regex, ""));
     setCopiedText(text.replace(regex, ""));
     setIsCopiedMultiple((prev) => ({ ...prev, [marja]: true }));
-
     // Clear any existing timeout
     cleanTimeout();
 
