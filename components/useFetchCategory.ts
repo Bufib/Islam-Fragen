@@ -1,5 +1,5 @@
 import { supabase } from "@/utils/supabase";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Item {
@@ -8,24 +8,22 @@ interface Item {
   text: string;
 }
 
+const topCategories = ["Rechtsfragen", "Glaubensfragen", "Quran", "Ethik", "Historie", "Ratschläge"];
 const createStorageKey = (category: string) => `supabaseData-${category}`;
 
 export default function useFetchCategory() {
-  const topCategories = ["Rechtsfragen", "Glaubensfragen", "Quran", "Ethik", "Historie", "Ratschläge"];
   const [fetchError, setFetchError] = useState<string>("");
   const [items, setItems] = useState<Record<string, Item[]>>({});
   const [initialized, setInitialized] = useState<boolean>(false);
 
-  const fetchItems = async (category: string) => {
+  const fetchItems = useCallback(async (category: string) => {
     const { data, error } = await supabase
       .from(category)
       .select("*")
       .order("title", { ascending: true });
 
     if (error) {
-      setFetchError(
-        `Elemente konnten nicht geladen werden für ${category}.\n Überprüfen Sie bitte Ihre Internet Verbindung!`
-      );
+      setFetchError(`Elemente konnten nicht geladen werden für ${category}.\n Überprüfen Sie bitte Ihre Internet Verbindung!`);
       setItems((prevItems) => ({ ...prevItems, [category]: [] }));
       await AsyncStorage.setItem(createStorageKey(category), JSON.stringify([]));
       return;
@@ -36,9 +34,9 @@ export default function useFetchCategory() {
       setFetchError("");
       await AsyncStorage.setItem(createStorageKey(category), JSON.stringify(data));
     }
-  };
+  }, []);
 
-  const loadItemsFromStorage = async () => {
+  const loadItemsFromStorage = useCallback(async () => {
     try {
       const keys = topCategories.map(createStorageKey);
       const storedData = await AsyncStorage.multiGet(keys);
@@ -57,11 +55,11 @@ export default function useFetchCategory() {
     } catch (error) {
       console.error('Error loading items from storage:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadItemsFromStorage();
-  }, []);
+  }, [loadItemsFromStorage]);
 
   useEffect(() => {
     if (!initialized) return;
@@ -89,7 +87,7 @@ export default function useFetchCategory() {
         supabase.removeChannel(channel);
       });
     };
-  }, [initialized]);
+  }, [initialized, fetchItems]);
 
   return {
     fetchError,

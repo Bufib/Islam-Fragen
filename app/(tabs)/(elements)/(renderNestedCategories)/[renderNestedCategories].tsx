@@ -1,41 +1,49 @@
-import { View } from "components/Themed";
+import { View, Text } from "components/Themed";
 import { StyleSheet } from "react-native";
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderNestedItems from "components/RenderNestedItems";
-import useFetchCategory from "components/useFetchCategory";
 import { Stack } from "expo-router";
+import { useFetchTableNames } from "components/useFetchTableNames";
 
-export default function RenderCategory() {
+export default function RenderNestedCategories() {
   const { category } = useLocalSearchParams<{ category: string }>();
 
   const encodeTable = (title: string) => {
-    // Clean the title by trimming and removing new lines
-    // Encode all characters with encodeURIComponent and manually encode parentheses since the cause trouble in the url
     const cleanTable = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanTable)
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
 
-  const { items, fetchError} = useFetchCategory();
-
+  const { tableNames, fetchError } = useFetchTableNames();
+  console.log(tableNames);
 
   if (!category) {
     return (
       <View style={styles.container}>
-        <RenderNestedItems items={[]} fetchError='Invalid category' table='' />
+        <RenderNestedItems items={[]} fetchError="Invalid category" table="" />
       </View>
     );
   }
 
+  // Filter and map the category items
+  const categoryItems = tableNames
+    .filter((item) => item.category === category)
+    .flatMap((item) =>
+      item.tableNames.split(", ").map((tableName, index) => ({
+        id: index,
+        title: tableName.trim(),
+      }))
+    );
+
+  console.log(categoryItems);
+
   return (
     <View style={styles.container}>
-      {/* Change header Title */}
       <Stack.Screen options={{ headerTitle: category }} />
-
       <RenderNestedItems
-        items={items[category] || []}
+        items={categoryItems}
         fetchError={fetchError}
         table={encodeTable(category)}
       />

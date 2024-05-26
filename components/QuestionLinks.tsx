@@ -8,7 +8,7 @@ import { Image } from "expo-image";
 import { useColorScheme } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 
-export default function Categories() {
+export default function QuestionLinks() {
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
 

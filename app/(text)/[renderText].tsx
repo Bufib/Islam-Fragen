@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useLayoutEffect, useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import useFetchText from "components/useFetchText";
+import { useFetchText } from "components/useFetchText";
 import Colors from "constants/Colors";
 import { Stack } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
@@ -30,7 +30,6 @@ import { useSetFontSize } from "components/fontSizeStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Network from "expo-network";
 import * as Clipboard from "expo-clipboard";
-import { useFetchAllAnswersFromAllTables } from "components/useFetchAllAnswersFromAllTables";
 
 export default function renderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -39,8 +38,9 @@ export default function renderText() {
     title: string;
   }>();
 
+  console.log("table");
   const { headerTitle, question, answers, fetchError, singleAnswer } =
-    useFetchText(id, table);
+    useFetchText(title, table);
 
   const key = `text-${id}-${table}`;
   const appColor = Appearance.getColorScheme();

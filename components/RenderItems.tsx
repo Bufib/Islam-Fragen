@@ -1,6 +1,6 @@
 import Colors from "constants/Colors";
 import { Text, View } from "components/Themed";
-import { FlatList, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
@@ -26,10 +26,7 @@ export default function RenderItems({
   table,
 }: RenderItemsProps) {
   const encodeTitle = (title: string) => {
-    // Clean the title by trimming and removing new lines
-    // Encode all characters with encodeURIComponent and manually encode parentheses since the cause trouble in the url
     const cleanedTitle = title.trim().replace(/\n/g, "");
-    console.log(cleanedTitle);
     return encodeURIComponent(cleanedTitle)
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
@@ -37,8 +34,8 @@ export default function RenderItems({
 
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
-
   const appColor = Appearance.getColorScheme();
+
   return (
     <View style={styles.container}>
       {fetchError && (
@@ -48,7 +45,7 @@ export default function RenderItems({
           </Text>
         </View>
       )}
-      {items && (
+      {items.length > 0 ? (
         <View style={styles.itemsContainer}>
           <FlashList
             data={items}
@@ -59,7 +56,7 @@ export default function RenderItems({
               <Link
                 style={styles.FlashListItems}
                 href={{
-                  pathname: `/(text)/${encodeTitle(item.title)}`,
+                  pathname: `(text)/${encodeTitle(item.title)}`,
                   params: {
                     id: item.id,
                     table: table,
@@ -69,12 +66,10 @@ export default function RenderItems({
                 asChild
               >
                 <Pressable>
-                  <View
-                    style={[styles.renderItem, themeStyles.containerContrast]}
-                  >
+                  <View style={[styles.renderItem, themeStyles.containerContrast]}>
                     <Text style={styles.itemText}>{item.title.trim()}</Text>
                     <Feather
-                      name='arrow-right-circle'
+                      name="arrow-right-circle"
                       size={25}
                       color={colorScheme == "light" ? "black" : "white"}
                     />
@@ -83,6 +78,10 @@ export default function RenderItems({
               </Link>
             )}
           />
+        </View>
+      ) : (
+        <View style={styles.noItemsContainer}>
+          <Text>No items available.</Text>
         </View>
       )}
     </View>
@@ -95,9 +94,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
-
   itemsContainer: {
     flex: 1,
+  },
+  noItemsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   FlashListItems: {
     paddingTop: 15,

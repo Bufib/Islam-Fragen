@@ -26,8 +26,6 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   table,
 }) => {
   const encodeTitle = (title: string) => {
-    // Clean the title by trimming and removing new lines
-    // Encode all characters with encodeURIComponent and manually encode parentheses since the cause trouble in the url
     const cleanedTitle = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanedTitle)
       .replace(/\(/g, "%28")
@@ -37,7 +35,6 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
-  // supabaseData-${tableName}-${id}
 
   return (
     <View style={styles.container}>
@@ -59,23 +56,26 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
               <Link
                 style={styles.FlashListItems}
                 key={item.id.toString()}
-                href={
-                  {
-                    pathname: "(renderCategory)/[renderCategory]",
-                    params: {
-                      subCategory: `${encodeTitle(item.title)}`,
-                      id: item.id.toString(),
-                      fetchError: fetchError
-                    },
-                  } as any
-                }
+                href={{
+                  pathname: "(renderCategory)/[renderCategory]",
+                  params: {
+                    subCategory: `${encodeTitle(item.title)}`,
+                    id: item.id.toString(),
+                    fetchError: fetchError,
+                  },
+                }}
                 asChild
               >
                 <Pressable>
-                  <View style={[styles.renderItem, themeStyles.containerContrast]}>
+                  <View
+                    style={[
+                      styles.renderItem,
+                      themeStyles.containerContrast,
+                    ]}
+                  >
                     <Text style={styles.itemText}>{item.title.trim()}</Text>
                     <Feather
-                      name='arrow-right-circle'
+                      name="arrow-right-circle"
                       size={25}
                       color={colorScheme == "light" ? "black" : "white"}
                     />
@@ -96,11 +96,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-
   itemsContainer: {
     flex: 1,
   },
-
   FlashListItems: {
     paddingTop: 15,
   },
@@ -127,4 +125,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
 export default RenderNestedItems;

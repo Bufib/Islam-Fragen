@@ -1,56 +1,69 @@
 import { View } from "components/Themed";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderItems from "components/RenderItems";
 import { Stack } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFetchAllAnswersFromAllTables } from "components/useFetchAllAnswersFromAllTables";
 
 export default function RenderCategory() {
-  const { subCategory, id, fetchError } = useLocalSearchParams<{ subCategory: string, id: string, fetchError: string; }>();
-  const [subCategoryElements, setSubCategoryElements] = useState([]);
+  const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
+  const [subCategoryItems, setSubCategoryItems] = useState<any[]>([]);
+  const [fetchError, setFetchError] = useState<string>("");
 
   const encodeTable = (title: string) => {
-    // Clean the title by trimming and removing new lines
-    // Encode all characters with encodeURIComponent and manually encode parentheses since they cause trouble in the URL
     const cleanTable = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanTable)
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-  const {data} = useFetchAllAnswersFromAllTables();
 
   useEffect(() => {
-    const fetchSubCategory = async () => {
+    const fetchSubCategoryItems = async () => {
       try {
         const storedData = await AsyncStorage.getItem(`supabaseData-${subCategory}`);
-        console.log(storedData)
-        console.log(subCategory, id)
         if (storedData) {
-          setSubCategoryElements(JSON.parse(storedData));
+          const parsedData = JSON.parse(storedData);
+          if (parsedData && typeof parsedData === "object" && !Array.isArray(parsedData)) {
+            const subCategoryItems = parsedData[subCategory];
+            if (subCategoryItems) {
+              setSubCategoryItems(subCategoryItems);
+            } else {
+              console.error("No subcategory items found for:", subCategory);
+              setFetchError(`No subcategory items found for ${subCategory}`);
+            }
+          } else {
+            console.error("Parsed data is not an object:", parsedData);
+            setFetchError(`Data format error for ${subCategory}`);
+          }
+        } else {
+          console.error("No data found for:", subCategory);
+          setFetchError(`No data found for ${subCategory}`);
         }
       } catch (error) {
         console.error("Error loading subcategory elements:", error);
+        setFetchError("Error loading data from storage.");
       }
     };
 
-    if (subCategory && id) {
-      fetchSubCategory();
+    if (subCategory) {
+      fetchSubCategoryItems();
     }
-  }, [subCategory, id]);
+  }, [subCategory]);
 
   if (!subCategory) {
-    return <View style={styles.container}><RenderItems items={[]} fetchError="Invalid category" table="" /></View>;
+    return (
+      <View style={styles.container}>
+        <RenderItems items={[]} fetchError="Invalid category" table="" />
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      {/* Change header Title */}
       <Stack.Screen options={{ headerTitle: subCategory }} />
-
       <RenderItems
-        items={subCategoryElements}
+        items={subCategoryItems}
         fetchError={fetchError}
         table={encodeTable(subCategory)}
       />

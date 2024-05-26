@@ -11,10 +11,15 @@ import { Appearance } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSetFontSize } from "components/fontSizeStore";
 
+
 export default function index() {
   const colorscheme = useColorScheme();
   const themeStyles = coustomTheme(colorscheme);
   const { fontSize, setLineHeigth, setFontSize } = useSetFontSize();
+
+  // Load all the text data
+
+
 
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
@@ -24,6 +29,9 @@ export default function index() {
         Appearance.setColorScheme(colorMode);
       }
     };
+
+
+    
 
     const getFontSetting = async () => {
       const storedFontSize = await AsyncStorage.getItem("fontSize");
@@ -39,6 +47,7 @@ export default function index() {
     getFontSetting();
     getColorMode();
     getColorMode();
+   
   }, []);
 
   return (
@@ -58,9 +67,7 @@ export default function index() {
                 />
               </View>
               <View style={styles.headerTextContainer}>
-                <Text style={styles.headerText}>
-                  Islam-Fragen
-                </Text>
+                <Text style={styles.headerText}>Islam-Fragen</Text>
                 <Text style={[styles.headerDash, themeStyles.indexBorderDash]}>
                   __________
                 </Text>
