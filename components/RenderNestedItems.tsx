@@ -1,7 +1,7 @@
 import Colors from "constants/Colors";
 import { Text, View } from "components/Themed";
 import { FlatList, Pressable, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useColorScheme } from "react-native";
@@ -37,8 +37,9 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
 
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
-
   const appColor = Appearance.getColorScheme();
+  // supabaseData-${tableName}-${id}
+
   return (
     <View style={styles.container}>
       {fetchError && (
@@ -63,7 +64,9 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
                   {
                     pathname: "(renderCategory)/[renderCategory]",
                     params: {
-                      category: `${encodeTitle(item.title)}`,
+                      subCategory: `${encodeTitle(item.title)}`,
+                      id: item.id.toString(),
+                      fetchError: fetchError
                     },
                   } as any
                 }

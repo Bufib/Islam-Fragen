@@ -1,39 +1,54 @@
 import { View } from "components/Themed";
 import { StyleSheet } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderItems from "components/RenderItems";
-import useFetchCategory from "components/useFetchCategory";
 import { Stack } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RenderCategory() {
-  const { category } = useLocalSearchParams<{ category: string }>();
+  const { subCategory, id, fetchError } = useLocalSearchParams<{ subCategory: string, id: string, fetchError: string; }>();
+  const [subCategoryElements, setSubCategoryElements] = useState([]);
 
   const encodeTable = (title: string) => {
     // Clean the title by trimming and removing new lines
-    // Encode all characters with encodeURIComponent and manually encode parentheses since the cause trouble in the url
+    // Encode all characters with encodeURIComponent and manually encode parentheses since they cause trouble in the URL
     const cleanTable = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanTable)
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
 
-  const categories = ["Rechtsfragen", "Glaubensfragen", "Quran", "Ethik", "Historie", "Ratschläge"];
-  const { fetchError, items } = useFetchCategory(categories);
+  useEffect(() => {
+    const fetchSubCategory = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem(`supabaseData-${subCategory}-${id}`);
+        if (storedData) {
+          setSubCategoryElements(JSON.parse(storedData));
+        }
+      } catch (error) {
+        console.error("Error loading subcategory elements:", error);
+      }
+    };
 
-  if (!category || !categories.includes(category)) {
+    if (subCategory && id) {
+      fetchSubCategory();
+    }
+  }, [subCategory, id]);
+
+  if (!subCategory) {
     return <View style={styles.container}><RenderItems items={[]} fetchError="Invalid category" table="" /></View>;
   }
 
   return (
     <View style={styles.container}>
       {/* Change header Title */}
-      <Stack.Screen options={{ headerTitle: category }} />
+      <Stack.Screen options={{ headerTitle: subCategory }} />
 
       <RenderItems
-        items={items[category] || []}
+        items={subCategoryElements}
         fetchError={fetchError}
-        table={encodeTable(category)}
+        table={encodeTable(subCategory)}
       />
     </View>
   );

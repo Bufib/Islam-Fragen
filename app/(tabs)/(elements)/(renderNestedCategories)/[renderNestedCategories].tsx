@@ -18,11 +18,15 @@ export default function RenderCategory() {
       .replace(/\)/g, "%29");
   };
 
-  const categories = ["Rechtsfragen", "Glaubensfragen", "Quran", "Ethik", "Historie", "Ratschläge"];
-  const { fetchError, items } = useFetchCategory(categories);
+  const { items, fetchError} = useFetchCategory();
+  console.log("items" + items);
 
-  if (!category || !categories.includes(category)) {
-    return <View style={styles.container}><RenderNestedItems items={[]} fetchError="Invalid category" table="" /></View>;
+  if (!category) {
+    return (
+      <View style={styles.container}>
+        <RenderNestedItems items={[]} fetchError='Invalid category' table='' />
+      </View>
+    );
   }
 
   return (

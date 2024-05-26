@@ -37,18 +37,15 @@ export default function RenderItems({
 
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
-  
-  ;
- 
-
-  console.log(table);
 
   const appColor = Appearance.getColorScheme();
   return (
     <View style={styles.container}>
       {fetchError && (
         <View style={styles.renderError}>
-          <Text style={[styles.errorText, themeStyles.error]}>{fetchError}</Text>
+          <Text style={[styles.errorText, themeStyles.error]}>
+            {fetchError}
+          </Text>
         </View>
       )}
       {items && (
@@ -72,7 +69,9 @@ export default function RenderItems({
                 asChild
               >
                 <Pressable>
-                  <View style={[styles.renderItem, themeStyles.containerContrast]}>
+                  <View
+                    style={[styles.renderItem, themeStyles.containerContrast]}
+                  >
                     <Text style={styles.itemText}>{item.title.trim()}</Text>
                     <Feather
                       name='arrow-right-circle'
@@ -126,5 +125,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
   },
-  
 });

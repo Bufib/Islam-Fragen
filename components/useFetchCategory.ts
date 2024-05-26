@@ -10,14 +10,13 @@ interface Item {
 
 const createStorageKey = (category: string) => `supabaseData-${category}`;
 
-export default function useFetchCategory(categories: string[]) {
+export default function useFetchCategory() {
+  const topCategories = ["Rechtsfragen", "Glaubensfragen", "Quran", "Ethik", "Historie", "Ratschläge"];
   const [fetchError, setFetchError] = useState<string>("");
   const [items, setItems] = useState<Record<string, Item[]>>({});
+  const [initialized, setInitialized] = useState<boolean>(false);
 
-  const fetchItems = async (
-    category: string,
-    setItems: React.Dispatch<React.SetStateAction<Record<string, Item[]>>>
-  ) => {
+  const fetchItems = async (category: string) => {
     const { data, error } = await supabase
       .from(category)
       .select("*")
@@ -29,6 +28,7 @@ export default function useFetchCategory(categories: string[]) {
       );
       setItems((prevItems) => ({ ...prevItems, [category]: [] }));
       await AsyncStorage.setItem(createStorageKey(category), JSON.stringify([]));
+      return;
     }
 
     if (data) {
@@ -38,29 +38,39 @@ export default function useFetchCategory(categories: string[]) {
     }
   };
 
-  const loadItemsFromStorage = async (
-    category: string,
-    setItems: React.Dispatch<React.SetStateAction<Record<string, Item[]>>>
-  ) => {
-    const storedData = await AsyncStorage.getItem(createStorageKey(category));
-    if (storedData) {
-      setItems((prevItems) => ({ ...prevItems, [category]: JSON.parse(storedData) }));
+  const loadItemsFromStorage = async () => {
+    try {
+      const keys = topCategories.map(createStorageKey);
+      const storedData = await AsyncStorage.multiGet(keys);
+      storedData.forEach(([key, value]) => {
+        if (value) {
+          const category = key.split('-').pop();
+          if (category) {
+            setItems((prevItems) => ({
+              ...prevItems,
+              [category]: JSON.parse(value),
+            }));
+          }
+        }
+      });
+      setInitialized(true);
+    } catch (error) {
+      console.error('Error loading items from storage:', error);
     }
   };
 
   useEffect(() => {
-    // Load initial data from AsyncStorage
-    categories.forEach((category) => {
-      loadItemsFromStorage(category, setItems);
+    loadItemsFromStorage();
+  }, []);
+
+  useEffect(() => {
+    if (!initialized) return;
+
+    topCategories.forEach((category) => {
+      fetchItems(category);
     });
 
-    // Fetch initial data from Supabase
-    categories.forEach((category) => {
-      fetchItems(category, setItems);
-    });
-
-    // Set up real-time subscriptions for each category
-    const channels = categories.map((category) =>
+    const channels = topCategories.map((category) =>
       supabase
         .channel(`table-data-${category}`)
         .on(
@@ -68,19 +78,18 @@ export default function useFetchCategory(categories: string[]) {
           { event: "*", schema: "public", table: category },
           () => {
             console.log(`Change received in ${category}!`);
-            fetchItems(category, setItems);
+            fetchItems(category);
           }
         )
         .subscribe()
     );
 
-    // Cleanup subscriptions on unmount
     return () => {
       channels.forEach((channel) => {
         supabase.removeChannel(channel);
       });
     };
-  }, [categories]);
+  }, [initialized]);
 
   return {
     fetchError,
