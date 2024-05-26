@@ -14,7 +14,7 @@ const createStorageKey = (tableName: string, id: string | number) => `supabaseDa
 const INITIAL_FETCH_KEY = "initialFetchDone";
 
 export const useFetchAllAnswersFromAllTables = <T extends { id: string | number }>(): SupabaseData<T> => {
-  const { tableNames, tableNamesLoading, refetchTableNames } = useFetchTableNames();
+  const { tableNames, tableNamesLoading } = useFetchTableNames();
   const [data, setData] = useState<Record<string, T[]> | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 

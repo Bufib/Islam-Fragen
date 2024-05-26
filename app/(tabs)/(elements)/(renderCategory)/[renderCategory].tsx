@@ -20,11 +20,11 @@ export default function RenderCategory() {
       .replace(/\)/g, "%29");
   };
   const {data} = useFetchAllAnswersFromAllTables();
-  
+
   useEffect(() => {
     const fetchSubCategory = async () => {
       try {
-        const storedData = await AsyncStorage.getItem(`supabaseData-${subCategory}-${id}`);
+        const storedData = await AsyncStorage.getItem(`supabaseData-${subCategory}`);
         console.log(storedData)
         console.log(subCategory, id)
         if (storedData) {

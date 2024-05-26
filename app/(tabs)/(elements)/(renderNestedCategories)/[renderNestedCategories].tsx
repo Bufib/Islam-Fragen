@@ -19,7 +19,7 @@ export default function RenderCategory() {
   };
 
   const { items, fetchError} = useFetchCategory();
-  console.log("items" + items);
+
 
   if (!category) {
     return (
