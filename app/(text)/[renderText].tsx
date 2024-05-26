@@ -16,7 +16,7 @@ import { useColorScheme } from "react-native";
 import { useIsChanging } from "components/favStore";
 import Markdown from "react-native-markdown-display";
 import { storeFavorites, getFavorites } from "components/manageFavorites";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRef } from "react";
@@ -30,6 +30,7 @@ import { useSetFontSize } from "components/fontSizeStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Network from "expo-network";
 import * as Clipboard from "expo-clipboard";
+import { useFetchAllAnswersFromAllTables } from "components/useFetchAllAnswersFromAllTables";
 
 export default function renderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -157,7 +158,7 @@ export default function renderText() {
                 <MaterialCommunityIcons
                   name='file-remove-outline'
                   size={24}
-                 style={themeStyles.downloadIcon}
+                  style={themeStyles.downloadIcon}
                   onPress={toggleDownload}
                 />
               ) : (
@@ -185,21 +186,38 @@ export default function renderText() {
         </View>
       ) : displaySingleAnswer ? (
         <ScrollView style={styles.answerContainer}>
-          <View style={[styles.questionContainer, themeStyles.containerContrast]}>
-            <Text style={[styles.questionText, {"lineHeight": lineHeight, "fontSize": fontSize}]}>{displayQuestion}</Text>
+          <View
+            style={[styles.questionContainer, themeStyles.containerContrast]}
+          >
+            <Text
+              style={[
+                styles.questionText,
+                { lineHeight: lineHeight, fontSize: fontSize },
+              ]}
+            >
+              {displayQuestion}
+            </Text>
           </View>
           <View style={[styles.singleAnswers, themeStyles.containerContrast]}>
             <View style={styles.copyContainerSingle}>
               {isCopiedSingle ? (
                 <View style={styles.copyDoneContainer}>
-                  <MaterialIcons name='done' size={24} color={colorScheme == "dark" ? "white" : "black" } />
+                  <MaterialIcons
+                    name='done'
+                    size={24}
+                    color={colorScheme == "dark" ? "white" : "black"}
+                  />
                   <Text style={styles.copyDoneText}>Text Kopiert!</Text>
                 </View>
               ) : (
                 <Pressable
                   onPress={() => copySingleAnswer(displaySingleAnswer)}
                 >
-                  <AntDesign name='copy1' size={24} color={colorScheme == "dark" ? "white" : "black" } />
+                  <AntDesign
+                    name='copy1'
+                    size={24}
+                    color={colorScheme == "dark" ? "white" : "black"}
+                  />
                 </Pressable>
               )}
             </View>
@@ -247,7 +265,9 @@ export default function renderText() {
         </ScrollView>
       ) : (
         <ScrollView style={styles.answerContainer}>
-          <View style={[styles.questionContainer, themeStyles.containerContrast]}>
+          <View
+            style={[styles.questionContainer, themeStyles.containerContrast]}
+          >
             <Text style={styles.questionText}>{displayQuestion}</Text>
           </View>
           <View style={styles.marjaChoiceContainer}>
@@ -263,11 +283,18 @@ export default function renderText() {
             ))}
           </View>
           {filteredAnswers.map((answer, index) => (
-            <View key={index} style={[styles.answers, themeStyles.containerContrast]}>
+            <View
+              key={index}
+              style={[styles.answers, themeStyles.containerContrast]}
+            >
               <View style={styles.copyContainer}>
                 {isCopiedMultiple[answer.name] ? (
                   <View style={styles.copyDoneContainer}>
-                    <MaterialIcons name='done' size={24} color={colorScheme == "dark" ? "white" : "black" }/>
+                    <MaterialIcons
+                      name='done'
+                      size={24}
+                      color={colorScheme == "dark" ? "white" : "black"}
+                    />
                     <Text style={styles.copyDoneText}>Text Kopiert!</Text>
                   </View>
                 ) : (
@@ -276,11 +303,21 @@ export default function renderText() {
                       copyMultipleAnswers(answer.name, answer.answer)
                     }
                   >
-                    <AntDesign name='copy1' size={24} color={colorScheme == "dark" ? "white" : "black" } />
+                    <AntDesign
+                      name='copy1'
+                      size={24}
+                      color={colorScheme == "dark" ? "white" : "black"}
+                    />
                   </Pressable>
                 )}
               </View>
-              <View style={[styles.headerContainer, , themeStyles.containerContrast]}>
+              <View
+                style={[
+                  styles.headerContainer,
+                  ,
+                  themeStyles.containerContrast,
+                ]}
+              >
                 <View style={styles.headerImage}>
                   <Image
                     source={images[answer.name]}
@@ -288,7 +325,9 @@ export default function renderText() {
                     contentFit='cover'
                   />
                 </View>
-                <View style={[styles.headerText, themeStyles.containerContrast]}>
+                <View
+                  style={[styles.headerText, themeStyles.containerContrast]}
+                >
                   <Text style={styles.marjaText}>{answer.marja}</Text>
                 </View>
               </View>
