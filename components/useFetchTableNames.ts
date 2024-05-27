@@ -14,7 +14,6 @@ interface TableNamesData {
 }
 
 export const useFetchTableNames = (): TableNamesData => {
-  AsyncStorage.clear();
   const [tableNames, setTableNames] = useState<
     { category: string; tableNames: string }[]
   >([]);
@@ -24,80 +23,79 @@ export const useFetchTableNames = (): TableNamesData => {
   const fetchTableNames = useCallback(async () => {
     try {
       setTableNamesLoading(true);
-      console.log("Fetching table names from Supabase...");
+    
 
       const { data, error } = await supabase
         .from("All table Names")
         .select("*");
       if (error) {
         throw new Error(error.message);
-      } else {
-        console.log("Data fetched from Supabase:", data);
-
-        const tableNamesObject: { [category: string]: string } = {};
-
-        data.forEach((item) => {
-          const category = item.category || DEFAULT_CATEGORY;
-          if (!tableNamesObject[category]) {
-            tableNamesObject[category] = item.tableName;
-          } else {
-            tableNamesObject[category] += `, ${item.tableName}`;
-          }
-        });
-
-        const tableNamesArray = Object.keys(tableNamesObject).map(
-          (category) => ({
-            category,
-            tableNames: tableNamesObject[category],
-          })
-        );
-
-        console.log("Processed table names array:", tableNamesArray);
-
-        await AsyncStorage.setItem(
-          TABLE_NAMES_KEY,
-          JSON.stringify(tableNamesArray)
-        );
-        await AsyncStorage.setItem(INITIAL_FETCH_KEY, "true");
-
-        console.log("Stored table names in AsyncStorage:", tableNamesArray);
-
-        setTableNames(tableNamesArray);
-        setTableNamesLoading(false);
       }
+
+     
+
+      const tableNamesObject: { [category: string]: string } = {};
+
+      data.forEach((item) => {
+        const category = item.category || DEFAULT_CATEGORY;
+        if (!tableNamesObject[category]) {
+          tableNamesObject[category] = item.tableName;
+        } else {
+          tableNamesObject[category] += `, ${item.tableName}`;
+        }
+      });
+
+      const tableNamesArray = Object.keys(tableNamesObject).map((category) => ({
+        category,
+        tableNames: tableNamesObject[category],
+      }));
+
+
+
+      await AsyncStorage.setItem(
+        TABLE_NAMES_KEY,
+        JSON.stringify(tableNamesArray)
+      );
+      await AsyncStorage.setItem(INITIAL_FETCH_KEY, "true");
+
+      
+
+      setTableNames(tableNamesArray);
+      setTableNamesLoading(false);
     } catch (error) {
       setFetchError(
         "Fehler: Bitte überprüfe deine Internetverbindung und versuch es später nochmal"
       );
       console.error("Error fetching table names:", error);
       setTableNamesLoading(false);
-      return;
     }
   }, []);
 
   useEffect(() => {
     const loadInitialData = async () => {
-      console.log("Loading initial data from AsyncStorage...");
-      const initialFetchDone = await AsyncStorage.getItem(INITIAL_FETCH_KEY);
+      try {
+   
+        const initialFetchDone = await AsyncStorage.getItem(INITIAL_FETCH_KEY);
 
-      if (initialFetchDone === "true") {
-        const storedTableNames = await AsyncStorage.getItem(TABLE_NAMES_KEY);
+        if (initialFetchDone === "true") {
+          const storedTableNames = await AsyncStorage.getItem(TABLE_NAMES_KEY);
 
-        if (storedTableNames) {
-          const parsedTableNames = JSON.parse(storedTableNames);
-          console.log(
-            "Loaded and parsed table names from AsyncStorage:",
-            parsedTableNames
-          );
-          setTableNames(parsedTableNames);
-          setTableNamesLoading(false);
+          if (storedTableNames) {
+            const parsedTableNames = JSON.parse(storedTableNames);
+           
+            setTableNames(parsedTableNames);
+            setTableNamesLoading(false);
+          } else {
+            await fetchTableNames();
+          }
         } else {
-          fetchTableNames();
+          await fetchTableNames();
         }
-      } else {
-        fetchTableNames();
+      } catch (error) {
+        console.error("Error loading initial data:", error);
       }
     };
+
     loadInitialData();
 
     // Set up real-time subscriptions to listen to changes

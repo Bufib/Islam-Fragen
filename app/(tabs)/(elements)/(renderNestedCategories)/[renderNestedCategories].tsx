@@ -17,7 +17,7 @@ export default function RenderNestedCategories() {
   };
 
   const { tableNames, fetchError } = useFetchTableNames();
-  console.log(tableNames);
+
 
   if (!category) {
     return (
@@ -37,7 +37,8 @@ export default function RenderNestedCategories() {
       }))
     );
 
-  console.log(categoryItems);
+
+
 
   return (
     <View style={styles.container}>

@@ -6,34 +6,41 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 interface TopCategoryItem {
   id: number;
   title: string;
-  // weitere Felder je nach Schema Ihrer Tabellen
+}
+
+interface TableData {
+  tableName: string;
+  questions: TopCategoryItem[];
 }
 
 export default function useFetchSubCategories() {
   const [fetchError, setFetchError] = useState<string>("");
-  const [subCategories, setSubCategories] = useState<TopCategoryItem[]>([]);
+  const [subCategories, setSubCategories] = useState<TableData[]>([]);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const { tableNames } = useFetchTableNames();
-console.log(tableNames)
+
   const fetchItems = async () => {
     try {
       setIsFetching(true);
-      const newTopCategories: TopCategoryItem[] = [];
+      const newTopCategories: TableData[] = [];
       if (tableNames) {
-        for (const tableName of tableNames) {
-          const { data, error } = await supabase
-            .from(tableName)
-            .select("*")
-            .order("title", { ascending: true });
+        for (const table of tableNames) {
+          const tablesArray = table.tableNames.split(',').map(t => t.trim());
+          for (const tableName of tablesArray) {
+            const { data, error } = await supabase
+              .from(tableName)
+              .select("*")
+              .order("title", { ascending: true });
 
-          if (error) {
-            throw Error;
-          }
+            if (error) {
+              throw error;
+            }
 
-          if (data) {
-            newTopCategories.push(...(data as TopCategoryItem[]));
-            await AsyncStorage.setItem(tableName, JSON.stringify(data));
+            if (data) {
+              newTopCategories.push({ tableName, questions: data as TopCategoryItem[] });
+              await AsyncStorage.setItem(tableName, JSON.stringify(data));
+            }
           }
         }
       }
@@ -51,12 +58,15 @@ console.log(tableNames)
 
   const loadItemsFromStorage = async () => {
     try {
-      const storedCategories: TopCategoryItem[] = [];
+      const storedCategories: TableData[] = [];
       if (tableNames) {
-        for (const tableName of tableNames) {
-          const storedData = await AsyncStorage.getItem(tableName);
-          if (storedData) {
-            storedCategories.push(...JSON.parse(storedData));
+        for (const table of tableNames) {
+          const tablesArray = table.tableNames.split(',').map(t => t.trim());
+          for (const tableName of tablesArray) {
+            const storedData = await AsyncStorage.getItem(tableName);
+            if (storedData) {
+              storedCategories.push({ tableName, questions: JSON.parse(storedData) });
+            }
           }
         }
       }
@@ -68,16 +78,19 @@ console.log(tableNames)
 
   useEffect(() => {
     const checkStorageAndFetch = async () => {
-      const storedCategories: TopCategoryItem[] = [];
+      const storedCategories: TableData[] = [];
       let needsFetch = false;
 
       if (tableNames) {
-        for (const tableName of tableNames) {
-          const storedData = await AsyncStorage.getItem(tableName);
-          if (storedData) {
-            storedCategories.push(...JSON.parse(storedData));
-          } else {
-            needsFetch = true;
+        for (const table of tableNames) {
+          const tablesArray = table.tableNames.split(',').map(t => t.trim());
+          for (const tableName of tablesArray) {
+            const storedData = await AsyncStorage.getItem(tableName);
+            if (storedData) {
+              storedCategories.push({ tableName, questions: JSON.parse(storedData) });
+            } else {
+              needsFetch = true;
+            }
           }
         }
       }
@@ -94,23 +107,26 @@ console.log(tableNames)
     loadItemsFromStorage().then(checkStorageAndFetch);
 
     if (tableNames) {
-      const subscriptions = tableNames.map((tableName) =>
-        supabase
-          .channel(tableName)
-          .on(
-            "postgres_changes",
-            { event: "*", schema: "public", table: tableName },
-            async (payload) => {
-              await fetchItems();
-              setUpdateAvailable(false);
-            }
-          )
-          .subscribe()
-      );
+      const subscriptions = tableNames.flatMap((table) => {
+        const tablesArray = table.tableNames.split(',').map(t => t.trim());
+        return tablesArray.map((tableName) => 
+          supabase
+            .channel("public:" + tableName)
+            .on(
+              "postgres_changes",
+              { event: "*", schema: "public", table: tableName },
+              async (payload) => {
+                await fetchItems();
+                setUpdateAvailable(true);
+              }
+            )
+            .subscribe()
+        );
+      });
 
       return () => {
         subscriptions.forEach((subscription) => {
-          subscription.unsubscribe();
+          supabase.removeChannel(subscription);
         });
       };
     }

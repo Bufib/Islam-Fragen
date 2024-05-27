@@ -10,7 +10,8 @@ import { useLayoutEffect } from "react";
 import { Appearance } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSetFontSize } from "components/fontSizeStore";
-
+import useFetchSubCategories from "components/useFetchSubCategories";
+useFetchSubCategories;
 
 export default function index() {
   const colorscheme = useColorScheme();
@@ -18,8 +19,6 @@ export default function index() {
   const { fontSize, setLineHeigth, setFontSize } = useSetFontSize();
 
   // Load all the text data
-
-
 
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
@@ -29,9 +28,6 @@ export default function index() {
         Appearance.setColorScheme(colorMode);
       }
     };
-
-
-    
 
     const getFontSetting = async () => {
       const storedFontSize = await AsyncStorage.getItem("fontSize");
@@ -44,10 +40,10 @@ export default function index() {
         setLineHeigth(Number(storedLineHeight));
       }
     };
+
     getFontSetting();
     getColorMode();
     getColorMode();
-   
   }, []);
 
   return (

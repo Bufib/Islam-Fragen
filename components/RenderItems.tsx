@@ -32,6 +32,7 @@ export default function RenderItems({
       .replace(/\)/g, "%29");
   };
 
+
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();

@@ -23,7 +23,6 @@ interface RenderNestedItemsProps {
 const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   items,
   fetchError,
-  table,
 }) => {
   const encodeTitle = (title: string) => {
     const cleanedTitle = title.trim().replace(/\n/g, "");
@@ -36,6 +35,7 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
 
+console.log
   return (
     <View style={styles.container}>
       {fetchError && (
