@@ -1,33 +1,33 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { useFetchText } from 'components/useFetchText';
+import React from "react";
+import { View, Text, ActivityIndicator } from "react-native";
+import { useFetchText } from "components/useFetchText";
 
 const RenderText = () => {
-  const title = "Handel";
-  const table = "Haare verkaufen";
-  const { item, fetchError, isFetching } = useFetchText(table, title);
+  const { item, fetchError, isFetching } = useFetchText(
+    "Quranwissenschaften",
+    "Welche Sure wurde als erste offenbart"
+  );
 
-  React.useEffect(() => {
-    console.log("Fetched item:", item);
-    console.log("Fetch error:", fetchError);
-    console.log("Is fetching:", isFetching);
-  }, [item, fetchError, isFetching]);
+  if (isFetching) {
+    return <ActivityIndicator />;
+  }
+
+  if (fetchError) {
+    return <Text>Error: {fetchError}</Text>;
+  }
+
+  if (!item) {
+    return <Text>No item found</Text>;
+  }
 
   return (
-    <View style={styles.container}>
-      {isFetching && <Text>Loading...</Text>}
-      {fetchError && <Text>Error: {fetchError}</Text>}
-      {item && <Text>{item.text}</Text>}
+    <View>
+      <Text>Title: {item.title}</Text>
+      <Text>Question: {item.question}</Text>
+      <Text>Answer (Sistani): {item.answer_sistani}</Text>
+      <Text>Answer (Khamenei): {item.answer_khamenei}</Text>
     </View>
   );
 };
 
 export default RenderText;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

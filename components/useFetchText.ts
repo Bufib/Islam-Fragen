@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { supabase } from "@/utils/supabase";
 import useFetchSubCategories from "./useFetchSubCategories";
 
 interface Item {
   id: number;
   title: string;
-  text: string;
+  answer_sistani: string;
+  answer_khamenei: string;
+  question: string;
 }
 
 interface TableData {
@@ -14,61 +15,34 @@ interface TableData {
   questions: Item[];
 }
 
-const createStorageKey = (table: string) => `supabaseData-${table}`;
+const createStorageKey = (table: string) => `${table}`;
 
 export const useFetchText = (table: string, title: string) => {
   const [item, setItem] = useState<Item | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const { subCategories, refetch } = useFetchSubCategories();
+  const { refetch } = useFetchSubCategories();
 
   const fetchData = async () => {
     try {
       setIsFetching(true);
-      await refetch();
+      await refetch(); // Ensure latest data is available
 
       const storageKey = createStorageKey(table);
       const storedData = await AsyncStorage.getItem(storageKey);
+      console.log("Stored data:", storedData);
+      
       if (storedData) {
-        console.log("Stored data found:", storedData);
-        const parsedData: TableData[] = JSON.parse(storedData);
-        for (const subCategory of parsedData) {
-          if (subCategory.tableName === table) {
-            const foundItem = subCategory.questions.find((item: Item) => item.title === title) || null;
-            if (foundItem) {
-              setItem(foundItem);
-              setIsFetching(false);
-              return;
-            }
-          }
+        const parsedData: Item[] = JSON.parse(storedData); // Parse the JSON data
+        const foundItem = parsedData.find((item) => item.title === title) || null;
+        
+        if (foundItem) {
+          setItem(foundItem);
+        } else {
+          setFetchError(`Item with title "${title}" not found in table "${table}"`);
         }
-      }
-
-      const { data, error } = await supabase
-        .from(table)
-        .select("*")
-        .eq("title", title)
-        .single();
-
-      if (error) {
-        throw error;
-      }
-
-      if (data) {
-        const newItem = data as Item;
-        setItem(newItem);
-
-        const newStoredData = storedData ? JSON.parse(storedData) : [];
-        const updatedStoredData = newStoredData.map((subCategory: TableData) => {
-          if (subCategory.tableName === table) {
-            subCategory.questions.push(newItem);
-          }
-          return subCategory;
-        });
-
-        await AsyncStorage.setItem(storageKey, JSON.stringify(updatedStoredData));
       } else {
-        setFetchError(`Item with title "${title}" not found in table "${table}"`);
+        setFetchError(`Stored data not found for table "${table}"`);
       }
     } catch (error) {
       console.error(`Error fetching item by title: ${error}`);
@@ -81,23 +55,6 @@ export const useFetchText = (table: string, title: string) => {
 
   useEffect(() => {
     fetchData();
-
-    const subscription = supabase
-      .channel(`public:${table}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table }, (payload) => {
-        fetchData();
-      })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table }, (payload) => {
-        fetchData();
-      })
-      .on("postgres_changes", { event: "DELETE", schema: "public", table }, (payload) => {
-        fetchData();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
   }, [table, title]);
 
   return { item, fetchError, isFetching };
