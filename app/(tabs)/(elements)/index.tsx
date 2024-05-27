@@ -22,6 +22,7 @@ export default function index() {
 
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
+   
     const getColorMode = async () => {
       const colorMode = await AsyncStorage.getItem("ColorMode");
       if (colorMode) {
