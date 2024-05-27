@@ -5,14 +5,10 @@ import useFetchSubCategories from "./useFetchSubCategories";
 interface Item {
   id: number;
   title: string;
-  answer_sistani: string;
-  answer_khamenei: string;
+  answer?: string;
+  answer_sistani?: string;
+  answer_khamenei?: string;
   question: string;
-}
-
-interface TableData {
-  tableName: string;
-  questions: Item[];
 }
 
 const createStorageKey = (table: string) => `${table}`;
@@ -34,9 +30,14 @@ export const useFetchText = (table: string, title: string) => {
       
       if (storedData) {
         const parsedData: Item[] = JSON.parse(storedData); // Parse the JSON data
-        const foundItem = parsedData.find((item) => item.title === title) || null;
+        console.log("Parsed data:", parsedData);
+        
+        // Normalizing title by trimming spaces
+        const normalizedTitle = title.trim();
+        const foundItem = parsedData.find((item) => item.title.trim() === normalizedTitle) || null;
         
         if (foundItem) {
+          console.log("Found item:", foundItem);
           setItem(foundItem);
         } else {
           setFetchError(`Item with title "${title}" not found in table "${table}"`);
