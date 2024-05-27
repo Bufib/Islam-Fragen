@@ -101,7 +101,7 @@ export default function RenderText() {
     ? displayAnswers.filter(
         (answer) => marja.includes(answer.marja) && typeof answer.answer === "string"
       )
-    : displayAnswers.filter((answer) => typeof answer.answer === "string");
+    : [];
 
   const copyMultipleAnswers = async (marja: string, text: string) => {
     if (typeof text !== "string") return;
