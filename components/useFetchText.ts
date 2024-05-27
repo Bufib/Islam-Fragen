@@ -26,27 +26,27 @@ export const useFetchText = (table: string, title: string) => {
 
       const storageKey = createStorageKey(table);
       const storedData = await AsyncStorage.getItem(storageKey);
-      console.log("Stored data:", storedData);
-      
+
       if (storedData) {
         const parsedData: Item[] = JSON.parse(storedData); // Parse the JSON data
-        console.log("Parsed data:", parsedData);
-        
+
         // Normalizing title by trimming spaces
         const normalizedTitle = title.trim();
-        const foundItem = parsedData.find((item) => item.title.trim() === normalizedTitle) || null;
-        
+        const foundItem =
+          parsedData.find((item) => item.title.trim() === normalizedTitle) ||
+          null;
+
         if (foundItem) {
-          console.log("Found item:", foundItem);
           setItem(foundItem);
         } else {
-          setFetchError(`Item with title "${title}" not found in table "${table}"`);
+          setFetchError(
+            `Item with title "${title}" not found in table "${table}"`
+          );
         }
       } else {
         setFetchError(`Stored data not found for table "${table}"`);
       }
     } catch (error) {
-      console.error(`Error fetching item by title: ${error}`);
       setFetchError(`Error fetching item by title: ${error}`);
       setItem(null);
     } finally {

@@ -16,7 +16,6 @@ import { useColorScheme } from "react-native";
 import { useIsChanging } from "components/favStore";
 import Markdown from "react-native-markdown-display";
 import { storeFavorites, getFavorites } from "components/manageFavorites";
-
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRef } from "react";
@@ -76,7 +75,10 @@ export default function renderText() {
 
   const displayQuestion = item?.question;
   const displaySingleAnswer = item?.answer;
-  const displayAnswers = [item?.answer_khamenei, item?.answer_sistani]
+  const displayAnswers = [
+    { marja: "khamenei", answer: item?.answer_khamenei },
+    { marja: "sistani", answer: item?.answer_sistani },
+  ];
 
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
@@ -102,8 +104,9 @@ export default function renderText() {
 
   const filteredAnswers =
     marja.length > 0
-      ? displayAnswers.filter((answer) => marja.includes(answer.name))
-      : [];
+      ? displayAnswers.filter((answer) => marja.includes(answer.marja))
+      : displayAnswers;
+     
 
   const copyMultipleAnswers = async (marja: string, text: string) => {
     await Clipboard.setStringAsync(text.replace(regex, ""));
@@ -137,7 +140,6 @@ export default function renderText() {
         options={{
           headerRight: () => (
             <View style={styles.buttonsHeaderContainer}>
-            
               <AntDesign
                 name={isInFavorites(id, table) ? "star" : "staro"}
                 size={24}
@@ -146,10 +148,10 @@ export default function renderText() {
               />
             </View>
           ),
-          headerTitle:  item?.title,
+          headerTitle: item?.title,
         }}
       />
-      {fetchError  ? (
+      {fetchError ? (
         <View style={styles.renderError}>
           <Text style={styles.errorText}>{fetchError}</Text>
         </View>
@@ -172,7 +174,7 @@ export default function renderText() {
               {isCopiedSingle ? (
                 <View style={styles.copyDoneContainer}>
                   <MaterialIcons
-                    name='done'
+                    name="done"
                     size={24}
                     color={colorScheme == "dark" ? "white" : "black"}
                   />
@@ -183,7 +185,7 @@ export default function renderText() {
                   onPress={() => copySingleAnswer(displaySingleAnswer)}
                 >
                   <AntDesign
-                    name='copy1'
+                    name="copy1"
                     size={24}
                     color={colorScheme == "dark" ? "white" : "black"}
                   />
@@ -237,7 +239,14 @@ export default function renderText() {
           <View
             style={[styles.questionContainer, themeStyles.containerContrast]}
           >
-            <Text style={styles.questionText}>{displayQuestion}</Text>
+            <Text
+              style={[
+                styles.questionText,
+                { lineHeight: lineHeight, fontSize: fontSize },
+              ]}
+            >
+              {displayQuestion}
+            </Text>
           </View>
           <View style={styles.marjaChoiceContainer}>
             {marjaOptions.map((option) => (
@@ -257,10 +266,10 @@ export default function renderText() {
               style={[styles.answers, themeStyles.containerContrast]}
             >
               <View style={styles.copyContainer}>
-                {isCopiedMultiple[answer.name] ? (
+                {isCopiedMultiple[answer.marja] ? (
                   <View style={styles.copyDoneContainer}>
                     <MaterialIcons
-                      name='done'
+                      name="done"
                       size={24}
                       color={colorScheme == "dark" ? "white" : "black"}
                     />
@@ -269,11 +278,11 @@ export default function renderText() {
                 ) : (
                   <Pressable
                     onPress={() =>
-                      copyMultipleAnswers(answer.name, answer.answer)
+                      copyMultipleAnswers(answer.marja, answer.answer)
                     }
                   >
                     <AntDesign
-                      name='copy1'
+                      name="copy1"
                       size={24}
                       color={colorScheme == "dark" ? "white" : "black"}
                     />
@@ -289,15 +298,18 @@ export default function renderText() {
               >
                 <View style={styles.headerImage}>
                   <Image
-                    source={images[answer.name]}
+                    source={images[answer.marja]}
                     style={styles.image}
-                    contentFit='cover'
+                    contentFit="cover"
                   />
                 </View>
                 <View
                   style={[styles.headerText, themeStyles.containerContrast]}
                 >
-                  <Text style={styles.marjaText}>{answer.marja}</Text>
+                  <Text style={styles.marjaText}>
+                    {marjaOptions.find((option) => option.value === answer.marja)
+                      ?.label}
+                  </Text>
                 </View>
               </View>
               <Markdown
@@ -347,6 +359,7 @@ export default function renderText() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -367,7 +380,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-
   questionContainer: {
     margin: 10,
     borderWidth: 1,
@@ -388,7 +400,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
   },
-
   answers: {
     flex: 1,
     marginBottom: 20,
@@ -404,7 +415,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "flex-start",
   },
-
   copyContainer: {
     backgroundColor: "transparent",
     flexDirection: "row",
@@ -424,7 +434,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "transparent",
   },
-
   copyDoneText: {
     marginLeft: 5,
   },
@@ -461,7 +470,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-
   bookmark: {
     paddingTop: 7,
   },

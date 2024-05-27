@@ -35,7 +35,7 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
 
-console.log
+
   return (
     <View style={styles.container}>
       {fetchError && (
@@ -50,7 +50,7 @@ console.log
           <FlashList
             data={items}
             extraData={appColor}
-            estimatedItemSize={63}
+            estimatedItemSize={85}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Link
@@ -93,7 +93,7 @@ console.log
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 10,
   },
   itemsContainer: {

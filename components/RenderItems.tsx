@@ -51,7 +51,7 @@ export default function RenderItems({
           <FlashList
             data={items}
             extraData={appColor}
-            estimatedItemSize={63}
+            estimatedItemSize={82}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Link
