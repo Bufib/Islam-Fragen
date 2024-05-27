@@ -32,6 +32,19 @@ interface Email {
   gender: string;
   question: string;
 }
+const genderOptions = [
+  { label: "-- Wähle bitte dein Geschlecht aus --", value: "default" },
+  { label: "Männlich", value: "Männlich" },
+  { label: "Weiblich ", value: "Weiblich" },
+];
+
+const marjaOptions = [
+  { label: "-- Wähle bitte deinen Marja aus --", value: "default" },
+  { label: "Sayid al-Khamenei", value: "Sayid al-Khamenei" },
+  { label: "Sayid as-Sistani", value: "Sayid as-Sistani" },
+  { label: "Keine Rechtsfrage", value: "Keine Rechtsfrage" },
+];
+
 export default function askQuestion() {
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
@@ -40,29 +53,15 @@ export default function askQuestion() {
   const [age, setAge] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [validateEmail, setValidateEmail] = useState<string>("");
-  const [marja, setMarja] = useState<string>("");
-  const [gender, setgender] = useState<string | null>(null);
+  const [marja, setMarja] = useState<string>(marjaOptions[0].label);
+  const [gender, setgender] = useState<string>(genderOptions[0].label);
   const [question, setQuestion] = useState<string>("");
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
   const [isPickerVisibleMarja, setIsPickerVisibleMarja] = useState(false);
+  const [isPickerVisibleGender, setIsPickerVisibleGender] = useState(false);
   const { sendEmail } = useSendQuestion();
 
   const scrollViewRef = useRef(null);
-
-  const genderOptions = [
-    { label: "Männlich", value: "Männlich" },
-    { label: "Weiblich ", value: "Weiblich" },
-  ];
-
-  const marjaOptions = [
-    { label: "Sayid al-Khamenei", value: "Sayid al-Khamenei" },
-    { label: "Sayid as-Sistani", value: "Sayid as-Sistani" },
-    { label: "Keine Rechtsfrage", value: "Keine Rechtsfrage" },
-  ];
-
-  const handleCheckboxChangeGender = (value: string) => {
-    setgender(value);
-  };
 
   const validateForm = () => {
     if (
@@ -93,7 +92,11 @@ export default function askQuestion() {
       return false;
     }
 
-    if (marja == null) {
+    if (gender == genderOptions[0].label) {
+      Alert.alert("Fehler", "Bitte wähle dein Geschlecht aus!");
+      return false;
+    }
+    if (marja == marjaOptions[0].label) {
       Alert.alert("Fehler", "Bitte wähle einen Marja aus!");
       return false;
     }
@@ -209,25 +212,57 @@ export default function askQuestion() {
               placeholder='E-Mail wiederholen (Pflicht)'
               keyboardType='email-address'
             />
-            <View style={styles.checkboxContainerGender}>
-              {genderOptions.map((option) => (
-                <View key={option.value} style={styles.checkboxView}>
-                  <Checkbox
-                    style={styles.checkboxElementGender}
-                    value={gender === option.value}
-                    onValueChange={() => setgender(option.value)}
-                  />
-                  <Text style={styles.genderLable}>{option.label}</Text>
-                </View>
-              ))}
+            {/* Gender */}
+            <View style={[styles.ContainerModal, themeStyles.inverseTextInput]}>
+              <TextInput
+                onPress={() => setIsPickerVisibleGender(true)}
+                style={styles.modalTextInput}
+                value={gender}
+                editable={false}
+              />
             </View>
-            <View style={styles.ContainerModalMarja}>
+            <Modal
+              visible={isPickerVisibleGender}
+              transparent={true}
+              animationType='slide'
+              onRequestClose={() => setIsPickerVisibleGender(false)}
+            >
+              <View
+                style={[
+                  styles.modalContainer,
+                  themeStyles.modalQuestionBlurredBackground,
+                ]}
+              >
+                <View
+                  style={[styles.pickerContainer, themeStyles.modalQuestion]}
+                >
+                  <Picker
+                    selectedValue={gender}
+                    onValueChange={(itemValue) => {
+                      setgender(itemValue);
+
+                      // Dismiss Picker
+                      setIsPickerVisibleGender(false);
+                    }}
+                  >
+                    {genderOptions.map((option) => (
+                      <Picker.Item
+                        key={option.label}
+                        label={option.label}
+                        value={option.label}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+            </Modal>
+            {/* Marja */}
+            <View style={[styles.ContainerModal, themeStyles.inverseTextInput]}>
               <TextInput
                 onPress={() => setIsPickerVisibleMarja(true)}
                 style={styles.modalTextInput}
                 value={marja}
                 editable={false}
-                placeholder="-- Wähle deinen Marja aus --"
               />
             </View>
             <Modal
@@ -236,7 +271,12 @@ export default function askQuestion() {
               animationType='slide'
               onRequestClose={() => setIsPickerVisibleMarja(false)}
             >
-              <View style={[styles.modalContainer, themeStyles.modalQuestionBlurredBackground]}>
+              <View
+                style={[
+                  styles.modalContainer,
+                  themeStyles.modalQuestionBlurredBackground,
+                ]}
+              >
                 <View
                   style={[styles.pickerContainer, themeStyles.modalQuestion]}
                 >
@@ -314,11 +354,13 @@ const styles = StyleSheet.create({
   contactContainer: {
     flexGrow: 1,
     justifyContent: "flex-start",
+    paddingTop: 20,
   },
   input: {
     marginHorizontal: 10,
     paddingHorizontal: 12,
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 10,
     paddingVertical: 10,
     borderWidth: 1,
     borderRadius: 20,
@@ -340,19 +382,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 20,
   },
-  ContainerModalMarja: {
+  ContainerModal: {
+    marginTop: 10,
+    marginBottom: 10,
     marginHorizontal: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderWidth: 1,
     borderRadius: 20,
     fontSize: 16,
-    marginBottom: 30,
   },
   modalTextInput: {
     textAlign: "center",
     fontSize: 16,
-   
   },
   modalContainer: {
     flex: 1,
@@ -373,12 +415,13 @@ const styles = StyleSheet.create({
   genderLable: {},
   marjaLable: {},
   rules: {
+    marginTop: 15,
+    marginBottom: 15,
+    marginLeft: 10,
+    marginRight: 30,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 30,
   },
   rulesCheckbox: {
     marginRight: 7,
