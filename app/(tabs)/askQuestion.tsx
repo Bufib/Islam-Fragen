@@ -9,7 +9,7 @@ import {
 import { View, Text } from "components/Themed";
 import Colors from "constants/Colors";
 import { TouchableWithoutFeedback } from "react-native";
-import { Pressable } from "react-native";
+import { Pressable, Modal } from "react-native";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { coustomTheme } from "components/coustomTheme";
@@ -22,6 +22,7 @@ import { Alert } from "react-native";
 import { Platform } from "react-native";
 import { useRef } from "react";
 import { Link } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
 
 interface Email {
   name: string;
@@ -39,10 +40,11 @@ export default function askQuestion() {
   const [age, setAge] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [validateEmail, setValidateEmail] = useState<string>("");
-  const [marja, setMarja] = useState<string | null>(null);
+  const [marja, setMarja] = useState<string>("");
   const [gender, setgender] = useState<string | null>(null);
   const [question, setQuestion] = useState<string>("");
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
+  const [isPickerVisibleMarja, setIsPickerVisibleMarja] = useState(false);
   const { sendEmail } = useSendQuestion();
 
   const scrollViewRef = useRef(null);
@@ -158,33 +160,50 @@ export default function askQuestion() {
           <ScrollView
             contentContainerStyle={styles.contactContainer}
             ref={scrollViewRef}
+            // Makes Question input jump up when keyboard visible
             onContentSizeChange={() =>
               scrollViewRef.current.scrollToEnd({ animated: true })
             }
           >
             <TextInput
-              style={[styles.input, styles.inputName, themeStyles.inverseTextInput]}
+              style={[
+                styles.input,
+                styles.inputName,
+                themeStyles.inverseTextInput,
+              ]}
               onChangeText={setName}
               value={name}
               placeholder='Name (optional)'
               keyboardType='default'
             />
             <TextInput
-              style={[styles.input, styles.inputAge, themeStyles.inverseTextInput]}
+              style={[
+                styles.input,
+                styles.inputAge,
+                themeStyles.inverseTextInput,
+              ]}
               onChangeText={setAge}
               value={age}
               placeholder='Alter (Pflicht)'
               keyboardType='numeric'
             />
             <TextInput
-              style={[styles.input, styles.inputEmail, themeStyles.inverseTextInput]}
+              style={[
+                styles.input,
+                styles.inputEmail,
+                themeStyles.inverseTextInput,
+              ]}
               onChangeText={setEmail}
               value={email}
               placeholder='E-Mail (Pflicht)'
               keyboardType='email-address'
             />
             <TextInput
-              style={[styles.input, styles.inputEmail, themeStyles.inverseTextInput]}
+              style={[
+                styles.input,
+                styles.inputEmail,
+                themeStyles.inverseTextInput,
+              ]}
               onChangeText={setValidateEmail}
               value={validateEmail}
               placeholder='E-Mail wiederholen (Pflicht)'
@@ -202,18 +221,45 @@ export default function askQuestion() {
                 </View>
               ))}
             </View>
-            <View style={styles.checkboxContainerMarja}>
-              {marjaOptions.map((option) => (
-                <View key={option.value} style={styles.checkboxView}>
-                  <Checkbox
-                    style={styles.checkboxElementMarja}
-                    value={marja === option.value}
-                    onValueChange={() => setMarja(option.value)}
-                  />
-                  <Text style={styles.marjaLable}>{option.label}</Text>
-                </View>
-              ))}
+            <View style={styles.ContainerModalMarja}>
+              <TextInput
+                onPress={() => setIsPickerVisibleMarja(true)}
+                style={styles.modalTextInput}
+                value={marja}
+                editable={false}
+                placeholder="-- Wähle deinen Marja aus --"
+              />
             </View>
+            <Modal
+              visible={isPickerVisibleMarja}
+              transparent={true}
+              animationType='slide'
+              onRequestClose={() => setIsPickerVisibleMarja(false)}
+            >
+              <View style={[styles.modalContainer, themeStyles.modalQuestionBlurredBackground]}>
+                <View
+                  style={[styles.pickerContainer, themeStyles.modalQuestion]}
+                >
+                  <Picker
+                    selectedValue={marja}
+                    onValueChange={(itemValue) => {
+                      setMarja(itemValue);
+
+                      // Dismiss Picker
+                      setIsPickerVisibleMarja(false);
+                    }}
+                  >
+                    {marjaOptions.map((option) => (
+                      <Picker.Item
+                        key={option.label}
+                        label={option.label}
+                        value={option.label}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+            </Modal>
 
             <View style={styles.rules}>
               <Checkbox
@@ -234,7 +280,11 @@ export default function askQuestion() {
               </View>
             </View>
             <TextInput
-              style={[styles.input, styles.inputQuestion, themeStyles.inverseTextInput]}
+              style={[
+                styles.input,
+                styles.inputQuestion,
+                themeStyles.inverseTextInput,
+              ]}
               onChangeText={setQuestion}
               value={question}
               placeholder='Frage (Pflicht)'
@@ -290,22 +340,36 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 20,
   },
-  checkboxContainerMarja: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    flexWrap: "wrap",
-    marginBottom: 25
-
+  ContainerModalMarja: {
+    marginHorizontal: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: 20,
+    fontSize: 16,
+    marginBottom: 30,
+  },
+  modalTextInput: {
+    textAlign: "center",
+    fontSize: 16,
+   
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pickerContainer: {
+    width: 300,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
   },
   checkboxElementGender: {
     borderRadius: 30,
     marginRight: 7,
   },
-  checkboxElementMarja: {
-    borderRadius: 30,
-    marginRight: 7,
-    marginBottom: 10,
-  },
+
   genderLable: {},
   marjaLable: {},
   rules: {

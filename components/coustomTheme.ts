@@ -69,6 +69,12 @@ export const lightTheme = {
   fontSizeIcon: {
     color: Colors.light.fontSizeIcon,
   },
+  modalQuestion:{
+    backgroundColor: Colors.light.modalQuestion,
+  },
+  modalQuestionBlurredBackground: {
+    backgroundColor: Colors.light.modalQuestionBlurredBackground,
+  }
 };
 
 export const darkTheme = {
@@ -146,6 +152,12 @@ export const darkTheme = {
   fontSizeIcon: {
     color: Colors.dark.fontSizeIcon,
   },
+  modalQuestion:{
+    backgroundColor: Colors.dark.modalQuestion,
+  },
+  modalQuestionBlurredBackground: {
+    backgroundColor: Colors.dark.modalQuestionBlurredBackground,
+  }
 };
 
 type ColorScheme = "light" | "dark" | undefined | null;

@@ -16,7 +16,7 @@ useFetchSubCategories;
 export default function index() {
   const colorscheme = useColorScheme();
   const themeStyles = coustomTheme(colorscheme);
-  const { fontSize, setLineHeigth, setFontSize } = useSetFontSize();
+  const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
   
 
   // Load all the text data
@@ -39,7 +39,7 @@ export default function index() {
       }
 
       if (storedLineHeight) {
-        setLineHeigth(Number(storedLineHeight));
+        setLineHeight(Number(storedLineHeight));
       }
     };
 

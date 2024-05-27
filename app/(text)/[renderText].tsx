@@ -157,10 +157,11 @@ export default function RenderText() {
         animationType='slide'
         onRequestClose={() => setIsPickerVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.pickerContainer}>
+        <View style={[styles.modalContainer, themeStyles.modalQuestionBlurredBackground]}>
+          <View style={[styles.pickerContainer, themeStyles.modalQuestion]}>
           <Picker
         selectedValue={pickerValue}
+       
         onValueChange={(itemValue) => {
           setPickerValue(itemValue);
 
@@ -428,7 +429,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+ 
   },
   pickerContainer: {
     width: 300,

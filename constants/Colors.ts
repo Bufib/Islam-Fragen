@@ -30,6 +30,8 @@ export default {
     deleteIcon: "#000000",
     downloadIcon: "#000000",
     fontSizeIcon: "#000000",
+    modalQuestion: "#FFFFFF",
+    modalQuestionBlurredBackground:"rgba(0, 0, 0, 0.5)",
   },
   dark: {
     text: "#d0d0c0",
@@ -60,5 +62,7 @@ export default {
     deleteIcon: "#FFFFFF",
     downloadIcon: "#FFFFFF",
     fontSizeIcon: "#FFFFFF",
+    modalQuestion: "#34495e",
+    modalQuestionBlurredBackground:"rgba(0, 0, 0, 0.5)",
   },
 };
