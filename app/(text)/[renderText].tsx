@@ -46,8 +46,8 @@ export default function RenderText() {
   const { toggleFavorite, isInFavorites } = useFavorites();
   const [marja, setMarja] = useState<string[]>([]);
   const [isCopiedMultiple, setIsCopiedMultiple] = useState({
-    khamenei: false,
-    sistani: false,
+    "Sayid al-Khamenei": false,
+    "Sayid as-Sistani": false,
   });
   const [isCopiedSingle, setIsCopiedSingle] = useState(false);
   const [copiedText, setCopiedText] = useState<string>("");
@@ -71,21 +71,21 @@ export default function RenderText() {
   const displayQuestion = item?.question;
   const displaySingleAnswer = item?.answer;
   const displayAnswers = [
-    { marja: "khamenei", answer: item?.answer_khamenei },
-    { marja: "sistani", answer: item?.answer_sistani },
+    { marja: "Sayid al-Khamenei", answer: item?.answer_khamenei },
+    { marja: "Sayid as-Sistani", answer: item?.answer_sistani },
   ];
 
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
 
   const images = {
-    sistani: require("assets/images/sistani.png"),
-    khamenei: require("assets/images/khamenei.png"),
+    "Sayid as-Sistani": require("assets/images/sistani.png"),
+    "Sayid al-Khamenei": require("assets/images/khamenei.png"),
   };
 
   const marjaOptions = [
-    { label: "Sayid al-Khamenei", value: "khamenei" },
-    { label: "Sayid as-Sistani", value: "sistani" },
+    { label: "Sayid al-Khamenei", value: "Sayid al-Khamenei" },
+    { label: "Sayid as-Sistani", value: "Sayid as-Sistani" },
   ];
 
   const handleCheckboxChange = (value: string) => {
@@ -97,16 +97,19 @@ export default function RenderText() {
   // Filter Markdown from copied Text
   const regex = /(\*\*|\*|######|#####|####|###|##|#)/g;
 
-  const filteredAnswers = marja.length > 0
-    ? displayAnswers.filter(
-        (answer) => marja.includes(answer.marja) && typeof answer.answer === "string"
-      )
-    : [];
+  const filteredAnswers =
+    marja.length > 0
+      ? displayAnswers.filter(
+          (answer) =>
+            marja.includes(answer.marja) && typeof answer.answer === "string"
+        )
+      : [];
 
   const copyMultipleAnswers = async (marja: string, text: string) => {
     if (typeof text !== "string") return;
-    await Clipboard.setStringAsync(text.replace(regex, ""));
-    setCopiedText(text.replace(regex, ""));
+    const cleanedText = text.replace(regex, "");
+    await Clipboard.setStringAsync(`${marja}: ${cleanedText}`);
+    setCopiedText(`${marja}: ${cleanedText}`);
     setIsCopiedMultiple((prev) => ({ ...prev, [marja]: true }));
 
     // Clear any existing timeout
@@ -171,7 +174,7 @@ export default function RenderText() {
               {isCopiedSingle ? (
                 <View style={styles.copyDoneContainer}>
                   <MaterialIcons
-                    name="done"
+                    name='done'
                     size={24}
                     color={colorScheme == "dark" ? "white" : "black"}
                   />
@@ -182,7 +185,7 @@ export default function RenderText() {
                   onPress={() => copySingleAnswer(displaySingleAnswer)}
                 >
                   <AntDesign
-                    name="copy1"
+                    name='copy1'
                     size={24}
                     color={colorScheme == "dark" ? "white" : "black"}
                   />
@@ -248,11 +251,13 @@ export default function RenderText() {
           <View style={styles.marjaChoiceContainer}>
             {marjaOptions.map((option) => (
               <View key={option.value} style={styles.marjaChoice}>
-                <Checkbox
-                  style={styles.marjaCheckbox}
-                  value={marja.includes(option.value)}
-                  onValueChange={() => handleCheckboxChange(option.value)}
-                />
+                <View style={styles.checkboxContainer}>
+                  <Checkbox
+                    style={styles.marjaCheckbox}
+                    value={marja.includes(option.value)}
+                    onValueChange={() => handleCheckboxChange(option.value)}
+                  />
+                </View>
                 <Text style={styles.marjaLable}>{option.label}</Text>
               </View>
             ))}
@@ -266,7 +271,7 @@ export default function RenderText() {
                 {isCopiedMultiple[answer.marja] ? (
                   <View style={styles.copyDoneContainer}>
                     <MaterialIcons
-                      name="done"
+                      name='done'
                       size={24}
                       color={colorScheme == "dark" ? "white" : "black"}
                     />
@@ -279,7 +284,7 @@ export default function RenderText() {
                     }
                   >
                     <AntDesign
-                      name="copy1"
+                      name='copy1'
                       size={24}
                       color={colorScheme == "dark" ? "white" : "black"}
                     />
@@ -287,24 +292,24 @@ export default function RenderText() {
                 )}
               </View>
               <View
-                style={[
-                  styles.headerContainer,
-                  themeStyles.containerContrast,
-                ]}
+                style={[styles.headerContainer, themeStyles.containerContrast]}
               >
                 <View style={styles.headerImage}>
                   <Image
                     source={images[answer.marja]}
                     style={styles.image}
-                    contentFit="cover"
+                    contentFit='cover'
                   />
                 </View>
                 <View
                   style={[styles.headerText, themeStyles.containerContrast]}
                 >
                   <Text style={styles.marjaText}>
-                    {marjaOptions.find((option) => option.value === answer.marja)
-                      ?.label}
+                    {
+                      marjaOptions.find(
+                        (option) => option.value === answer.marja
+                      )?.label
+                    }
                   </Text>
                 </View>
               </View>
@@ -449,11 +454,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+  
   },
-  marjaCheckbox: {},
+  checkboxContainer: {
+   
+  },
+  marjaCheckbox: {
+    width: 30,
+    height: 30,
+  },
   marjaLable: {
     marginTop: 5,
     paddingLeft: 5,
+    fontWeight: "bold",
   },
   headerImage: {},
   image: {
