@@ -16,6 +16,8 @@ export default function RenderCategory() {
     }
   }, [subCategory]);
 
+  console.log(JSON.stringify(subCategories))
+
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanTable)
