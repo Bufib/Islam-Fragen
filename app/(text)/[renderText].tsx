@@ -25,6 +25,8 @@ import Checkbox from "expo-checkbox";
 import { useSetFontSize } from "components/fontSizeStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import { Picker } from "@react-native-picker/picker";
+import { Modal } from "react-native";
 
 export default function RenderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -42,7 +44,14 @@ export default function RenderText() {
   const [contentVerticalOffset, setContentVerticalOffset] = useState(0);
   const CONTENT_OFFSET_THRESHOLD = 300;
   const { bookmarks, toggleBookmark } = useBookmarks(key);
-  const { fontSize, lineHeight } = useSetFontSize();
+  const {
+    fontSize,
+    lineHeight,
+    pickerValue,
+    setFontSize,
+    setLineHeight,
+    setPickerValue,
+  } = useSetFontSize();
   const { toggleFavorite, isInFavorites } = useFavorites();
   const [marja, setMarja] = useState<string[]>([]);
   const [isCopiedMultiple, setIsCopiedMultiple] = useState({
@@ -52,6 +61,7 @@ export default function RenderText() {
   const [isCopiedSingle, setIsCopiedSingle] = useState(false);
   const [copiedText, setCopiedText] = useState<string>("");
   const timeoutRef = useRef(null);
+  const [isPickerVisible, setIsPickerVisible] = useState(false);
 
   // Clean Timeout
   const cleanTimeout = () => {
@@ -132,14 +142,56 @@ export default function RenderText() {
 
     timeoutRef.current = setTimeout(() => setIsCopiedSingle(false), 1000);
   };
-
+  const fontSizeOptions = [
+    { label: 'Klein', fontSize: 16, lineHeight: 30 },
+    { label: 'Mittel', fontSize: 20, lineHeight: 40 },
+    { label: 'Groß', fontSize: 25, lineHeight: 40 },
+  ];
+  
   return (
     <View style={styles.container}>
       {/* Change header Title */}
+      <Modal
+        visible={isPickerVisible}
+        transparent={true}
+        animationType='slide'
+        onRequestClose={() => setIsPickerVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.pickerContainer}>
+          <Picker
+        selectedValue={pickerValue}
+        onValueChange={(itemValue) => {
+          setPickerValue(itemValue);
+
+          // Zustand Store
+          const selectedOption = fontSizeOptions.find(option => option.label === itemValue);
+          if (selectedOption) {
+            setFontSize(selectedOption.fontSize);
+            setLineHeight(selectedOption.lineHeight);
+          }
+
+          // Dismiss Picker
+          setIsPickerVisible(false);
+        }}
+      >
+        {fontSizeOptions.map(option => (
+          <Picker.Item key={option.label} label={option.label} value={option.label} />
+        ))}
+      </Picker>
+          </View>
+        </View>
+      </Modal>
       <Stack.Screen
         options={{
           headerRight: () => (
             <View style={styles.buttonsHeaderContainer}>
+              <MaterialCommunityIcons
+                name='format-letter-case'
+                size={26}
+                style={themeStyles.fontSizeIcon}
+                onPress={() => setIsPickerVisible(true)}
+              />
               <AntDesign
                 name={isInFavorites(id, table) ? "star" : "staro"}
                 size={24}
@@ -367,9 +419,22 @@ const styles = StyleSheet.create({
   },
   buttonsHeaderContainer: {
     flexDirection: "row",
+    justifyContent: "center",
     gap: 15,
     backgroundColor: "transparent",
     marginLeft: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  pickerContainer: {
+    width: 300,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
   },
   FlashContainer: {
     flex: 1,
@@ -454,11 +519,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
-  
   },
-  checkboxContainer: {
-   
-  },
+  checkboxContainer: {},
   marjaCheckbox: {
     width: 30,
     height: 30,

@@ -65,7 +65,10 @@ export const lightTheme = {
   },
   markdownText: {
     color: Colors.light.text,
-  }
+  },
+  fontSizeIcon: {
+    color: Colors.light.fontSizeIcon,
+  },
 };
 
 export const darkTheme = {
@@ -139,7 +142,10 @@ export const darkTheme = {
   },
   markdownText: {
     color: Colors.dark.text,
-  }
+  },
+  fontSizeIcon: {
+    color: Colors.dark.fontSizeIcon,
+  },
 };
 
 type ColorScheme = "light" | "dark" | undefined | null;

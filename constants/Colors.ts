@@ -29,6 +29,7 @@ export default {
     searchBorderDash:  "#000000",
     deleteIcon: "#000000",
     downloadIcon: "#000000",
+    fontSizeIcon: "#000000",
   },
   dark: {
     text: "#d0d0c0",
@@ -58,5 +59,6 @@ export default {
     searchBorderDash:  "#FFFFFF",
     deleteIcon: "#FFFFFF",
     downloadIcon: "#FFFFFF",
+    fontSizeIcon: "#FFFFFF",
   },
 };
