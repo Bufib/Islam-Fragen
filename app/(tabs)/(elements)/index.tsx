@@ -17,12 +17,13 @@ export default function index() {
   const colorscheme = useColorScheme();
   const themeStyles = coustomTheme(colorscheme);
   const { fontSize, setLineHeigth, setFontSize } = useSetFontSize();
+  
 
   // Load all the text data
 
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
-   
+
     const getColorMode = async () => {
       const colorMode = await AsyncStorage.getItem("ColorMode");
       if (colorMode) {

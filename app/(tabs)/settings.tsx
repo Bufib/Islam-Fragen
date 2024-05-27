@@ -6,14 +6,12 @@ import { Switch } from "react-native";
 import { Appearance } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import Checkbox from "expo-checkbox";
-import { useSetFontSize } from "components/fontSizeStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function settings() {
   const colorScheme = Appearance.getColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme == "dark");
   const [selectSize, setSelectSize] = useState<number>();
-  const { fontSize, setLineHeigth, setFontSize } = useSetFontSize();
 
   // Save Font mode and Color mode in Asyncstorage
   useLayoutEffect(() => {
@@ -26,14 +24,6 @@ export default function settings() {
       }
     };
 
-    const getFontSetting = async () => {
-      const storedFontSize = await AsyncStorage.getItem("fontSize");
-
-      if (storedFontSize) {
-        setSelectSize(Number(storedFontSize));
-      }
-    };
-    getFontSetting();
     getColorMode();
   }, []);
 
@@ -44,23 +34,9 @@ export default function settings() {
     setIsDarkMode(!isDarkMode);
   };
 
-  const toggleSwitchFont = async (lineHeight, fontSize) => {
-    setLineHeigth(lineHeight);
-    setSelectSize(fontSize);
-    setFontSize(fontSize);
-    await AsyncStorage.setItem("lineHeigth", JSON.stringify(lineHeight));
-    await AsyncStorage.setItem("fontSize", JSON.stringify(fontSize));
-  };
-
   const saveSwitchStatus = async (colorMode) => {
     await AsyncStorage.setItem("ColorMode", colorMode);
   };
-
-  const SizeOptions = [
-    { label: "Groß", fontSize: 25, lineHeight: 40 },
-    { label: "Mittel", fontSize: 20, lineHeight: 40 },
-    { label: "Klein", fontSize: 16, lineHeight: 30 },
-  ];
 
   return (
     <View style={styles.container}>
@@ -75,26 +51,6 @@ export default function settings() {
         />
       </View>
 
-      <View style={styles.textSizeContainer}>
-        <Text style={styles.textSizeText}>Schriftgröße: </Text>
-        <View style={styles.textSizeElements}>
-          {SizeOptions.map((option) => (
-            <View
-              key={option.fontSize}
-              style={styles.textSizeCheckboxContainer}
-            >
-              <Checkbox
-                style={styles.textSizeCheckbox}
-                value={fontSize === option.fontSize}
-                onValueChange={() => {
-                  toggleSwitchFont(option.lineHeight, option.fontSize);
-                }}
-              />
-              <Text style={styles.checboxLable}>{option.label}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
       <View style={styles.spacer} />
       <View style={styles.informationContainer}>
         <Link style={styles.linkText} href='/information'>
@@ -127,30 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
   },
-  textSizeContainer: {
-    flex: 1,
-    flexDirection: "row",
-    marginTop: 25,
-  },
-  textSizeText: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  textSizeElements: {
-    flexDirection: "row",
-  },
-  textSizeCheckbox: {
-    marginBottom: 15,
-  },
-  textSizeCheckboxContainer: {
-    flexDirection: "row",
-    marginLeft: 5,
-  },
-  checboxLable: {
-    marginLeft: 5,
-    fontSize: 18,
-    fontWeight: "700",
-  },
+
   spacer: {
     flexGrow: 1,
   },
