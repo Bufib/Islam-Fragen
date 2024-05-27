@@ -13,24 +13,20 @@ import Colors from "constants/Colors";
 import { Stack } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import { useColorScheme } from "react-native";
-import { useIsChanging } from "components/favStore";
 import Markdown from "react-native-markdown-display";
-import { storeFavorites, getFavorites } from "components/manageFavorites";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRef } from "react";
 import useBookmarks from "components/useBookmarks";
 import useFavorites from "components/useFavorites";
-import useDownload from "components/useDownload";
 import { coustomTheme } from "components/coustomTheme";
 import { Image } from "expo-image";
 import Checkbox from "expo-checkbox";
 import { useSetFontSize } from "components/fontSizeStore";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as Network from "expo-network";
 import * as Clipboard from "expo-clipboard";
 
-export default function renderText() {
+export default function RenderText() {
   const { id, table, title } = useLocalSearchParams<{
     id: string;
     table: string;
@@ -43,7 +39,6 @@ export default function renderText() {
   );
 
   const key = `text-${id}-${table}`;
-  const appColor = Appearance.getColorScheme();
   const [contentVerticalOffset, setContentVerticalOffset] = useState(0);
   const CONTENT_OFFSET_THRESHOLD = 300;
   const { bookmarks, toggleBookmark } = useBookmarks(key);
@@ -58,7 +53,7 @@ export default function renderText() {
   const [copiedText, setCopiedText] = useState<string>("");
   const timeoutRef = useRef(null);
 
-  // clean Timout
+  // Clean Timeout
   const cleanTimeout = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -102,13 +97,14 @@ export default function renderText() {
   // Filter Markdown from copied Text
   const regex = /(\*\*|\*|######|#####|####|###|##|#)/g;
 
-  const filteredAnswers =
-    marja.length > 0
-      ? displayAnswers.filter((answer) => marja.includes(answer.marja))
-      : displayAnswers;
-     
+  const filteredAnswers = marja.length > 0
+    ? displayAnswers.filter(
+        (answer) => marja.includes(answer.marja) && typeof answer.answer === "string"
+      )
+    : displayAnswers.filter((answer) => typeof answer.answer === "string");
 
   const copyMultipleAnswers = async (marja: string, text: string) => {
+    if (typeof text !== "string") return;
     await Clipboard.setStringAsync(text.replace(regex, ""));
     setCopiedText(text.replace(regex, ""));
     setIsCopiedMultiple((prev) => ({ ...prev, [marja]: true }));
@@ -123,6 +119,7 @@ export default function renderText() {
   };
 
   const copySingleAnswer = async (text: string) => {
+    if (typeof text !== "string") return;
     await Clipboard.setStringAsync(text.replace(regex, ""));
     setCopiedText(text.replace(regex, ""));
     setIsCopiedSingle(true);
@@ -292,7 +289,6 @@ export default function renderText() {
               <View
                 style={[
                   styles.headerContainer,
-                  ,
                   themeStyles.containerContrast,
                 ]}
               >
