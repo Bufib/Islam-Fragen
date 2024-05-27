@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
   },
   border: {
-    color: Colors.dark.border,
     fontSize: 25,
     paddingLeft: 3,
     paddingBottom: 5,

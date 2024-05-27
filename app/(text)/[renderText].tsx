@@ -2,7 +2,6 @@ import { View, Text } from "components/Themed";
 import {
   StyleSheet,
   Pressable,
-  Appearance,
   Platform,
   ScrollView,
 } from "react-native";
@@ -143,11 +142,11 @@ export default function RenderText() {
     timeoutRef.current = setTimeout(() => setIsCopiedSingle(false), 1000);
   };
   const fontSizeOptions = [
-    { label: 'Klein', fontSize: 16, lineHeight: 30 },
-    { label: 'Mittel', fontSize: 20, lineHeight: 40 },
-    { label: 'Groß', fontSize: 25, lineHeight: 40 },
+    { label: "Klein", fontSize: 16, lineHeight: 30 },
+    { label: "Mittel", fontSize: 20, lineHeight: 40 },
+    { label: "Groß", fontSize: 25, lineHeight: 40 },
   ];
-  
+
   return (
     <View style={styles.container}>
       {/* Change header Title */}
@@ -157,29 +156,39 @@ export default function RenderText() {
         animationType='slide'
         onRequestClose={() => setIsPickerVisible(false)}
       >
-        <View style={[styles.modalContainer, themeStyles.modalQuestionBlurredBackground]}>
+        <View
+          style={[
+            styles.modalContainer,
+            themeStyles.modalQuestionBlurredBackground,
+          ]}
+        >
           <View style={[styles.pickerContainer, themeStyles.modalQuestion]}>
-          <Picker
-        selectedValue={pickerValue}
-       
-        onValueChange={(itemValue) => {
-          setPickerValue(itemValue);
+            <Picker
+              selectedValue={pickerValue}
+              onValueChange={(itemValue) => {
+                setPickerValue(itemValue);
 
-          // Zustand Store
-          const selectedOption = fontSizeOptions.find(option => option.label === itemValue);
-          if (selectedOption) {
-            setFontSize(selectedOption.fontSize);
-            setLineHeight(selectedOption.lineHeight);
-          }
+                // Zustand Store
+                const selectedOption = fontSizeOptions.find(
+                  (option) => option.label === itemValue
+                );
+                if (selectedOption) {
+                  setFontSize(selectedOption.fontSize);
+                  setLineHeight(selectedOption.lineHeight);
+                }
 
-          // Dismiss Picker
-          setIsPickerVisible(false);
-        }}
-      >
-        {fontSizeOptions.map(option => (
-          <Picker.Item key={option.label} label={option.label} value={option.label} />
-        ))}
-      </Picker>
+                // Dismiss Picker
+                setIsPickerVisible(false);
+              }}
+            >
+              {fontSizeOptions.map((option) => (
+                <Picker.Item
+                  key={option.label}
+                  label={option.label}
+                  value={option.label}
+                />
+              ))}
+            </Picker>
           </View>
         </View>
       </Modal>
@@ -429,7 +438,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
- 
   },
   pickerContainer: {
     width: 300,
@@ -446,13 +454,25 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 10,
     marginBottom: 10,
+    
   },
   questionContainer: {
     margin: 10,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 10,
+    ...Platform.select({
+      ios: {
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 1,
+      },
+    }),
   },
+
   questionText: {
     textAlign: "center",
     fontWeight: "bold",
