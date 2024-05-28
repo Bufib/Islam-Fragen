@@ -39,7 +39,7 @@ const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
           params: {
             id: item.id,
             title: `${encodeTitle(item.title)}`,
-            table: item.tableName 
+            table: item.tableName // Pass tableName here
           },
         }}
         asChild

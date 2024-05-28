@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import useFetchSubCategories from "components/useFetchSubCategories";
+
 interface Item {
   id: number;
   title: string;
@@ -9,13 +12,9 @@ interface Item {
 }
 
 interface TopCategoryItem {
-  id: number;
-  title: string;
-  questions?: Item[]; // Ensure this matches the actual data structure
+  tableName: string;
+  questions: Item[];
 }
-
-import { useState, useEffect } from "react";
-import useFetchSubCategories from "components/useFetchSubCategories";
 
 const useSearchItems = (search: string) => {
   const [searchResults, setSearchResults] = useState<Item[]>([]);
@@ -36,17 +35,17 @@ const useSearchItems = (search: string) => {
 
         // Flatten the questions into a single array and include tableName
         subCategories.forEach((category: TopCategoryItem) => {
-          if (category.questions) {
-            category.questions.forEach((question, index) => {
-              if (question && question.question && question.title) {
-                flatQuestions.push({ ...question, tableName: category.title, id: index });
-              } else {
-                console.error("Invalid question format", question);
-              }
-            });
-          } else {
-            console.error("Category without questions", category);
-          }
+          category.questions.forEach((question, index) => {
+            if (question && question.question && question.title) {
+              flatQuestions.push({ 
+                ...question, 
+                tableName: category.tableName, // Ensure tableName is added here
+                id: `${category.tableName}-${index}` // Ensure unique id
+              });
+            } else {
+              console.error("Invalid question format", question);
+            }
+          });
         });
 
         const normalizedSearch = search.toLowerCase();
