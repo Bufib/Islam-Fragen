@@ -39,6 +39,7 @@ export default function RenderText() {
     title || ""
   );
 
+
   const key = `text-${id}-${table}`;
   const [contentVerticalOffset, setContentVerticalOffset] = useState(0);
   const CONTENT_OFFSET_THRESHOLD = 300;

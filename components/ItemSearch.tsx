@@ -27,7 +27,7 @@ const ItemSearch: React.FC<ItemSearchProps> = ({ search }) => {
             data={searchResults}
             estimatedItemSize={63}
             extraData={appColor}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) => `${item.id}-${index}`} // Ensure unique keys
             renderItem={({ item }) => <RenderSearch item={item} />}
           />
         </View>

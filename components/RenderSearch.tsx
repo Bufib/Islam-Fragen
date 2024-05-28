@@ -12,6 +12,7 @@ interface Item {
   answer?: string;
   answer_sistani?: string;
   answer_khamenei?: string;
+  tableName: string; // Include tableName
 }
 
 interface RenderSearchProps {
@@ -38,7 +39,7 @@ const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
           params: {
             id: item.id,
             title: `${encodeTitle(item.title)}`,
-            
+            table: item.tableName 
           },
         }}
         asChild
@@ -47,7 +48,7 @@ const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
           <View style={[styles.renderItem, themeStyles.containerContrast]}>
             <Text style={styles.itemText}>{item.title.trim()}</Text>
             <Feather
-              name='arrow-right-circle'
+              name="arrow-right-circle"
               size={25}
               color={colorScheme == "light" ? "black" : "white"}
             />
