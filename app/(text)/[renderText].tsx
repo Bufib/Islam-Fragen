@@ -1,10 +1,5 @@
 import { View, Text } from "components/Themed";
-import {
-  StyleSheet,
-  Pressable,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Pressable, Platform, ScrollView } from "react-native";
 import React, { useLayoutEffect, useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { useFetchText } from "components/useFetchText";
@@ -38,7 +33,6 @@ export default function RenderText() {
     table || "",
     title || ""
   );
-
 
   const key = `text-${id}-${table}`;
   const [contentVerticalOffset, setContentVerticalOffset] = useState(0);
@@ -187,6 +181,7 @@ export default function RenderText() {
                   key={option.label}
                   label={option.label}
                   value={option.label}
+                  color={colorScheme == "light" ? Colors.light.modalQuestionText :Colors.dark.modalQuestionText}
                 />
               ))}
             </Picker>
@@ -455,7 +450,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 10,
     marginBottom: 10,
-    
   },
   questionContainer: {
     margin: 10,

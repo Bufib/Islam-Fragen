@@ -29,7 +29,6 @@ export const useFetchText = (table: string, title: string) => {
 
       if (storedData) {
         const parsedData: Item[] = JSON.parse(storedData); // Parse the JSON data
-        console.log(parsedData)
 
         // Normalizing title by trimming spaces
         const normalizedTitle = title.trim();

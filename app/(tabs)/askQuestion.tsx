@@ -213,10 +213,10 @@ export default function askQuestion() {
               keyboardType='email-address'
             />
             {/* Gender */}
-            <View style={[styles.ContainerModal, themeStyles.inverseTextInput]}>
+            <View style={[styles.ContainerModal, themeStyles.inverseQuestionBackground]}>
               <TextInput
                 onPress={() => setIsPickerVisibleGender(true)}
-                style={styles.modalTextInput}
+                style={[styles.modalTextInput, themeStyles.inverseQuestionText]}
                 value={gender}
                 editable={false}
               />
@@ -250,6 +250,11 @@ export default function askQuestion() {
                         key={option.label}
                         label={option.label}
                         value={option.label}
+                        color={
+                          colorScheme == "light"
+                            ? Colors.light.modalQuestionText
+                            : Colors.dark.modalQuestionText
+                        }
                       />
                     ))}
                   </Picker>
@@ -257,10 +262,10 @@ export default function askQuestion() {
               </View>
             </Modal>
             {/* Marja */}
-            <View style={[styles.ContainerModal, themeStyles.inverseTextInput]}>
+            <View style={[styles.ContainerModal, themeStyles.inverseQuestionBackground]}>
               <TextInput
                 onPress={() => setIsPickerVisibleMarja(true)}
-                style={styles.modalTextInput}
+                style={[styles.modalTextInput, themeStyles.inverseQuestionText]}
                 value={marja}
                 editable={false}
               />
@@ -294,6 +299,11 @@ export default function askQuestion() {
                         key={option.label}
                         label={option.label}
                         value={option.label}
+                        color={
+                          colorScheme == "light"
+                            ? Colors.light.modalQuestionText
+                            : Colors.dark.modalQuestionText
+                        }
                       />
                     ))}
                   </Picker>

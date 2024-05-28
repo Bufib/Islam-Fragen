@@ -1,4 +1,5 @@
-import { Text, View, Pressable, StyleSheet } from "react-native";
+import { Text, View } from "components/Themed";
+import { StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
@@ -39,7 +40,7 @@ const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
           params: {
             id: item.id,
             title: `${encodeTitle(item.title)}`,
-            table: item.tableName // Pass tableName here
+            table: item.tableName, // Pass tableName here
           },
         }}
         asChild
@@ -48,7 +49,7 @@ const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
           <View style={[styles.renderItem, themeStyles.containerContrast]}>
             <Text style={styles.itemText}>{item.title.trim()}</Text>
             <Feather
-              name="arrow-right-circle"
+              name='arrow-right-circle'
               size={25}
               color={colorScheme == "light" ? "black" : "white"}
             />

@@ -11,9 +11,10 @@ export const lightTheme = {
     color: Colors.light.addNewsButton,
   },
   inverseTextInput: {
-    color: Colors.light.black,
+    color: Colors.light.inverseText,
     backgroundColor: Colors.light.contrast,
   },
+
   categorieText: {
     color: Colors.light.categorieText,
   },
@@ -69,12 +70,24 @@ export const lightTheme = {
   fontSizeIcon: {
     color: Colors.light.fontSizeIcon,
   },
-  modalQuestion:{
+  modalQuestion: {
     backgroundColor: Colors.light.modalQuestion,
   },
   modalQuestionBlurredBackground: {
     backgroundColor: Colors.light.modalQuestionBlurredBackground,
-  }
+  },
+  inverseText: {
+    color: Colors.light.inverseText,
+  },
+  modalQuestionText: {
+    color: Colors.light.modalQuestionText,
+  },
+  inverseQuestionText: {
+    color: Colors.dark.inverseQuestionText,
+  },
+  inverseQuestionBackground: {
+    backgroundColor: Colors.dark.contrast,
+  },
 };
 
 export const darkTheme = {
@@ -94,7 +107,7 @@ export const darkTheme = {
     backgroundColor: Colors.dark.background,
   },
   inverseTextInput: {
-    color: Colors.dark.white,
+    color: Colors.dark.inverseText,
     backgroundColor: Colors.dark.contrast,
   },
   categorieText: {
@@ -152,12 +165,24 @@ export const darkTheme = {
   fontSizeIcon: {
     color: Colors.dark.fontSizeIcon,
   },
-  modalQuestion:{
+  modalQuestion: {
     backgroundColor: Colors.dark.modalQuestion,
   },
   modalQuestionBlurredBackground: {
     backgroundColor: Colors.dark.modalQuestionBlurredBackground,
-  }
+  },
+  inverseText: {
+    color: Colors.dark.inverseText,
+  },
+  modalQuestionText: {
+    color: Colors.dark.modalQuestionText,
+  },
+  inverseQuestionText: {
+    color: Colors.dark.inverseQuestionText,
+  },
+  inverseQuestionBackground: {
+    backgroundColor: Colors.dark.contrast,
+  },
 };
 
 type ColorScheme = "light" | "dark" | undefined | null;

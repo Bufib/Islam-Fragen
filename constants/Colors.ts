@@ -26,12 +26,16 @@ export default {
     updateButtonNews: "#2ecc71",
     trashIcon: "#BA2F16",
     characterCountNewsImage: "#000000",
-    searchBorderDash:  "#000000",
+    searchBorderDash: "#000000",
     deleteIcon: "#000000",
     downloadIcon: "#000000",
     fontSizeIcon: "#000000",
     modalQuestion: "#FFFFFF",
-    modalQuestionBlurredBackground:"rgba(0, 0, 0, 0.5)",
+    modalQuestionText: "#000000",
+    modalQuestionBlurredBackground: "rgba(0, 0, 0, 0.5)",
+    inverseText: "#000000",
+
+    inverseQuestionText: "rgba(0, 0, 0, 0.2)",
   },
   dark: {
     text: "#d0d0c0",
@@ -58,11 +62,16 @@ export default {
     updateButtonNews: "#2ecc71",
     trashIcon: "#D63031",
     characterCountNewsImage: "#FFFFFF",
-    searchBorderDash:  "#FFFFFF",
+    searchBorderDash: "#FFFFFF",
     deleteIcon: "#FFFFFF",
     downloadIcon: "#FFFFFF",
     fontSizeIcon: "#FFFFFF",
     modalQuestion: "#34495e",
-    modalQuestionBlurredBackground:"rgba(0, 0, 0, 0.5)",
+    modalQuestionText: "#FFFFFF",
+    modalQuestionBlurredBackground: "rgba(0, 0, 0, 0.5)",
+
+    inverseText: "#FFFFFF",
+
+    inverseQuestionText: "rgba(255, 255, 255, 0.3)",
   },
 };

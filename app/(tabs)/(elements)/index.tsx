@@ -18,7 +18,6 @@ export default function index() {
   const themeStyles = coustomTheme(colorscheme);
   const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
   
-
   // Load all the text data
 
   // Load colorscheme Mode and Font size stored in Asyncstorage
@@ -65,7 +64,7 @@ export default function index() {
                 />
               </View>
               <View style={styles.headerTextContainer}>
-                <Text style={styles.headerText}>Islam-Fragen</Text>
+                <Text style={[styles.headerText, themeStyles.inverseText]}>Islam-Fragen</Text>
                 <Text style={[styles.headerDash, themeStyles.indexBorderDash]}>
                   __________
                 </Text>
