@@ -38,6 +38,7 @@ const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
           params: {
             id: item.id,
             title: `${encodeTitle(item.title)}`,
+            
           },
         }}
         asChild
