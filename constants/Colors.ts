@@ -56,7 +56,7 @@ export default {
     categorieText: "#000000",
     indexBorderDash: "#DDC092",
     backgroundIndexHeader: "#41ACD2",
-    shadowColor: "#000000",
+    shadowColor: "#FFFFFF",
     activityIndicator: "#009432",
     arrowUp: "#45CE30",
     updateButtonNews: "#2ecc71",

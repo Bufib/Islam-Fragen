@@ -216,7 +216,7 @@ export default function RenderText() {
       ) : displaySingleAnswer ? (
         <ScrollView style={styles.answerContainer}>
           <View
-            style={[styles.questionContainer, themeStyles.containerContrast]}
+            style={[styles.questionContainer, themeStyles.containerContrast, themeStyles.shadow]}
           >
             <Text
               style={[
@@ -461,6 +461,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
+        
       },
       android: {
         elevation: 1,

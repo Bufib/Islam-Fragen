@@ -58,7 +58,6 @@ export default function QuestionLinks() {
               styles.element,
               themeStyles.categorieBackground,
               themeStyles.indexBorderDash,
-              themeStyles.shadow,
             ]}
           >
             <Link
@@ -169,16 +168,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "flex-end",
     paddingHorizontal: 2,
-    ...Platform.select({
-      ios: {
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
   },
 
   elementIcon: {

@@ -83,11 +83,12 @@ export const lightTheme = {
     color: Colors.light.modalQuestionText,
   },
   inverseQuestionText: {
-    color: Colors.dark.inverseQuestionText,
+    color: Colors.light.inverseQuestionText,
   },
   inverseQuestionBackground: {
-    backgroundColor: Colors.dark.contrast,
+    backgroundColor: Colors.light.contrast,
   },
+
 };
 
 export const darkTheme = {
@@ -183,6 +184,7 @@ export const darkTheme = {
   inverseQuestionBackground: {
     backgroundColor: Colors.dark.contrast,
   },
+
 };
 
 type ColorScheme = "light" | "dark" | undefined | null;
