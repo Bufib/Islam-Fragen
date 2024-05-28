@@ -5,7 +5,7 @@ import React from "react";
 import RenderSearch from "./RenderSearch";
 import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
-import useSearchItems from "./useSearchItems";
+import useSearchItems from "components/useSearchItems";
 
 const appColor = Appearance.getColorScheme();
 
@@ -15,7 +15,6 @@ interface ItemSearchProps {
 
 const ItemSearch: React.FC<ItemSearchProps> = ({ search }) => {
   const { searchResults, isLoading } = useSearchItems(search);
-
   return (
     <View style={styles.container}>
       {isLoading ? (
@@ -28,10 +27,8 @@ const ItemSearch: React.FC<ItemSearchProps> = ({ search }) => {
             data={searchResults}
             estimatedItemSize={63}
             extraData={appColor}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <RenderSearch items={item.items} table={item.table} />
-            )}
+            //keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <RenderSearch item={item} />}
           />
         </View>
       ) : (

@@ -1,6 +1,4 @@
-import Colors from "constants/Colors";
-import { Text, View } from "components/Themed";
-import { Pressable, StyleSheet } from "react-native";
+import { Text, View, Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
@@ -10,60 +8,51 @@ import { coustomTheme } from "./coustomTheme";
 interface Item {
   id: number;
   title: string;
-  table: string;
+  question: string;
+  answer?: string;
+  answer_sistani?: string;
+  answer_khamenei?: string;
 }
 
 interface RenderSearchProps {
-  items: Item[];
-  table: string;
+  item: Item;
 }
 
-const RenderSearch: React.FC<RenderSearchProps> = ({ items, table }) => {
+const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
 
   const encodeTitle = (title: string) => {
-    // Clean the title by trimming and removing new lines
-    // Encode all characters with encodeURIComponent and manually encode parentheses since the cause trouble in the url
     const cleanedTitle = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanedTitle)
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
+
   return (
     <View style={styles.container}>
-      {items && (
-        <View style={[styles.itemsContainer]}>
-          {items.map((item) => (
-            <Link
-              style={styles.FlashListItems}
-              key={`${item.table}-${item.id}`}
-              href={{
-                pathname: `/(text)/${encodeTitle(item.title)}`,
-                params: {
-                  id: item.id,
-                  table: table,
-                  title: `${encodeTitle(item.title)}`,
-                },
-              }}
-              asChild
-            >
-              <Pressable>
-                <View
-                  style={[styles.renderItem, themeStyles.containerContrast]}
-                >
-                  <Text style={styles.itemText}>{item.title.trim()}</Text>
-                  <Feather
-                    name='arrow-right-circle'
-                    size={25}
-                    color={colorScheme == "light" ? "black" : "white"}
-                  />
-                </View>
-              </Pressable>
-            </Link>
-          ))}
-        </View>
-      )}
+      <Link
+        style={styles.FlashListItems}
+        href={{
+          pathname: `/(text)/${encodeTitle(item.title)}`,
+          params: {
+            id: item.id,
+            title: `${encodeTitle(item.title)}`,
+          },
+        }}
+        asChild
+      >
+        <Pressable>
+          <View style={[styles.renderItem, themeStyles.containerContrast]}>
+            <Text style={styles.itemText}>{item.title.trim()}</Text>
+            <Feather
+              name='arrow-right-circle'
+              size={25}
+              color={colorScheme == "light" ? "black" : "white"}
+            />
+          </View>
+        </Pressable>
+      </Link>
     </View>
   );
 };
@@ -72,11 +61,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
-  itemsContainer: {
-    flex: 1,
-  },
-
   FlashListItems: {
     paddingTop: 15,
   },
@@ -86,7 +70,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.2,
     alignItems: "center",
   },
-
   itemText: {
     flex: 1,
     paddingRight: 20,

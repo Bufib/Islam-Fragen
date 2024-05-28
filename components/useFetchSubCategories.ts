@@ -26,7 +26,7 @@ export default function useFetchSubCategories() {
       const newTopCategories: TableData[] = [];
       if (tableNames) {
         for (const table of tableNames) {
-          const tablesArray = table.tableNames.split(',').map(t => t.trim());
+          const tablesArray = table.tableNames.split(",").map((t) => t.trim());
           for (const tableName of tablesArray) {
             const { data, error } = await supabase
               .from(tableName)
@@ -38,7 +38,10 @@ export default function useFetchSubCategories() {
             }
 
             if (data) {
-              newTopCategories.push({ tableName, questions: data as TopCategoryItem[] });
+              newTopCategories.push({
+                tableName,
+                questions: data as TopCategoryItem[],
+              });
               await AsyncStorage.setItem(tableName, JSON.stringify(data));
             }
           }
@@ -61,11 +64,14 @@ export default function useFetchSubCategories() {
       const storedCategories: TableData[] = [];
       if (tableNames) {
         for (const table of tableNames) {
-          const tablesArray = table.tableNames.split(',').map(t => t.trim());
+          const tablesArray = table.tableNames.split(",").map((t) => t.trim());
           for (const tableName of tablesArray) {
             const storedData = await AsyncStorage.getItem(tableName);
             if (storedData) {
-              storedCategories.push({ tableName, questions: JSON.parse(storedData) });
+              storedCategories.push({
+                tableName,
+                questions: JSON.parse(storedData),
+              });
             }
           }
         }
@@ -83,11 +89,14 @@ export default function useFetchSubCategories() {
 
       if (tableNames) {
         for (const table of tableNames) {
-          const tablesArray = table.tableNames.split(',').map(t => t.trim());
+          const tablesArray = table.tableNames.split(",").map((t) => t.trim());
           for (const tableName of tablesArray) {
             const storedData = await AsyncStorage.getItem(tableName);
             if (storedData) {
-              storedCategories.push({ tableName, questions: JSON.parse(storedData) });
+              storedCategories.push({
+                tableName,
+                questions: JSON.parse(storedData),
+              });
             } else {
               needsFetch = true;
             }
@@ -108,8 +117,8 @@ export default function useFetchSubCategories() {
 
     if (tableNames) {
       const subscriptions = tableNames.flatMap((table) => {
-        const tablesArray = table.tableNames.split(',').map(t => t.trim());
-        return tablesArray.map((tableName) => 
+        const tablesArray = table.tableNames.split(",").map((t) => t.trim());
+        return tablesArray.map((tableName) =>
           supabase
             .channel("public:" + tableName)
             .on(
