@@ -88,7 +88,6 @@ export const lightTheme = {
   inverseQuestionBackground: {
     backgroundColor: Colors.light.contrast,
   },
-
 };
 
 export const darkTheme = {
@@ -133,9 +132,7 @@ export const darkTheme = {
   link: {
     color: Colors.dark.link,
   },
-  updateButtonNews: {
-    backgroundColor: Colors.dark.updateButtonNews,
-  },
+
   trashIcon: {
     color: Colors.dark.trashIcon,
   },
@@ -184,7 +181,6 @@ export const darkTheme = {
   inverseQuestionBackground: {
     backgroundColor: Colors.dark.contrast,
   },
-
 };
 
 type ColorScheme = "light" | "dark" | undefined | null;

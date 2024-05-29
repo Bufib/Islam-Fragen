@@ -19,6 +19,7 @@ import {
 } from "react-native";
 import { coustomTheme } from "components/coustomTheme";
 import HeaderFlashListIndex from "components/HeaderFlashListIndex";
+import { Image } from "expo-image";
 
 export default function index() {
   const [refreshing, setRefreshing] = useState(false);
@@ -70,14 +71,19 @@ export default function index() {
           </View>
         ) : null}
         {updateAvailable && (
-          <View style={styles.updateContainer}>
+        
             <Pressable
-              style={[styles.updateButton, themeStyles.updateButtonNews]}
+              style={styles.updateContainer}
               onPress={() => updateNews()}
             >
+              <Image
+                source={require("assets/images/refresh.png")}
+                style={styles.refreshImage}
+                contentFit='cover'
+              />
               <Text style={styles.updateButtonText}>Aktualisieren</Text>
             </Pressable>
-          </View>
+   
         )}
         {fetchError ? (
           <ScrollView
@@ -284,15 +290,18 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
     top: 0,
+    left: 0,
     zIndex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "transparent",
   },
-  updateButton: {
-    borderWidth: 1,
-    borderRadius: 30,
+
+  refreshImage: {
+    width: 50,
+    height: 50,
   },
+
   updateButtonText: {
     fontSize: 16,
     padding: 6,

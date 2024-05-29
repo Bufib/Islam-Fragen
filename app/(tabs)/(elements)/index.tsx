@@ -22,7 +22,6 @@ export default function index() {
   const { fetchError, subCategories, refetch, isFetching } = useFetchSubCategories();
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
-
     const getColorMode = async () => {
       const colorMode = await AsyncStorage.getItem("ColorMode");
       if (colorMode) {

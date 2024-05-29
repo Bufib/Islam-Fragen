@@ -27,7 +27,7 @@ export const useFetchTableNames = (): TableNamesData => {
 
       const { data, error } = await supabase
         .from("All table Names")
-        .select("*");
+        .select("*").order("tableName", { ascending: true });
       if (error) {
         throw new Error(error.message);
       }
