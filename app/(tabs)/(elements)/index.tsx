@@ -19,7 +19,7 @@ export default function index() {
   const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
   
   // Load all the text data
-
+  const { fetchError, subCategories, refetch, isFetching } = useFetchSubCategories();
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
 

@@ -5,10 +5,11 @@ import { useLocalSearchParams } from "expo-router";
 import RenderNestedItems from "components/RenderNestedItems";
 import { Stack } from "expo-router";
 import { useFetchTableNames } from "components/useFetchTableNames";
+import useFetchSubCategories from "components/useFetchSubCategories";
 
 export default function RenderNestedCategories() {
   const { category } = useLocalSearchParams<{ category: string }>();
-
+  const { subCategories, refetch, isFetching } = useFetchSubCategories();
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanTable)

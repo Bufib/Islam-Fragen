@@ -21,6 +21,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { Picker } from "@react-native-picker/picker";
 import { Modal } from "react-native";
+import useFetchSubCategories from "components/useFetchSubCategories";
 
 export default function RenderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -56,7 +57,7 @@ export default function RenderText() {
   const [copiedText, setCopiedText] = useState<string>("");
   const timeoutRef = useRef(null);
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-
+  const { subCategories, refetch, isFetching: isFetchingSub } = useFetchSubCategories();
   // Clean Timeout
   const cleanTimeout = () => {
     if (timeoutRef.current) {
