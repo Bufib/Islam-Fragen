@@ -5,11 +5,12 @@ import { useLocalSearchParams } from "expo-router";
 import RenderNestedItems from "components/RenderNestedItems";
 import { Stack } from "expo-router";
 import { useFetchTableNames } from "components/useFetchTableNames";
+import { useEffect } from "react";
 import useFetchSubCategories from "components/useFetchSubCategories";
 
 export default function RenderNestedCategories() {
   const { category } = useLocalSearchParams<{ category: string }>();
-  const { subCategories, refetch, isFetching } = useFetchSubCategories();
+
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanTable)
@@ -19,11 +20,10 @@ export default function RenderNestedCategories() {
 
   const { tableNames, fetchError } = useFetchTableNames();
 
-
   if (!category) {
     return (
       <View style={styles.container}>
-        <RenderNestedItems items={[]} fetchError="Invalid category" table="" />
+        <RenderNestedItems items={[]} fetchError='Invalid category' table='' />
       </View>
     );
   }
@@ -37,9 +37,6 @@ export default function RenderNestedCategories() {
         title: tableName.trim(),
       }))
     );
-
-
-
 
   return (
     <View style={styles.container}>

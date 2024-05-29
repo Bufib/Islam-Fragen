@@ -12,14 +12,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSetFontSize } from "components/fontSizeStore";
 import useFetchSubCategories from "components/useFetchSubCategories";
 useFetchSubCategories;
+import { useEffect } from "react";
 
 export default function index() {
   const colorscheme = useColorScheme();
   const themeStyles = coustomTheme(colorscheme);
   const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
-  
-  // Load all the text data
-  const { fetchError, subCategories, refetch, isFetching } = useFetchSubCategories();
+
+ 
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
     const getColorMode = async () => {
@@ -41,10 +41,15 @@ export default function index() {
       }
     };
 
-    getFontSetting();
-    getColorMode();
-    getColorMode();
+    const initializeSettings = async () => {
+      await getFontSetting();
+      await getColorMode();
+    };
+
+    initializeSettings();
   }, []);
+
+
 
   return (
     <View style={styles.container}>
@@ -63,7 +68,9 @@ export default function index() {
                 />
               </View>
               <View style={styles.headerTextContainer}>
-                <Text style={[styles.headerText, themeStyles.inverseText]}>Islam-Fragen</Text>
+                <Text style={[styles.headerText, themeStyles.inverseText]}>
+                  Islam-Fragen
+                </Text>
                 <Text style={[styles.headerDash, themeStyles.indexBorderDash]}>
                   __________
                 </Text>

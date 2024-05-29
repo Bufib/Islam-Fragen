@@ -8,6 +8,7 @@ import { useColorScheme } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
+import useFetchSubCategories from "./useFetchSubCategories";
 
 interface NestedItem {
   id: number;
@@ -34,7 +35,6 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
-
 
   return (
     <View style={styles.container}>
@@ -68,14 +68,11 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
               >
                 <Pressable>
                   <View
-                    style={[
-                      styles.renderItem,
-                      themeStyles.containerContrast,
-                    ]}
+                    style={[styles.renderItem, themeStyles.containerContrast]}
                   >
                     <Text style={styles.itemText}>{item.title.trim()}</Text>
                     <Feather
-                      name="arrow-right-circle"
+                      name='arrow-right-circle'
                       size={25}
                       color={colorScheme == "light" ? "black" : "white"}
                     />

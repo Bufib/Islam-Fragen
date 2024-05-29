@@ -7,6 +7,7 @@ import Colors from "constants/Colors";
 import { Image } from "expo-image";
 import { useColorScheme } from "react-native";
 import { coustomTheme } from "./coustomTheme";
+import useFetchSubCategories from "./useFetchSubCategories";
 
 export default function QuestionLinks() {
   const colorScheme = useColorScheme();

@@ -8,7 +8,14 @@ import useFetchSubCategories from "components/useFetchSubCategories";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
-  const { fetchError, subCategories, refetch, isFetching } = useFetchSubCategories();
+  const {
+    fetchError,
+    subCategories,
+    refetch,
+    isFetching,
+    updateAvailable,
+    applyUpdates,
+  } = useFetchSubCategories();
 
   useEffect(() => {
     if (subCategory) {
@@ -27,11 +34,13 @@ export default function RenderCategory() {
   if (!subCategory) {
     return (
       <View style={styles.container}>
-        <RenderItems items={[]} fetchError="Invalid category" table="" />
+        <RenderItems items={[]} fetchError='Invalid category' table='' />
       </View>
     );
   } else {
-    const matchedTable = subCategories.find(table => table.tableName === subCategory);
+    const matchedTable = subCategories.find(
+      (table) => table.tableName === subCategory
+    );
     const filteredItems = matchedTable ? matchedTable.questions : [];
 
     return (
