@@ -24,6 +24,7 @@ export default function useFetchSubCategories() {
     try {
       setIsFetching(true);
       const newTopCategories: TableData[] = [];
+
       if (tableNames) {
         for (const table of tableNames) {
           const tablesArray = table.tableNames.split(",").map((t) => t.trim());
@@ -47,6 +48,7 @@ export default function useFetchSubCategories() {
           }
         }
       }
+
       setSubCategories(newTopCategories);
       setFetchError("");
     } catch (error) {
@@ -84,7 +86,6 @@ export default function useFetchSubCategories() {
 
   useEffect(() => {
     const checkStorageAndFetch = async () => {
-      const storedCategories: TableData[] = [];
       let needsFetch = false;
 
       if (tableNames) {
@@ -92,62 +93,42 @@ export default function useFetchSubCategories() {
           const tablesArray = table.tableNames.split(",").map((t) => t.trim());
           for (const tableName of tablesArray) {
             const storedData = await AsyncStorage.getItem(tableName);
-            if (storedData) {
-              storedCategories.push({
-                tableName,
-                questions: JSON.parse(storedData),
-              });
-            } else {
+            if (!storedData) {
               needsFetch = true;
+              break;
             }
           }
         }
       }
 
-      if (storedCategories.length > 0) {
-        setSubCategories(storedCategories);
-      }
-
       if (needsFetch) {
         await fetchItems();
+      } else {
+        await loadItemsFromStorage();
       }
     };
 
-    loadItemsFromStorage().then(checkStorageAndFetch);
+    checkStorageAndFetch();
 
     if (tableNames) {
       const subscriptions = tableNames.flatMap((table) => {
         const tablesArray = table.tableNames.split(",").map((t) => t.trim());
-        return tablesArray.map((tableName) =>
-          supabase
-            .channel(tableName)
+        return tablesArray.map((tableName) => {
+          const subscription = supabase
+            .channel(`public:${tableName}`)
             .on(
               "postgres_changes",
-              { event: "INSERT", schema: "public", table: tableName },
+              { event: "*", schema: "public", table: tableName },
               async (payload) => {
-                console.log("changes" + tableName)
+                console.log(`Received event on table ${tableName}:`, payload);
                 await fetchItems();
                 setUpdateAvailable(true);
               }
             )
-            .on(
-              "postgres_changes",
-              { event: "UPDATE", schema: "public", table: tableName },
-              async (payload) => {
-                await fetchItems();
-                setUpdateAvailable(true);
-              }
-            )
-            .on(
-              "postgres_changes",
-              { event: "DELETE", schema: "public", table: tableName },
-              async (payload) => {
-                await fetchItems();
-                setUpdateAvailable(true);
-              }
-            )
-            .subscribe()
-        );
+            .subscribe();
+
+          return subscription;
+        });
       });
 
       return () => {
