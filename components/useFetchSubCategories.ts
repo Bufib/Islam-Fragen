@@ -118,7 +118,25 @@ export default function useFetchSubCategories() {
             .channel(`public:${tableName}`)
             .on(
               "postgres_changes",
-              { event: "*", schema: "public", table: tableName },
+              { event: "INSERT", schema: "public", table: tableName },
+              async (payload) => {
+                console.log(`Received event on table ${tableName}:`, payload);
+                await fetchItems();
+                setUpdateAvailable(true);
+              }
+            )
+            .on(
+              "postgres_changes",
+              { event: "UPDATE", schema: "public", table: tableName },
+              async (payload) => {
+                console.log(`Received event on table ${tableName}:`, payload);
+                await fetchItems();
+                setUpdateAvailable(true);
+              }
+            )
+            .on(
+              "postgres_changes",
+              { event: "DELETE", schema: "public", table: tableName },
               async (payload) => {
                 console.log(`Received event on table ${tableName}:`, payload);
                 await fetchItems();
@@ -152,3 +170,4 @@ export default function useFetchSubCategories() {
     isFetching,
   };
 }
+
