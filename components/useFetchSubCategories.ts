@@ -120,10 +120,27 @@ export default function useFetchSubCategories() {
         const tablesArray = table.tableNames.split(",").map((t) => t.trim());
         return tablesArray.map((tableName) =>
           supabase
-            .channel("public:" + tableName)
+            .channel(tableName)
             .on(
               "postgres_changes",
-              { event: "*", schema: "public", table: tableName },
+              { event: "INSERT", schema: "public", table: tableName },
+              async (payload) => {
+                console.log("changes" + tableName)
+                await fetchItems();
+                setUpdateAvailable(true);
+              }
+            )
+            .on(
+              "postgres_changes",
+              { event: "UPDATE", schema: "public", table: tableName },
+              async (payload) => {
+                await fetchItems();
+                setUpdateAvailable(true);
+              }
+            )
+            .on(
+              "postgres_changes",
+              { event: "DELETE", schema: "public", table: tableName },
               async (payload) => {
                 await fetchItems();
                 setUpdateAvailable(true);

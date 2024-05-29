@@ -5,7 +5,6 @@ import { Link } from "expo-router";
 import { Switch } from "react-native";
 import { Appearance } from "react-native";
 import { useLayoutEffect, useState } from "react";
-import Checkbox from "expo-checkbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function settings() {
@@ -53,7 +52,7 @@ export default function settings() {
 
       <View style={styles.spacer} />
       <View style={styles.informationContainer}>
-        <Link style={styles.linkText} href='/information'>
+        <Link style={styles.linkText} href='/about'>
           Über die App
         </Link>
       </View>

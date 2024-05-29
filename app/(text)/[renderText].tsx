@@ -181,7 +181,11 @@ export default function RenderText() {
                   key={option.label}
                   label={option.label}
                   value={option.label}
-                  color={colorScheme == "light" ? Colors.light.modalQuestionText :Colors.dark.modalQuestionText}
+                  color={
+                    colorScheme == "light"
+                      ? Colors.light.modalQuestionText
+                      : Colors.dark.modalQuestionText
+                  }
                 />
               ))}
             </Picker>
@@ -216,7 +220,7 @@ export default function RenderText() {
       ) : displaySingleAnswer ? (
         <ScrollView style={styles.answerContainer}>
           <View
-            style={[styles.questionContainer, themeStyles.containerContrast, themeStyles.shadow]}
+            style={[styles.questionContainer, themeStyles.containerContrast]}
           >
             <Text
               style={[
@@ -456,17 +460,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    ...Platform.select({
-      ios: {
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        
-      },
-      android: {
-        elevation: 1,
-      },
-    }),
   },
 
   questionText: {

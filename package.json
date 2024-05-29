@@ -17,11 +17,13 @@
     "@expo/html-elements": "^0.9.1",
     "@expo/vector-icons": "^14.0.0",
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.0.2",
     "@shopify/flash-list": "1.6.4",
     "@supabase/supabase-js": "^2.42.1",
     "expo": "^51.0.8",
     "expo-checkbox": "~3.0.0",
+    "expo-clipboard": "~6.0.3",
     "expo-constants": "~16.0.1",
     "expo-document-picker": "~12.0.1",
     "expo-font": "~12.0.5",
@@ -53,9 +55,7 @@
     "react-native-webview": "13.8.6",
     "use-debounce": "^10.0.0",
     "uuid": "^9.0.1",
-    "zustand": "^4.5.2",
-    "expo-clipboard": "~6.0.3",
-    "@react-native-picker/picker": "2.7.5"
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
