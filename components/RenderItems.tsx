@@ -65,10 +65,12 @@ export default function RenderItems({
                 asChild
               >
                 <Pressable>
-                  <View style={[styles.renderItem, themeStyles.containerContrast]}>
+                  <View
+                    style={[styles.renderItem, themeStyles.containerContrast]}
+                  >
                     <Text style={styles.itemText}>{item.title.trim()}</Text>
                     <Feather
-                      name="arrow-right-circle"
+                      name='arrow-right-circle'
                       size={25}
                       color={colorScheme == "light" ? "black" : "white"}
                     />
@@ -80,7 +82,9 @@ export default function RenderItems({
         </View>
       ) : (
         <View style={styles.noItemsContainer}>
-          <Text>Keine Daten verfügbar. Prüfe bitte deine Internetverbindung!.</Text>
+          <Text>
+            Keine Daten verfügbar. Prüfe bitte deine Internetverbindung!.
+          </Text>
         </View>
       )}
     </View>
@@ -98,8 +102,8 @@ const styles = StyleSheet.create({
   },
   noItemsContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   FlashListItems: {
     paddingTop: 15,
