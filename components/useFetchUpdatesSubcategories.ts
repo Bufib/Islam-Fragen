@@ -1,6 +1,7 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 interface SubCategoryItem {
   id: number;
@@ -17,9 +18,16 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
   const [subCategoriesUpdate, setSubCategoriesUpdate] = useState<TableData[]>([]);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  const fetchUpdates = async () => {
+  const fetchUpdates = async (showToast: boolean = false) => {
     try {
+      if (showToast) {
+        Toast.show({
+          type: "info",
+          text1: "Fragen und Antworten werden aktualisiert!",
+        });
+      }
       setIsUpdating(true);
       const { data, error } = await supabase
         .from(tableName)
@@ -43,6 +51,12 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
       }
 
       setFetchErrorUpdate("");
+      if (showToast) {
+        Toast.show({
+          type: "info",
+          text1: "Aktualisierung fertig!",
+        });
+      }
     } catch (error) {
       setFetchErrorUpdate(
         "Elemente konnten nicht geladen werden.\n Überprüfen Sie bitte Ihre Internet Verbindung!"
@@ -65,8 +79,9 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
             },
           ]);
         } else {
-          await fetchUpdates();
+          await fetchUpdates(false);  // Fetch without showing toast
         }
+        setInitialLoad(false);
       } catch (error) {
         console.log("Failed to load items from storage", error);
       }
@@ -81,7 +96,7 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
         { event: "INSERT", schema: "public", table: tableName },
         async (payload) => {
           console.log(`Received event on table ${tableName}:`, payload);
-          await fetchUpdates();
+          await fetchUpdates(true);  // Fetch with showing toast
           setUpdateAvailable(true);
         }
       )
@@ -90,7 +105,7 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
         { event: "UPDATE", schema: "public", table: tableName },
         async (payload) => {
           console.log(`Received event on table ${tableName}:`, payload);
-          await fetchUpdates();
+          await fetchUpdates(true);  // Fetch with showing toast
           setUpdateAvailable(true);
         }
       )
@@ -99,7 +114,7 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
         { event: "DELETE", schema: "public", table: tableName },
         async (payload) => {
           console.log(`Received event on table ${tableName}:`, payload);
-          await fetchUpdates();
+          await fetchUpdates(true);  // Fetch with showing toast
           setUpdateAvailable(true);
         }
       )
