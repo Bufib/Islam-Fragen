@@ -5,15 +5,12 @@ import { useLocalSearchParams } from "expo-router";
 import RenderItems from "components/RenderItems";
 import { Stack } from "expo-router";
 import useFetchUpdatesSubcategories from "components/useFetchUpdatesSubcategories";
+import { router } from "expo-router";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
-  const {
-    fetchErrorUpdate,
-    subCategoriesUpdate,
-    fetchUpdates,
-    isUpdating,
-  } = useFetchUpdatesSubcategories(subCategory || "");
+  const { fetchErrorUpdate, subCategoriesUpdate, fetchUpdates, isUpdating } =
+    useFetchUpdatesSubcategories(subCategory || "");
 
   useLayoutEffect(() => {
     if (subCategory) {
@@ -31,7 +28,7 @@ export default function RenderCategory() {
   if (!subCategory) {
     return (
       <View style={styles.container}>
-        <RenderItems items={[]} fetchError="Invalid category" table="" />
+        <RenderItems items={[]} fetchError='Invalid category' table='' />
       </View>
     );
   } else {

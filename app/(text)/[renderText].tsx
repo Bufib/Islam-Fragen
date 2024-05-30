@@ -22,6 +22,8 @@ import * as Clipboard from "expo-clipboard";
 import { Picker } from "@react-native-picker/picker";
 import { Modal } from "react-native";
 import useFetchSubCategories from "components/useFetchSubCategories";
+import useFetchUpdatesSubcategories from "components/useFetchUpdatesSubcategories";
+import { router } from "expo-router";
 
 export default function RenderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -57,7 +59,15 @@ export default function RenderText() {
   const [copiedText, setCopiedText] = useState<string>("");
   const timeoutRef = useRef(null);
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const { subCategories, refetch, isFetching: isFetchingSub } = useFetchSubCategories();
+  const {
+    fetchErrorUpdate,
+    subCategoriesUpdate,
+    fetchUpdates,
+    updateAvailable,
+    applyUpdates,
+    isUpdating,
+  } = useFetchUpdatesSubcategories(table || "");
+
   // Clean Timeout
   const cleanTimeout = () => {
     if (timeoutRef.current) {
@@ -72,6 +82,12 @@ export default function RenderText() {
       cleanTimeout();
     };
   }, []);
+
+  useEffect(() => {
+    if (isUpdating) {
+      router.back();
+    }
+  }, [isUpdating]);
 
   const displayQuestion = item?.question;
   const displaySingleAnswer = item?.answer;

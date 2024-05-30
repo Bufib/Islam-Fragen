@@ -79,7 +79,7 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
             },
           ]);
         } else {
-          await fetchUpdates(false);  // Fetch without showing toast
+          await fetchUpdates(false);  
         }
         setInitialLoad(false);
       } catch (error) {
@@ -96,7 +96,7 @@ export default function useFetchUpdatesSubcategories(tableName: string) {
         { event: "INSERT", schema: "public", table: tableName },
         async (payload) => {
           console.log(`Received event on table ${tableName}:`, payload);
-          await fetchUpdates(true);  // Fetch with showing toast
+          await fetchUpdates(true);  
           setUpdateAvailable(true);
         }
       )
