@@ -1,28 +1,25 @@
 import { View, Text } from "components/Themed";
 import { StyleSheet } from "react-native";
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderItems from "components/RenderItems";
 import { Stack } from "expo-router";
-import useFetchSubCategories from "components/useFetchSubCategories";
+import useFetchUpdatesSubcategories from "components/useFetchUpdatesSubcategories";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
   const {
-    fetchError,
-    subCategories,
-    refetch,
-    isFetching,
-    updateAvailable,
-    applyUpdates,
-  } = useFetchSubCategories();
+    fetchErrorUpdate,
+    subCategoriesUpdate,
+    fetchUpdates,
+    isUpdating,
+  } = useFetchUpdatesSubcategories(subCategory || "");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (subCategory) {
-      refetch();
+      fetchUpdates();
     }
   }, [subCategory]);
-
 
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
@@ -34,11 +31,11 @@ export default function RenderCategory() {
   if (!subCategory) {
     return (
       <View style={styles.container}>
-        <RenderItems items={[]} fetchError='Invalid category' table='' />
+        <RenderItems items={[]} fetchError="Invalid category" table="" />
       </View>
     );
   } else {
-    const matchedTable = subCategories.find(
+    const matchedTable = subCategoriesUpdate.find(
       (table) => table.tableName === subCategory
     );
     const filteredItems = matchedTable ? matchedTable.questions : [];
@@ -48,7 +45,7 @@ export default function RenderCategory() {
         <Stack.Screen options={{ headerTitle: subCategory }} />
         <RenderItems
           items={filteredItems}
-          fetchError={fetchError}
+          fetchError={fetchErrorUpdate}
           table={encodeTable(subCategory)}
         />
       </View>

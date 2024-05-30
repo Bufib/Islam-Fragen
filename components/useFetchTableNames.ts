@@ -105,7 +105,7 @@ export const useFetchTableNames = (): TableNamesData => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "All table Names" },
         (payload) => {
-          console.log("Table names change received!", payload);
+         
           fetchTableNames(); // Refetch data when a change occurs
         }
       )
@@ -113,7 +113,7 @@ export const useFetchTableNames = (): TableNamesData => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "All table Names" },
         (payload) => {
-          console.log("Table names change received!", payload);
+         
           fetchTableNames(); // Refetch data when a change occurs
         }
       )
@@ -121,16 +121,16 @@ export const useFetchTableNames = (): TableNamesData => {
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "All table Names" },
         (payload) => {
-          console.log("Table names change received!", payload);
+         
           fetchTableNames(); // Refetch data when a change occurs
         }
       )
       .subscribe();
 
-    console.log("Subscription setup completed.");
+   
 
     return () => {
-      console.log("Cleaning up subscription...");
+     
       supabase.removeChannel(channel);
     };
   }, [fetchTableNames]);

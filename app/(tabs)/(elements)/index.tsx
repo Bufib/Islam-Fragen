@@ -11,15 +11,16 @@ import { Appearance } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSetFontSize } from "components/fontSizeStore";
 import useFetchSubCategories from "components/useFetchSubCategories";
-useFetchSubCategories;
-import { useEffect } from "react";
+import { Alert } from "react-native";
+
 
 export default function index() {
   const colorscheme = useColorScheme();
   const themeStyles = coustomTheme(colorscheme);
   const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
 
- 
+
+  const { fetchError, subCategories, refetch, isFetching } = useFetchSubCategories();
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
     const getColorMode = async () => {

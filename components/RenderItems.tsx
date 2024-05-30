@@ -1,4 +1,3 @@
-
 import { Text, View } from "components/Themed";
 import { Pressable, StyleSheet } from "react-native";
 import React from "react";
@@ -8,8 +7,6 @@ import { useColorScheme } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
-import useFetchSubCategories from "./useFetchSubCategories";
-import { useEffect } from "react";
 
 interface Item {
   id: number;
@@ -33,14 +30,7 @@ export default function RenderItems({
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-const {
-    fetchError: fetchErrorSub,
-    subCategories,
-    refetch,
-    isFetching,
-    updateAvailable,
-    applyUpdates,
-  } = useFetchSubCategories();
+
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
@@ -88,11 +78,7 @@ const {
             )}
           />
         </View>
-      ) : isFetching ? (
-        <View style={styles.noItemsContainer}>
-          <Text>Lade daten...</Text>
-        </View>
-      ): (
+      ) : (
         <View style={styles.noItemsContainer}>
           <Text>Keine Daten verfügbar. Prüfe bitte deine Internetverbindung!.</Text>
         </View>

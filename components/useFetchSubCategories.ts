@@ -1,30 +1,35 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
-import { useFetchTableNames } from "./useFetchTableNames";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFetchTableNames } from "./useFetchTableNames";
+import { useIsInitialFetching } from "components/fetchStore";
+import { Alert } from "react-native";
 
-interface TopCategoryItem {
+interface SubCategoryItem {
   id: number;
   title: string;
 }
 
 interface TableData {
   tableName: string;
-  questions: TopCategoryItem[];
+  questions: SubCategoryItem[];
 }
 
+// Hook that accepts an optional onFetching callback
 export default function useFetchSubCategories() {
   const [fetchError, setFetchError] = useState<string>("");
   const [subCategories, setSubCategories] = useState<TableData[]>([]);
-  const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const { tableNames } = useFetchTableNames();
+  const { initialFetch, setInitialFetch } = useIsInitialFetching();
 
   const fetchItems = async () => {
     try {
       setIsFetching(true);
-      const newTopCategories: TableData[] = [];
 
+      const newSubCategories: TableData[] = [];
+
+      // Fetch all data per TableName from Supabase
       if (tableNames) {
         for (const table of tableNames) {
           const tablesArray = table.tableNames.split(",").map((t) => t.trim());
@@ -39,17 +44,16 @@ export default function useFetchSubCategories() {
             }
 
             if (data) {
-              newTopCategories.push({
+              newSubCategories.push({
                 tableName,
-                questions: data as TopCategoryItem[],
+                questions: data as SubCategoryItem[],
               });
               await AsyncStorage.setItem(tableName, JSON.stringify(data));
             }
           }
         }
       }
-
-      setSubCategories(newTopCategories);
+      setSubCategories(newSubCategories);
       setFetchError("");
     } catch (error) {
       setFetchError(
@@ -58,11 +62,16 @@ export default function useFetchSubCategories() {
       setSubCategories([]);
     } finally {
       setIsFetching(false);
+    
+      if (!initialFetch) await setInitialFetch(); // Mark initial fetch as done
     }
   };
 
   const loadItemsFromStorage = async () => {
     try {
+      // Get all the data from the storage
+      setIsFetching(true);
+     
       const storedCategories: TableData[] = [];
       if (tableNames) {
         for (const table of tableNames) {
@@ -81,27 +90,18 @@ export default function useFetchSubCategories() {
       setSubCategories(storedCategories);
     } catch (error) {
       console.log("Failed to load items from storage", error);
+    } finally {
+      setIsFetching(false);
     }
   };
 
   useEffect(() => {
     const checkStorageAndFetch = async () => {
-      let needsFetch = false;
-
-      if (tableNames) {
-        for (const table of tableNames) {
-          const tablesArray = table.tableNames.split(",").map((t) => t.trim());
-          for (const tableName of tablesArray) {
-            const storedData = await AsyncStorage.getItem(tableName);
-            if (!storedData) {
-              needsFetch = true;
-              break;
-            }
-          }
-        }
-      }
-
-      if (needsFetch) {
+      if (!initialFetch) {
+        Alert.alert(
+          "Fetching data...",
+          "Please wait while we fetch the latest data."
+        );
         await fetchItems();
       } else {
         await loadItemsFromStorage();
@@ -109,66 +109,12 @@ export default function useFetchSubCategories() {
     };
 
     checkStorageAndFetch();
-
-    if (tableNames) {
-      const subscriptions = tableNames.flatMap((table) => {
-        const tablesArray = table.tableNames.split(",").map((t) => t.trim());
-        return tablesArray.map((tableName) => {
-          const subscription = supabase
-            .channel(`public:${tableName}`)
-            .on(
-              "postgres_changes",
-              { event: "INSERT", schema: "public", table: tableName },
-              async (payload) => {
-                console.log(`Received event on table ${tableName}:`, payload);
-                await fetchItems();
-                setUpdateAvailable(true);
-              }
-            )
-            .on(
-              "postgres_changes",
-              { event: "UPDATE", schema: "public", table: tableName },
-              async (payload) => {
-                console.log(`Received event on table ${tableName}:`, payload);
-                await fetchItems();
-                setUpdateAvailable(true);
-              }
-            )
-            .on(
-              "postgres_changes",
-              { event: "DELETE", schema: "public", table: tableName },
-              async (payload) => {
-                console.log(`Received event on table ${tableName}:`, payload);
-                await fetchItems();
-                setUpdateAvailable(true);
-              }
-            )
-            .subscribe();
-
-          return subscription;
-        });
-      });
-
-      return () => {
-        subscriptions.forEach((subscription) => {
-          supabase.removeChannel(subscription);
-        });
-      };
-    }
-  }, [tableNames]);
-
-  const applyUpdates = () => {
-    setUpdateAvailable(false);
-  };
+  }, [tableNames, initialFetch]);
 
   return {
     fetchError,
     subCategories,
     refetch: fetchItems,
-    updateAvailable,
-    applyUpdates,
     isFetching,
   };
 }
-
-
