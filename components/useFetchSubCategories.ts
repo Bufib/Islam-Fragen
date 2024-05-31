@@ -25,7 +25,6 @@ export default function useFetchSubCategories() {
   const fetchItems = async () => {
     try {
       setIsFetching(true);
-
       const newSubCategories: TableData[] = [];
       // Fetch all data per TableName from Supabase
       if (tableNames && tableNames.length > 0) {

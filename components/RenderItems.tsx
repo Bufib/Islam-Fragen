@@ -7,7 +7,7 @@ import { useColorScheme } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
-
+import { ActivityIndicator } from "react-native";
 
 interface Item {
   id: number;
@@ -18,12 +18,14 @@ interface RenderItemsProps {
   items: Item[];
   fetchError?: string;
   table: string;
+  isFetching: boolean;
 }
 
 export default function RenderItems({
   items,
   fetchError,
   table,
+  isFetching,
 }: RenderItemsProps) {
   const encodeTitle = (title: string) => {
     const cleanedTitle = title.trim().replace(/\n/g, "");
@@ -36,7 +38,7 @@ export default function RenderItems({
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
 
-  console.log(items)
+  console.log(items);
 
   return (
     <View style={styles.container}>
@@ -83,6 +85,13 @@ export default function RenderItems({
             )}
           />
         </View>
+      ) : isFetching ? (
+        <View style={styles.loadingIndicator}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text style={styles.loadingIndicatorText}>
+           Fragen werden geladen. Das kann je nach Internetverbindung, einige Minuten dauern
+          </Text>
+        </View>
       ) : (
         <View style={styles.noItemsContainer}>
           <Text>
@@ -102,6 +111,17 @@ const styles = StyleSheet.create({
   },
   itemsContainer: {
     flex: 1,
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 20
+  },
+  loadingIndicatorText: {
+    fontSize: 20,
+    textAlign: "center",
+    marginTop: 15,
   },
   noItemsContainer: {
     flex: 1,
