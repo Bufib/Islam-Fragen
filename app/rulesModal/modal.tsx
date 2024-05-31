@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginBottom: 50,
+   
   },
   headerText: {
     marginHorizontal: 10,
@@ -89,5 +89,6 @@ const styles = StyleSheet.create({
   mainText: {
     marginHorizontal: 15,
     fontSize: 20,
+    paddingBottom: 40
   },
 });
