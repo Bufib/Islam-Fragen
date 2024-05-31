@@ -19,12 +19,12 @@ const INITIAL_FETCH_KEY_SubCategory = "initialFetchDoneSub";
 export default function useFetchSubCategories() {
   const [fetchError, setFetchError] = useState<string>("");
   const [subCategories, setSubCategories] = useState<TableData[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetchingSub, setIsFetchingSub] = useState(false);
   const { tableNames } = useFetchTableNames();
 
   const fetchItems = async () => {
     try {
-      setIsFetching(true);
+      setIsFetchingSub(true);
       const newSubCategories: TableData[] = [];
       // Fetch all data per TableName from Supabase
       if (tableNames && tableNames.length > 0) {
@@ -64,13 +64,13 @@ export default function useFetchSubCategories() {
       setSubCategories([]);
       console.error("Error fetching items:", error);
     } finally {
-      setIsFetching(false);
+      setIsFetchingSub(false);
     }
   };
 
   const loadItemsFromStorage = async () => {
     try {
-      setIsFetching(true);
+      setIsFetchingSub(true);
 
       const storedCategories: TableData[] = [];
       if (tableNames && tableNames.length > 0) {
@@ -94,7 +94,7 @@ export default function useFetchSubCategories() {
     } catch (error) {
       console.log("Failed to load items from storage", error);
     } finally {
-      setIsFetching(false);
+      setIsFetchingSub(false);
     }
   };
 
@@ -118,6 +118,6 @@ export default function useFetchSubCategories() {
     fetchError,
     subCategories,
     refetch: fetchItems,
-    isFetching,
+    isFetchingSub,
   };
 }

@@ -8,7 +8,7 @@ import { useColorScheme } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
-import useFetchSubCategories from "./useFetchSubCategories";
+import { ActivityIndicator } from "react-native";
 
 interface NestedItem {
   id: number;
@@ -19,11 +19,13 @@ interface RenderNestedItemsProps {
   items: NestedItem[];
   fetchError?: string;
   table: string;
+  isFetchinTable: boolean;
 }
 
 const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   items,
   fetchError,
+  isFetchinTable,
 }) => {
   const encodeTitle = (title: string) => {
     const cleanedTitle = title.trim().replace(/\n/g, "");
@@ -45,7 +47,16 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
           </Text>
         </View>
       )}
-      {items && (
+      {isFetchinTable && (
+        <View style={styles.loadingIndicator}>
+          <ActivityIndicator size='large' color='#0000ff' />
+          <Text style={styles.loadingIndicatorText}>
+            Kategorien werden geladen. Das kann je nach Internetverbindung, einige
+            Minuten dauern.
+          </Text>
+        </View>
+      )}
+      {items.length > 0 && (
         <View style={styles.itemsContainer}>
           <FlashList
             data={items}
@@ -120,6 +131,17 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 20,
     textAlign: "center",
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 20,
+  },
+  loadingIndicatorText: {
+    fontSize: 20,
+    textAlign: "center",
+    marginTop: 15,
   },
 });
 

@@ -49,7 +49,16 @@ export default function RenderItems({
           </Text>
         </View>
       )}
-      {items.length > 0 ? (
+      {isFetching && (
+        <View style={styles.loadingIndicator}>
+          <ActivityIndicator size='large' color='#0000ff' />
+          <Text style={styles.loadingIndicatorText}>
+            Fragen werden geladen. Das kann je nach Internetverbindung, einige
+            Minuten dauern.
+          </Text>
+        </View>
+      )}
+      {items.length > 0 && (
         <View style={styles.itemsContainer}>
           <FlashList
             data={items}
@@ -85,19 +94,6 @@ export default function RenderItems({
             )}
           />
         </View>
-      ) : isFetching ? (
-        <View style={styles.loadingIndicator}>
-          <ActivityIndicator size="large" color="#0000ff" />
-          <Text style={styles.loadingIndicatorText}>
-           Fragen werden geladen. Das kann je nach Internetverbindung, einige Minuten dauern
-          </Text>
-        </View>
-      ) : (
-        <View style={styles.noItemsContainer}>
-          <Text>
-            Keine Daten verfügbar. Prüfe bitte deine Internetverbindung!.
-          </Text>
-        </View>
       )}
     </View>
   );
@@ -116,7 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 20
+    marginHorizontal: 20,
   },
   loadingIndicatorText: {
     fontSize: 20,

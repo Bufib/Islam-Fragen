@@ -7,7 +7,7 @@ const INITIAL_FETCH_KEY_Table = "initialFetchDoneTable";
 
 interface TableNamesData {
   tableNames: { category: string; tableNames: string }[];
-  tableNamesLoading: boolean;
+  isFetchinTable: boolean;
   fetchError: string;
 }
 
@@ -16,10 +16,12 @@ export const useFetchTableNames = (): TableNamesData => {
     { category: string; tableNames: string }[]
   >([]);
   const [fetchError, setFetchError] = useState<string>("");
-  const [tableNamesLoading, setTableNamesLoading] = useState<boolean>(true);
+  const [isFetchinTable, setIsFetchinTable] = useState<boolean>(true);
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchTableNames = async () => {
-    setTableNamesLoading(true);
+    setIsFetchinTable(true);
+   
     try {
       const { data, error } = await supabase
         .from("All table Names")
@@ -50,13 +52,13 @@ export const useFetchTableNames = (): TableNamesData => {
       await AsyncStorage.setItem(INITIAL_FETCH_KEY_Table, "true");
 
       setTableNames(tableNamesArray);
-      setTableNamesLoading(false);
+      setIsFetchinTable(false);
     } catch (error) {
       setFetchError(
         "Error fetching data. Please check your connection and try again."
       );
       console.error("Error fetching table names:", error);
-      setTableNamesLoading(false);
+      setIsFetchinTable(false);
     }
   };
 
@@ -66,7 +68,7 @@ export const useFetchTableNames = (): TableNamesData => {
       if (storedTableNames) {
         const parsedTableNames = JSON.parse(storedTableNames);
         setTableNames(parsedTableNames);
-        setTableNamesLoading(false);
+        setIsFetchinTable(false);
       } else {
         throw new Error("Error loading initial data:");
       }
@@ -90,5 +92,5 @@ export const useFetchTableNames = (): TableNamesData => {
     checkStorageAndFetch();
   }, [INITIAL_FETCH_KEY_Table]);
 
-  return { tableNames, fetchError, tableNamesLoading };
+  return { tableNames, fetchError, isFetchinTable };
 };

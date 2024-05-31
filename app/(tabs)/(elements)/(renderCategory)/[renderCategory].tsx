@@ -13,7 +13,7 @@ export default function RenderCategory() {
     fetchError,
     subCategories,
     refetch: fetchItems,
-    isFetching,
+    isFetchingSub,
   } = useFetchSubCategories();
 
 
@@ -28,7 +28,7 @@ export default function RenderCategory() {
   if (!subCategory) {
     return (
       <View style={styles.container}>
-        <RenderItems items={[]} fetchError='Invalid category' table='' isFetching={isFetching} />
+        <RenderItems items={[]} fetchError={fetchError} table='' isFetching={isFetchingSub} />
       </View>
     );
   } else {
@@ -44,7 +44,7 @@ export default function RenderCategory() {
           items={filteredItems}
           fetchError={fetchError}
           table={encodeTable(subCategory)}
-          isFetching={isFetching}
+          isFetching={isFetchingSub}
         />
       </View>
     );
