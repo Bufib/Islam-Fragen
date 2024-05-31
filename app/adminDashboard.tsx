@@ -46,7 +46,7 @@ export default function adminDashboard() {
         />
         <View style={styles.inputFieldsContainer}>
           <TextInput
-            style={[styles.headerInput]}
+            style={[styles.headerInput, themeStyles.inverseTextInput]}
             onChangeText={setTitle}
             value={title}
             placeholder='Title (optional)'
