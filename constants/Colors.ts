@@ -33,7 +33,7 @@ export default {
     modalQuestionText: "#000000",
     modalQuestionBlurredBackground: "rgba(0, 0, 0, 0.5)",
     inverseText: "#000000",
-
+    inverseTextIndex:  "#FFFFFF",
     inverseQuestionText: "rgba(0, 0, 0, 0.2)",
   },
   dark: {
@@ -67,9 +67,8 @@ export default {
     modalQuestion: "#34495e",
     modalQuestionText: "#FFFFFF",
     modalQuestionBlurredBackground: "rgba(0, 0, 0, 0.5)",
-
     inverseText: "#FFFFFF",
-
+    inverseTextIndex: "#000000",
     inverseQuestionText: "rgba(255, 255, 255, 0.3)",
   },
 };

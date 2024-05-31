@@ -8,6 +8,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 
+
 interface Item {
   id: number;
   title: string;
@@ -34,6 +35,8 @@ export default function RenderItems({
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
+
+  console.log(items)
 
   return (
     <View style={styles.container}>

@@ -4,19 +4,19 @@ import React, { useLayoutEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderItems from "components/RenderItems";
 import { Stack } from "expo-router";
-import useFetchUpdatesSubcategories from "components/useFetchUpdatesSubcategories";
-import { router } from "expo-router";
+import useFetchSubCategories from "components/useFetchSubCategories";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
-  const { fetchErrorUpdate, subCategoriesUpdate, fetchUpdates, isUpdating } =
-    useFetchUpdatesSubcategories(subCategory || "");
 
-  useLayoutEffect(() => {
-    if (subCategory) {
-      fetchUpdates();
-    }
-  }, [subCategory]);
+  const {
+    fetchError,
+    subCategories,
+    refetch: fetchItems,
+    isFetching,
+  } = useFetchSubCategories();
+
+
 
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
@@ -32,7 +32,7 @@ export default function RenderCategory() {
       </View>
     );
   } else {
-    const matchedTable = subCategoriesUpdate.find(
+    const matchedTable = subCategories.find(
       (table) => table.tableName === subCategory
     );
     const filteredItems = matchedTable ? matchedTable.questions : [];
@@ -42,7 +42,7 @@ export default function RenderCategory() {
         <Stack.Screen options={{ headerTitle: subCategory }} />
         <RenderItems
           items={filteredItems}
-          fetchError={fetchErrorUpdate}
+          fetchError={fetchError}
           table={encodeTable(subCategory)}
         />
       </View>

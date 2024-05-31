@@ -1,15 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "utils/supabase";
 
 const TABLE_NAMES_KEY = "tableNames";
-const INITIAL_FETCH_KEY = "initialFetchDone";
-const DEFAULT_CATEGORY = "Uncategorized";
+const INITIAL_FETCH_KEY_Table = "initialFetchDoneTable";
 
 interface TableNamesData {
   tableNames: { category: string; tableNames: string }[];
   tableNamesLoading: boolean;
-  refetchTableNames: () => void;
   fetchError: string;
 }
 
@@ -20,125 +18,77 @@ export const useFetchTableNames = (): TableNamesData => {
   const [fetchError, setFetchError] = useState<string>("");
   const [tableNamesLoading, setTableNamesLoading] = useState<boolean>(true);
 
-  const fetchTableNames = useCallback(async () => {
+  const fetchTableNames = async () => {
+    setTableNamesLoading(true);
     try {
-      setTableNamesLoading(true);
-    
-
       const { data, error } = await supabase
         .from("All table Names")
-        .select("*").order("tableName", { ascending: true });
+        .select("*")
+        .order("tableName", { ascending: true });
+
       if (error) {
         throw new Error(error.message);
       }
 
-     
-
-      const tableNamesObject: { [category: string]: string } = {};
-
-      data.forEach((item) => {
-        const category = item.category || DEFAULT_CATEGORY;
-        if (!tableNamesObject[category]) {
-          tableNamesObject[category] = item.tableName;
-        } else {
-          tableNamesObject[category] += `, ${item.tableName}`;
-        }
-      });
+      const tableNamesObject = data.reduce((acc, item) => {
+        const category = item.category;
+        acc[category] =
+          (acc[category] || "") +
+          (acc[category] ? `, ${item.tableName}` : item.tableName);
+        return acc;
+      }, {});
 
       const tableNamesArray = Object.keys(tableNamesObject).map((category) => ({
         category,
         tableNames: tableNamesObject[category],
       }));
 
-
-
       await AsyncStorage.setItem(
         TABLE_NAMES_KEY,
         JSON.stringify(tableNamesArray)
       );
-      await AsyncStorage.setItem(INITIAL_FETCH_KEY, "true");
-
-      
+      await AsyncStorage.setItem(INITIAL_FETCH_KEY_Table, "true");
 
       setTableNames(tableNamesArray);
       setTableNamesLoading(false);
     } catch (error) {
       setFetchError(
-        "Fehler: Bitte überprüfe deine Internetverbindung und versuch es später nochmal"
+        "Error fetching data. Please check your connection and try again."
       );
       console.error("Error fetching table names:", error);
       setTableNamesLoading(false);
     }
-  }, []);
+  };
+
+  const loadItemsFromStorage = async () => {
+    try {
+      const storedTableNames = await AsyncStorage.getItem(TABLE_NAMES_KEY);
+      if (storedTableNames) {
+        const parsedTableNames = JSON.parse(storedTableNames);
+        setTableNames(parsedTableNames);
+        setTableNamesLoading(false);
+      } else {
+        throw new Error("Error loading initial data:");
+      }
+    } catch (error) {
+      console.error("Error loading initial data:", error);
+    }
+  };
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-   
-        const initialFetchDone = await AsyncStorage.getItem(INITIAL_FETCH_KEY);
-
-        if (initialFetchDone === "true") {
-          const storedTableNames = await AsyncStorage.getItem(TABLE_NAMES_KEY);
-
-          if (storedTableNames) {
-            const parsedTableNames = JSON.parse(storedTableNames);
-           
-            setTableNames(parsedTableNames);
-            setTableNamesLoading(false);
-          } else {
-            await fetchTableNames();
-          }
-        } else {
-          await fetchTableNames();
-        }
-      } catch (error) {
-        console.error("Error loading initial data:", error);
+    const checkStorageAndFetch = async () => {
+      const initialFetchDone = await AsyncStorage.getItem(
+        INITIAL_FETCH_KEY_Table
+      );
+      if (initialFetchDone === "true") {
+        await loadItemsFromStorage();
+      } else {
+        await fetchTableNames();
       }
     };
 
-    loadInitialData();
+    checkStorageAndFetch();
+  }, [INITIAL_FETCH_KEY_Table]);
 
-    // Set up real-time subscriptions to listen to changes
-    const channel = supabase
-      .channel("public:All table Names")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "All table Names" },
-        (payload) => {
-         
-          fetchTableNames(); // Refetch data when a change occurs
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "All table Names" },
-        (payload) => {
-         
-          fetchTableNames(); // Refetch data when a change occurs
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "All table Names" },
-        (payload) => {
-         
-          fetchTableNames(); // Refetch data when a change occurs
-        }
-      )
-      .subscribe();
-
-   
-
-    return () => {
-     
-      supabase.removeChannel(channel);
-    };
-  }, [fetchTableNames]);
-
-  const refetchTableNames = useCallback(() => {
-    setTableNamesLoading(true);
-    fetchTableNames();
-  }, [fetchTableNames]);
-
-  return { tableNames, fetchError, tableNamesLoading, refetchTableNames };
+  return { tableNames, fetchError, tableNamesLoading };
 };

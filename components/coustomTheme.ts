@@ -37,9 +37,7 @@ export const lightTheme = {
   shadow: {
     shadowColor: Colors.light.shadowColor,
   },
-  updateButtonNews: {
-    backgroundColor: Colors.light.updateButtonNews,
-  },
+
   trashIcon: {
     color: Colors.light.trashIcon,
   },
@@ -87,6 +85,9 @@ export const lightTheme = {
   },
   inverseQuestionBackground: {
     backgroundColor: Colors.light.contrast,
+  },
+  inverseTextIndex: {
+    color: Colors.light.inverseTextIndex,
   },
 };
 
@@ -180,6 +181,9 @@ export const darkTheme = {
   },
   inverseQuestionBackground: {
     backgroundColor: Colors.dark.contrast,
+  },
+  inverseTextIndex: {
+    color: Colors.dark.inverseTextIndex,
   },
 };
 

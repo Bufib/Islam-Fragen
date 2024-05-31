@@ -1,6 +1,6 @@
 import { View, Text } from "components/Themed";
 import { StyleSheet, Pressable, Platform, ScrollView } from "react-native";
-import React, { useLayoutEffect, useEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { useFetchText } from "components/useFetchText";
 import Colors from "constants/Colors";
@@ -8,7 +8,6 @@ import { Stack } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import { useColorScheme } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRef } from "react";
 import useBookmarks from "components/useBookmarks";
@@ -21,9 +20,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { Picker } from "@react-native-picker/picker";
 import { Modal } from "react-native";
-import useFetchSubCategories from "components/useFetchSubCategories";
-import useFetchUpdatesSubcategories from "components/useFetchUpdatesSubcategories";
-import { router } from "expo-router";
 
 export default function RenderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -40,7 +36,6 @@ export default function RenderText() {
   const key = `text-${id}-${table}`;
   const [contentVerticalOffset, setContentVerticalOffset] = useState(0);
   const CONTENT_OFFSET_THRESHOLD = 300;
-  const { bookmarks, toggleBookmark } = useBookmarks(key);
   const {
     fontSize,
     lineHeight,
@@ -51,22 +46,38 @@ export default function RenderText() {
   } = useSetFontSize();
   const { toggleFavorite, isInFavorites } = useFavorites();
   const [marja, setMarja] = useState<string[]>([]);
-  const [isCopiedMultiple, setIsCopiedMultiple] = useState({
-    "Sayid al-Khamenei": false,
-    "Sayid as-Sistani": false,
-  });
   const [isCopiedSingle, setIsCopiedSingle] = useState(false);
   const [copiedText, setCopiedText] = useState<string>("");
   const timeoutRef = useRef(null);
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const {
-    fetchErrorUpdate,
-    subCategoriesUpdate,
-    fetchUpdates,
-    updateAvailable,
-    applyUpdates,
-    isUpdating,
-  } = useFetchUpdatesSubcategories(table || "");
+  const displayQuestion = item?.question;
+  const displaySingleAnswer = item?.answer;
+  const colorScheme = useColorScheme();
+  const themeStyles = coustomTheme(colorScheme);
+  const [isCopiedMultiple, setIsCopiedMultiple] = useState({
+    "Sayid al-Khamenei": false,
+    "Sayid as-Sistani": false,
+  });
+  const displayAnswers = [
+    { marja: "Sayid al-Khamenei", answer: item?.answer_khamenei },
+    { marja: "Sayid as-Sistani", answer: item?.answer_sistani },
+  ];
+
+  const images = {
+    "Sayid as-Sistani": require("assets/images/sistani.png"),
+    "Sayid al-Khamenei": require("assets/images/khamenei.png"),
+  };
+
+  const marjaOptions = [
+    { label: "Sayid al-Khamenei", value: "Sayid al-Khamenei" },
+    { label: "Sayid as-Sistani", value: "Sayid as-Sistani" },
+  ];
+
+  const fontSizeOptions = [
+    { label: "Klein", fontSize: 16, lineHeight: 30 },
+    { label: "Mittel", fontSize: 20, lineHeight: 40 },
+    { label: "Groß", fontSize: 25, lineHeight: 40 },
+  ];
 
   // Clean Timeout
   const cleanTimeout = () => {
@@ -82,32 +93,6 @@ export default function RenderText() {
       cleanTimeout();
     };
   }, []);
-
-  useEffect(() => {
-    if (isUpdating) {
-      router.back();
-    }
-  }, [isUpdating]);
-
-  const displayQuestion = item?.question;
-  const displaySingleAnswer = item?.answer;
-  const displayAnswers = [
-    { marja: "Sayid al-Khamenei", answer: item?.answer_khamenei },
-    { marja: "Sayid as-Sistani", answer: item?.answer_sistani },
-  ];
-
-  const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
-
-  const images = {
-    "Sayid as-Sistani": require("assets/images/sistani.png"),
-    "Sayid al-Khamenei": require("assets/images/khamenei.png"),
-  };
-
-  const marjaOptions = [
-    { label: "Sayid al-Khamenei", value: "Sayid al-Khamenei" },
-    { label: "Sayid as-Sistani", value: "Sayid as-Sistani" },
-  ];
 
   const handleCheckboxChange = (value: string) => {
     setMarja((prev) =>
@@ -153,11 +138,6 @@ export default function RenderText() {
 
     timeoutRef.current = setTimeout(() => setIsCopiedSingle(false), 1000);
   };
-  const fontSizeOptions = [
-    { label: "Klein", fontSize: 16, lineHeight: 30 },
-    { label: "Mittel", fontSize: 20, lineHeight: 40 },
-    { label: "Groß", fontSize: 25, lineHeight: 40 },
-  ];
 
   return (
     <View style={styles.container}>

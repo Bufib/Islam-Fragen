@@ -13,16 +13,26 @@ import { useSetFontSize } from "components/fontSizeStore";
 import useFetchSubCategories from "components/useFetchSubCategories";
 import { Alert } from "react-native";
 
-
 export default function index() {
   const colorscheme = useColorScheme();
   const themeStyles = coustomTheme(colorscheme);
   const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
 
-
-  const { fetchError, subCategories, refetch, isFetching } = useFetchSubCategories();
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
+    // Check if app has been opened before 
+
+    const initialFetchDone = async () => {
+      const initialTable = await AsyncStorage.getItem("initialFetchDoneTable")
+      const initialSub= await AsyncStorage.getItem("initialFetchDoneSub")
+      console.log("initialTable " +initialTable)
+      console.log("initialSub " +initialSub)
+      if (!initialTable || !initialSub) {
+      Alert.alert("Daten werden geladen! Es kann einige Minuten dauern, bis du alle Fragen angezeigt bekommst")
+      }
+    }
+
+    // Get saved colormode: light or darkmode
     const getColorMode = async () => {
       const colorMode = await AsyncStorage.getItem("ColorMode");
       if (colorMode) {
@@ -30,6 +40,7 @@ export default function index() {
       }
     };
 
+    // Get saved fontsettings (Size and Lineheight)
     const getFontSetting = async () => {
       const storedFontSize = await AsyncStorage.getItem("fontSize");
       const storedLineHeight = await AsyncStorage.getItem("lineHeight");
@@ -41,16 +52,14 @@ export default function index() {
         setLineHeight(Number(storedLineHeight));
       }
     };
-
+   
     const initializeSettings = async () => {
       await getFontSetting();
       await getColorMode();
     };
-
+    initialFetchDone()
     initializeSettings();
   }, []);
-
-
 
   return (
     <View style={styles.container}>
@@ -69,7 +78,7 @@ export default function index() {
                 />
               </View>
               <View style={styles.headerTextContainer}>
-                <Text style={[styles.headerText, themeStyles.inverseText]}>
+                <Text style={[styles.headerText, themeStyles.inverseTextIndex]}>
                   Islam-Fragen
                 </Text>
                 <Text style={[styles.headerDash, themeStyles.indexBorderDash]}>

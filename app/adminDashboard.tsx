@@ -46,21 +46,21 @@ export default function adminDashboard() {
         />
         <View style={styles.inputFieldsContainer}>
           <TextInput
-            style={[styles.headerInput, themeStyles.text]}
+            style={[styles.headerInput]}
             onChangeText={setTitle}
             value={title}
             placeholder='Title (optional)'
-            placeholderTextColor={themeStyles.text.color}
+           
             editable
             onSubmitEditing={Keyboard.dismiss}
           />
 
           <TextInput
-            style={[styles.ContentInput, themeStyles.text]}
+            style={[styles.ContentInput, themeStyles.inverseTextInput]}
             onChangeText={setContent}
             value={content}
             placeholder='Beitrag'
-            placeholderTextColor={themeStyles.text.color}
+          
             multiline
             editable
             autoCapitalize='none'
