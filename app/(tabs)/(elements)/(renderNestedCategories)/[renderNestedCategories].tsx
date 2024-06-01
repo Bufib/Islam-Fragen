@@ -15,7 +15,6 @@ export default function RenderNestedCategories() {
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-  console.log(category);
   const { tableNames, fetchError, isFetchinTable } = useFetchTableNames();
 
   if (!category) {

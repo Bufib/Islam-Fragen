@@ -77,12 +77,46 @@ export const useFetchTableNames = (): TableNamesData => {
     }
   };
 
+  const subscribeToTable = async () => {
+    const subscription = supabase
+      .channel("All table Names")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "All table Names" },
+        (payload) => {
+          console.log("INSERT")
+        }  
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "All table Names" },
+        (payload) => {
+          console.log("UPDATE")
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "All table Names" },
+        (payload) => {
+          console.log("DELETE")
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+    
+  };
+
+
   useEffect(() => {
     const checkStorageAndFetch = async () => {
       const initialFetchDone = await AsyncStorage.getItem(
         INITIAL_FETCH_KEY_Table
       );
       if (initialFetchDone === "true") {
+        await subscribeToTable()
         await loadItemsFromStorage();
       } else {
         await fetchTableNames();
@@ -94,3 +128,4 @@ export const useFetchTableNames = (): TableNamesData => {
 
   return { tableNames, fetchError, isFetchinTable };
 };
+

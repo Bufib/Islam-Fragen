@@ -38,7 +38,6 @@ export default function RenderItems({
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
 
-  console.log(items);
 
   return (
     <View style={styles.container}>

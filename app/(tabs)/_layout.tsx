@@ -9,6 +9,8 @@ import { Pressable } from "react-native";
 import { useAuthStore } from "components/authStore";
 import { Entypo } from "@expo/vector-icons";
 import { Platform } from "react-native";
+import { View } from "components/Themed";
+import { Text } from "components/Themed";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -64,7 +66,11 @@ export default function TabLayout() {
         name='news'
         options={{
           title: "",
-          tabBarIcon: ({ color }) => <TabBarIcon name='bars' color={color} />,
+          tabBarIcon: ({ color }) => (
+            <View>
+              <TabBarIcon name='bars' color={color} />
+            </View>
+          ),
         }}
       />
       <Tabs.Screen

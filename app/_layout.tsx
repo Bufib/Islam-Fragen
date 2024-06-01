@@ -90,9 +90,8 @@ function RootLayoutNav() {
           name='rulesModal'
           options={{
             headerShown: false,
-            presentation: 'modal'
+            presentation: "modal",
           }}
-          
         />
       </Stack>
       <Toast />

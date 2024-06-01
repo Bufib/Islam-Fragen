@@ -47,7 +47,6 @@ export default function fetchNews() {
 
   useEffect(() => {
     fetchItems();
-
     const subscription = supabase
       .channel("News")
       .on(
