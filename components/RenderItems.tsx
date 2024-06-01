@@ -51,7 +51,10 @@ export default function RenderItems({
       )}
       {isFetching && (
         <View style={styles.loadingIndicator}>
-          <ActivityIndicator size='large' color='#0000ff' />
+          <ActivityIndicator
+            size='large'
+            color={colorScheme == "light" ? "black" : "white"}
+          />
           <Text style={styles.loadingIndicatorText}>
             Fragen werden geladen. Das kann je nach Internetverbindung, einige
             Minuten dauern.
