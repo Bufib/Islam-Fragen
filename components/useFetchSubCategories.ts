@@ -98,13 +98,58 @@ export default function useFetchSubCategories() {
     }
   };
 
+  const subscribeToTable = async () => {
+    if (tableNames && tableNames.length > 0) {
+      const subscriptions = [];
+      for (const table of tableNames) {
+        const tablesArray = table.tableNames.split(",").map((t) => t.trim());
+        for (const tableName of tablesArray) {
+          const subscription = supabase
+            .channel(tableName)
+            .on(
+              "postgres_changes",
+              { event: "INSERT", schema: "public", table: tableName },
+              (payload) => {
+                console.log("INSERT")
+                fetchItems();
+              }
+            )
+            .on(
+              "postgres_changes",
+              { event: "UPDATE", schema: "public", table: tableName },
+              (payload) => {
+                console.log("UPDATE")
+                fetchItems();
+              }
+            )
+            .on(
+              "postgres_changes",
+              { event: "DELETE", schema: "public", table: tableName },
+              (payload) => {
+                console.log("DELETE")
+                fetchItems();
+              }
+            )
+            .subscribe();
+
+          subscriptions.push(subscription);
+        }
+      }
+
+      return () => {
+        subscriptions.forEach((subscription) => subscription.unsubscribe());
+      };
+    }
+  };
+
   useEffect(() => {
     const checkStorageAndFetch = async () => {
       const initialFetchDone = await AsyncStorage.getItem(
         INITIAL_FETCH_KEY_SubCategory
       );
-      console.log("initialFetchDone " + initialFetchDone);
+      
       if (initialFetchDone == "true") {
+        await subscribeToTable();
         await loadItemsFromStorage();
       } else {
         await fetchItems();
