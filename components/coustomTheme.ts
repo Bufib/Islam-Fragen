@@ -1,18 +1,18 @@
 import Colors from "constants/Colors";
 
 export const lightTheme = {
+  containerDefault: {
+    backgroundColor: Colors.light.background,
+  },
   containerContrast: {
     backgroundColor: Colors.light.contrast,
   },
+
   error: {
     color: Colors.light.error,
   },
   addNewsButton: {
     color: Colors.light.addNewsButton,
-  },
-  inverseTextInput: {
-    color: Colors.light.inverseText,
-    backgroundColor: Colors.light.contrast,
   },
 
   categorieText: {
@@ -84,14 +84,32 @@ export const lightTheme = {
     color: Colors.light.inverseQuestionText,
   },
   inverseQuestionBackground: {
+    
     backgroundColor: Colors.light.contrast,
   },
   inverseTextIndex: {
     color: Colors.light.inverseTextIndex,
   },
+  inverseTextInput: {
+    color: Colors.light.black,
+    backgroundColor: Colors.light.contrast,
+  },
+  pickerContainerBorder:
+  {
+    borderColor: Colors.light.pickerContainerBorder,
+  }
 };
 
+
+
+
+
+
+
 export const darkTheme = {
+  containerDefault: {
+    backgroundColor: Colors.dark.background,
+  },
   containerContrast: {
     backgroundColor: Colors.dark.contrast,
   },
@@ -104,11 +122,12 @@ export const darkTheme = {
   addNewsButton: {
     color: Colors.dark.addNewsButton,
   },
+
   background: {
     backgroundColor: Colors.dark.background,
   },
   inverseTextInput: {
-    color: Colors.dark.inverseText,
+    color: Colors.light.white,
     backgroundColor: Colors.dark.contrast,
   },
   categorieText: {
@@ -185,6 +204,10 @@ export const darkTheme = {
   inverseTextIndex: {
     color: Colors.dark.inverseTextIndex,
   },
+  pickerContainerBorder:
+  {
+    borderColor: Colors.dark.pickerContainerBorder,
+  }
 };
 
 type ColorScheme = "light" | "dark" | undefined | null;

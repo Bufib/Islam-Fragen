@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TextInput,
   View,
-  Text,
   TouchableWithoutFeedback,
   Pressable,
   Modal,
@@ -21,6 +20,7 @@ import Checkbox from "expo-checkbox";
 import { useSendQuestion } from "components/useSendQuestion";
 import Toast from "react-native-toast-message";
 import { Picker } from "@react-native-picker/picker";
+import { Text } from "components/Themed";
 
 const genderOptions = [
   { label: "-- Wähle bitte dein Geschlecht aus --", value: "default" },
@@ -54,7 +54,13 @@ export default function askQuestion() {
   const scrollViewRef = useRef(null);
 
   const validateForm = () => {
-    if (!age || !email || !validateEmail || !question || question.trim() === "") {
+    if (
+      !age ||
+      !email ||
+      !validateEmail ||
+      !question ||
+      question.trim() === ""
+    ) {
       Alert.alert("Fehler", "Bitte fülle alle Pflichtfelder aus!");
       return false;
     }
@@ -98,7 +104,14 @@ export default function askQuestion() {
 
   const send = async () => {
     if (validateForm()) {
-      const success = await sendEmail(name, age, email, marja, gender, question);
+      const success = await sendEmail(
+        name,
+        age,
+        email,
+        marja,
+        gender,
+        question
+      );
       if (success) {
         Toast.show({
           type: "success",
@@ -118,7 +131,7 @@ export default function askQuestion() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={[styles.container, themeStyles.containerDefault]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
@@ -139,7 +152,9 @@ export default function askQuestion() {
           <ScrollView
             contentContainerStyle={styles.contactContainer}
             ref={scrollViewRef}
-            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+            onContentSizeChange={() =>
+              scrollViewRef.current.scrollToEnd({ animated: true })
+            }
           >
             <TextInput
               style={[styles.input, themeStyles.inverseTextInput]}
@@ -171,9 +186,20 @@ export default function askQuestion() {
             />
 
             {/* Gender Picker */}
-            <TouchableWithoutFeedback onPress={() => setIsPickerVisibleGender(true)}>
-              <View style={[styles.pickerTrigger, themeStyles.inverseTextInput]}>
-                <Text style={styles.pickerText}>{genderOptions.find(option => option.value === gender)?.label}</Text>
+            <TouchableWithoutFeedback
+              onPress={() => setIsPickerVisibleGender(true)}
+            >
+              <View
+                style={[styles.pickerTrigger, themeStyles.inverseTextInput]}
+              >
+                <Text
+                  style={[styles.pickerText, themeStyles.inverseQuestionText]}
+                >
+                  {
+                    genderOptions.find((option) => option.value === gender)
+                      ?.label
+                  }
+                </Text>
               </View>
             </TouchableWithoutFeedback>
             <Modal
@@ -183,7 +209,7 @@ export default function askQuestion() {
               onRequestClose={() => setIsPickerVisibleGender(false)}
             >
               <View style={styles.modalContainer}>
-                <View style={styles.pickerContainer}>
+              <View style={styles.pickerContainer}>
                   <Picker
                     selectedValue={gender}
                     onValueChange={(itemValue) => {
@@ -192,7 +218,11 @@ export default function askQuestion() {
                     }}
                   >
                     {genderOptions.map((option) => (
-                      <Picker.Item key={option.value} label={option.label} value={option.value} />
+                      <Picker.Item
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                      />
                     ))}
                   </Picker>
                 </View>
@@ -200,9 +230,17 @@ export default function askQuestion() {
             </Modal>
 
             {/* Marja Picker */}
-            <TouchableWithoutFeedback onPress={() => setIsPickerVisibleMarja(true)}>
-              <View style={[styles.pickerTrigger, themeStyles.inverseTextInput]}>
-                <Text style={styles.pickerText}>{marjaOptions.find(option => option.value === marja)?.label}</Text>
+            <TouchableWithoutFeedback
+              onPress={() => setIsPickerVisibleMarja(true)}
+            >
+              <View
+                style={[styles.pickerTrigger, themeStyles.inverseTextInput]}
+              >
+                <Text
+                  style={[styles.pickerText, themeStyles.inverseQuestionText]}
+                >
+                  {marjaOptions.find((option) => option.value === marja)?.label}
+                </Text>
               </View>
             </TouchableWithoutFeedback>
             <Modal
@@ -212,7 +250,7 @@ export default function askQuestion() {
               onRequestClose={() => setIsPickerVisibleMarja(false)}
             >
               <View style={styles.modalContainer}>
-                <View style={styles.pickerContainer}>
+                <View style={[styles.pickerContainer, themeStyles.pickerContainerBorder]}>
                   <Picker
                     selectedValue={marja}
                     onValueChange={(itemValue) => {
@@ -221,7 +259,11 @@ export default function askQuestion() {
                     }}
                   >
                     {marjaOptions.map((option) => (
-                      <Picker.Item key={option.value} label={option.label} value={option.value} />
+                      <Picker.Item
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                      />
                     ))}
                   </Picker>
                 </View>
@@ -236,14 +278,21 @@ export default function askQuestion() {
               />
               <View style={styles.linkContainer}>
                 <Text style={styles.linkText}>Ich habe die</Text>
-                <Link href='rulesModal/modal' style={[styles.link, themeStyles.link]}>
+                <Link
+                  href='rulesModal/modal'
+                  style={[styles.link, themeStyles.link]}
+                >
                   Richtlinien
                 </Link>
                 <Text style={styles.linkText}>gelesen und akzeptiert.</Text>
               </View>
             </View>
             <TextInput
-              style={[styles.input, styles.inputQuestion, themeStyles.inverseTextInput]}
+              style={[
+                styles.input,
+                styles.inputQuestion,
+                themeStyles.inverseTextInput,
+              ]}
               onChangeText={setQuestion}
               value={question}
               placeholder='Frage (Pflicht)'
@@ -298,12 +347,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
+
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   pickerContainer: {
+    borderWidth: 3,
     width: 300,
     backgroundColor: "white",
     borderRadius: 10,

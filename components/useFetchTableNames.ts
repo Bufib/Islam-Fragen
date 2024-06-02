@@ -21,10 +21,9 @@ export const useFetchTableNames = (): TableNamesData => {
 
   const fetchTableNames = async () => {
     setIsFetchinTable(true);
-   
     try {
       const { data, error } = await supabase
-        .from("All table Names")
+        .from("AllTableNames")
         .select("*")
         .order("tableName", { ascending: true });
 
@@ -79,26 +78,26 @@ export const useFetchTableNames = (): TableNamesData => {
 
   const subscribeToTable = async () => {
     const subscription = supabase
-      .channel("All table Names")
+      .channel("AllTableNames")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "All table Names" },
+        { event: "INSERT", schema: "public", table: "AllTableNames" },
         (payload) => {
-          console.log("INSERT")
+          fetchTableNames();
         }  
       )
       .on(
         "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "All table Names" },
+        { event: "UPDATE", schema: "public", table: "AllTableNames" },
         (payload) => {
-          console.log("UPDATE")
+          fetchTableNames();
         }
       )
       .on(
         "postgres_changes",
-        { event: "DELETE", schema: "public", table: "All table Names" },
+        { event: "DELETE", schema: "public", table: "AllTableNames" },
         (payload) => {
-          console.log("DELETE")
+          fetchTableNames();
         }
       )
       .subscribe();
@@ -115,7 +114,8 @@ export const useFetchTableNames = (): TableNamesData => {
       const initialFetchDone = await AsyncStorage.getItem(
         INITIAL_FETCH_KEY_Table
       );
-      if (initialFetchDone === "true") {
+      if (initialFetchDone === "true")
+       {
         await subscribeToTable()
         await loadItemsFromStorage();
       } else {

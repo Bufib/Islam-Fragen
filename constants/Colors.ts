@@ -34,7 +34,9 @@ export default {
     modalQuestionBlurredBackground: "rgba(0, 0, 0, 0.5)",
     inverseText: "#000000",
     inverseTextIndex:  "#FFFFFF",
-    inverseQuestionText: "rgba(0, 0, 0, 0.2)",
+    inverseTextPicker:  "#FFFFFF",
+    inverseQuestionText: "rgba(0, 0, 0, 1)",
+    pickerContainerBorder: "#000000"
   },
   dark: {
     text: "#d0d0c0",
@@ -69,6 +71,8 @@ export default {
     modalQuestionBlurredBackground: "rgba(0, 0, 0, 0.5)",
     inverseText: "#FFFFFF",
     inverseTextIndex: "#000000",
-    inverseQuestionText: "rgba(255, 255, 255, 0.3)",
+    inverseTextPicker:  "#000000",
+    inverseQuestionText: "rgba(255, 255, 255, 1)",
+    pickerContainerBorder: "#FFFFFF"
   },
 };
