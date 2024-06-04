@@ -47,7 +47,7 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
           </Text>
         </View>
       )}
-      {isFetchinTable && (
+      {isFetchinTable && !isFetchinTable && (
         <View style={styles.loadingIndicator}>
           <ActivityIndicator
             size='large'

@@ -93,6 +93,13 @@ function RootLayoutNav() {
             presentation: "modal",
           }}
         />
+         <Stack.Screen
+          name='about'
+          options={{
+            headerShown: true,
+            headerTitle: "Über diese App",
+          }}
+        />
       </Stack>
       <Toast />
     </ThemeProvider>

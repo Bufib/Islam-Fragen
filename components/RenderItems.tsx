@@ -38,7 +38,6 @@ export default function RenderItems({
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
 
-
   return (
     <View style={styles.container}>
       {fetchError && (
@@ -60,7 +59,7 @@ export default function RenderItems({
           </Text>
         </View>
       )}
-      {items.length > 0 && (
+      {items.length > 0 && !isFetching && (
         <View style={styles.itemsContainer}>
           <FlashList
             data={items}

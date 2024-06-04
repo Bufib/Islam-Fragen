@@ -20,16 +20,18 @@ export default function index() {
 
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
-    // Check if app has been opened before 
+    // Check if app has been opened before
     const initialFetchDone = async () => {
-      const initialTable = await AsyncStorage.getItem("initialFetchDoneTable")
-      const initialSub= await AsyncStorage.getItem("initialFetchDoneSub")
-      console.log("initialTable " +initialTable)
-      console.log("initialSub " +initialSub)
+      const initialTable = await AsyncStorage.getItem("initialFetchDoneTable");
+      const initialSub = await AsyncStorage.getItem("initialFetchDoneSub");
+      console.log("initialTable " + initialTable);
+      console.log("initialSub " + initialSub);
       if (!initialTable || !initialSub) {
-      Alert.alert("Daten werden geladen! Es kann einige Minuten dauern, bis du alle Fragen angezeigt bekommst")
+        Alert.alert(
+          "Daten werden geladen! Es kann einige Minuten dauern, bis du alle Fragen angezeigt bekommst"
+        );
       }
-    }
+    };
 
     // Get saved colormode: light or darkmode
     const getColorMode = async () => {
@@ -51,12 +53,12 @@ export default function index() {
         setLineHeight(Number(storedLineHeight));
       }
     };
-   
+
     const initializeSettings = async () => {
       await getFontSetting();
       await getColorMode();
     };
-    initialFetchDone()
+    initialFetchDone();
     initializeSettings();
   }, []);
 
