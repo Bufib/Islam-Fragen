@@ -37,7 +37,7 @@ export default function RenderItems({
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
-  const { refetch } = useFetchSubCategories();
+console.log(items)
 
 
   return (

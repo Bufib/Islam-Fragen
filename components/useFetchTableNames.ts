@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "utils/supabase";
+import { router } from "expo-router";
+import Toast from "react-native-toast-message";
 
 const TABLE_NAMES_KEY = "tableNames";
 const INITIAL_FETCH_KEY_Table = "initialFetchDoneTable";
@@ -52,9 +54,9 @@ export const useFetchTableNames = (): TableNamesData => {
 
       setTableNames(tableNamesArray);
       setIsFetchinTable(false);
-      setFetchError("")
+      setFetchError("");
     } catch (error) {
-      setTableNames([])
+      setTableNames([]);
       setFetchError(
         "Fehler beim Laden der Fragen. Bitte überpüfe deine Internetverbindung und versuch es zu einem späteren Zeitpunkt nochmal!"
       );
@@ -85,21 +87,28 @@ export const useFetchTableNames = (): TableNamesData => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "AllTableNames" },
         (payload) => {
+          Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
           fetchTableNames();
+          router.navigate("/")
+
         }
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "AllTableNames" },
         (payload) => {
+          Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
           fetchTableNames();
+          router.navigate("/")
         }
       )
       .on(
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "AllTableNames" },
         (payload) => {
+          Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
           fetchTableNames();
+          router.navigate("/")
         }
       )
       .subscribe();

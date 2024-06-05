@@ -1,7 +1,7 @@
 import { View, Text } from "components/Themed";
 import { StyleSheet, Pressable, Platform, ScrollView } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
 import { useFetchText } from "components/useFetchText";
 import Colors from "constants/Colors";
 import { Stack } from "expo-router";
@@ -78,6 +78,7 @@ export default function RenderText() {
     { label: "Mittel", fontSize: 20, lineHeight: 40 },
     { label: "Groß", fontSize: 25, lineHeight: 40 },
   ];
+
 
   // Clean Timeout
   const cleanTimeout = () => {
@@ -521,7 +522,7 @@ const styles = StyleSheet.create({
   marjaChoiceContainer: {
     flexDirection: "row",
     margin: 20,
-    justifyContent: "space-around",
+    justifyContent: "space-between",
   },
   marjaChoice: {
     flexDirection: "row",
@@ -534,6 +535,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   marjaLable: {
+    fontSize: 16,
     marginTop: 5,
     paddingLeft: 5,
     fontWeight: "bold",
