@@ -2,7 +2,7 @@ import { View, Text, SafeAreaView } from "components/Themed";
 import Colors from "constants/Colors";
 import fetchNews from "components/fetchNews";
 import { useAuthStore } from "components/authStore";
-import { useCallback, useState, useRef, useMemo } from "react";
+import { useCallback, useState, useRef, useMemo, useLayoutEffect } from "react";
 import { useIsUpLoading } from "components/uploadingStore";
 import { FlashList } from "@shopify/flash-list";
 import { Feather } from "@expo/vector-icons";
@@ -20,6 +20,7 @@ import {
 import { coustomTheme } from "components/coustomTheme";
 import HeaderFlashListIndex from "components/HeaderFlashListIndex";
 import { Image } from "expo-image";
+import { useRefetchNewsStore } from "components/refetchNews";
 
 export default function index() {
   const [refreshing, setRefreshing] = useState(false);
@@ -34,6 +35,14 @@ export default function index() {
   const CONTENT_OFFSET_THRESHOLD_NEW_UPDATE = 5;
   const CONTENT_OFFSET_THRESHOLD_UP = 300;
   const themeStyles = coustomTheme(colorScheme);
+  const { hasRefetched, setRefetch } = useRefetchNewsStore();
+
+  useLayoutEffect(() => {
+    if (!hasRefetched) {
+      refetch()
+      setRefetch()
+    }
+  },[]);
 
   // Update News on either reloading or pressing "Aktualisieren" button
   const updateNews = useCallback(() => {
@@ -71,19 +80,17 @@ export default function index() {
           </View>
         ) : null}
         {updateAvailable && (
-        
-            <Pressable
-              style={styles.updateContainer}
-              onPress={() => updateNews()}
-            >
-              <Image
-                source={require("assets/images/refresh.png")}
-                style={styles.refreshImage}
-                contentFit='cover'
-              />
-              <Text style={styles.updateButtonText}>Aktualisieren</Text>
-            </Pressable>
-   
+          <Pressable
+            style={styles.updateContainer}
+            onPress={() => updateNews()}
+          >
+            <Image
+              source={require("assets/images/refresh.png")}
+              style={styles.refreshImage}
+              contentFit='cover'
+            />
+            <Text style={styles.updateButtonText}>Aktualisieren</Text>
+          </Pressable>
         )}
         {fetchError ? (
           <ScrollView

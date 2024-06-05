@@ -52,9 +52,11 @@ export const useFetchTableNames = (): TableNamesData => {
 
       setTableNames(tableNamesArray);
       setIsFetchinTable(false);
+      setFetchError("")
     } catch (error) {
+      setTableNames([])
       setFetchError(
-        "Error fetching data. Please check your connection and try again."
+        "Fehler beim Laden der Fragen. Bitte überpüfe deine Internetverbindung und versuch es zu einem späteren Zeitpunkt nochmal!"
       );
       console.error("Error fetching table names:", error);
       setIsFetchinTable(false);

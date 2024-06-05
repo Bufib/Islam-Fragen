@@ -1,14 +1,17 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./authStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface NewsItem {
   id: number;
   title: string;
   content: string;
   created_at: Date;
-  // weitere Felder je nach Schema Ihrer News-Tabelle
+
 }
+
+const INITIAL_FETCH_KEY_NEWS = "initialFetchDoneNEWS";
 
 export default function fetchNews() {
   const [fetchError, setFetchError] = useState<string>("");
@@ -16,6 +19,43 @@ export default function fetchNews() {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const { isLoggedIn } = useAuthStore();
+
+  const storeItems = async (items: NewsItem[]) => {
+    try {
+      const jsonValue = JSON.stringify(items);
+      await AsyncStorage.setItem("newsItems", jsonValue);
+    } catch (error) {
+      console.error("Error storing data", error);
+    }
+  };
+
+  const loadItemsFromStorage = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("newsItems");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      console.error("Error loading data from storage", error);
+      return null;
+    }
+  };
+
+  const setInitialFetchDone = async () => {
+    try {
+      await AsyncStorage.setItem(INITIAL_FETCH_KEY_NEWS, "true");
+    } catch (error) {
+      console.error("Error setting initial fetch key", error);
+    }
+  };
+
+  const checkInitialFetchDone = async () => {
+    try {
+      const value = await AsyncStorage.getItem(INITIAL_FETCH_KEY_NEWS);
+      return value === "true";
+    } catch (error) {
+      console.error("Error checking initial fetch key", error);
+      return false;
+    }
+  };
 
   const fetchItems = async () => {
     try {
@@ -32,6 +72,8 @@ export default function fetchNews() {
       if (data) {
         setPosts(data as NewsItem[]);
         setFetchError("");
+        await storeItems(data as NewsItem[]);
+        await setInitialFetchDone();
       } else {
         setPosts([]);
       }
@@ -46,7 +88,22 @@ export default function fetchNews() {
   };
 
   useEffect(() => {
-    fetchItems();
+    const initializeData = async () => {
+      const initialFetchDone = await checkInitialFetchDone();
+      if (initialFetchDone) {
+        const storedItems = await loadItemsFromStorage();
+        if (storedItems) {
+          setPosts(storedItems);
+        } else {
+          fetchItems();
+        }
+      } else {
+        fetchItems();
+      }
+    };
+
+    initializeData();
+
     const subscription = supabase
       .channel("News")
       .on(

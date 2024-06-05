@@ -74,6 +74,7 @@ export default function useFetchSubCategories() {
 
       setFetchError("");
     } catch (error) {
+      setSubCategories([]);
       setFetchError(
         "Elemente konnten nicht geladen werden.\n Überprüfen Sie bitte Ihre Internet Verbindung!"
       );
