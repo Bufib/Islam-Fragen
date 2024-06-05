@@ -376,6 +376,7 @@ export default function RenderText() {
                 style={{
                   body: {
                     ...themeStyles.markdownText,
+
                     fontSize: fontSize,
                     lineHeight: lineHeight,
                     fontFamily: Platform.OS === "ios" ? "Helvetica" : "Roboto",

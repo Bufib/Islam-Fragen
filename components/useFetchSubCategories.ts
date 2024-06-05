@@ -110,6 +110,7 @@ export default function useFetchSubCategories() {
               "postgres_changes",
               { event: "INSERT", schema: "public", table: tableName },
               (payload) => {
+                console.log(payload)
                 console.log("INSERT")
                 fetchItems();
               }
@@ -118,6 +119,7 @@ export default function useFetchSubCategories() {
               "postgres_changes",
               { event: "UPDATE", schema: "public", table: tableName },
               (payload) => {
+                console.log(payload)
                 console.log("UPDATE")
                 fetchItems();
               }
@@ -126,11 +128,12 @@ export default function useFetchSubCategories() {
               "postgres_changes",
               { event: "DELETE", schema: "public", table: tableName },
               (payload) => {
+                console.log(payload)
                 console.log("DELETE")
                 fetchItems();
               }
             )
-            .subscribe();
+            .subscribe(status => console.log(status));
 
           subscriptions.push(subscription);
         }

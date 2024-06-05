@@ -9,7 +9,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "components/useColorScheme";
-import Toast from "react-native-toast-message";
+import { Header } from "react-native/Libraries/NewAppScreen";
+
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,6 +49,14 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+// Seperate header which is supabase table name
+const separateWords = (name: string) => {
+  return name
+    .replace(/([A-Z])/g, " $1")
+    .replace(/&/g, " & ")
+    .trim();
+};
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
@@ -61,12 +70,18 @@ function RootLayoutNav() {
 
         <Stack.Screen
           name='(renderCategory)/[renderCategory]'
-          options={{ headerShown: true }}
+          options={{
+            headerShown: true,
+           
+          }}
         />
 
         <Stack.Screen
           name='(renderNestedCategories)/[renderNestedCategories]'
-          options={{ headerShown: true }}
+          options={{
+            headerShown: true,
+            
+          }}
         />
       </Stack>
       {/* <Toast /> */}
