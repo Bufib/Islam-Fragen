@@ -1,10 +1,11 @@
 import { View, Text } from "components/Themed";
 import { StyleSheet } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderNestedItems from "components/RenderNestedItems";
 import { Stack } from "expo-router";
 import { useFetchTableNames } from "components/useFetchTableNames";
+import { useRefetchTableStore } from "components/refetchTableStore";
 
 export default function RenderNestedCategories() {
   const { category } = useLocalSearchParams<{ category: string }>();
@@ -15,7 +16,19 @@ export default function RenderNestedCategories() {
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-  const { tableNames, fetchError, isFetchinTable } = useFetchTableNames();
+  const { tableNames, fetchError, isFetchinTable, fetchTableNames } =
+    useFetchTableNames();
+  const { hasRefetched, setRefetch } = useRefetchTableStore();
+
+  useLayoutEffect(() => {
+    const refetchTable = async () => {
+      if (!hasRefetched) {
+        await fetchTableNames();
+        setRefetch();
+      }
+    };
+    refetchTable();
+  }, []);
 
   if (!category) {
     return (

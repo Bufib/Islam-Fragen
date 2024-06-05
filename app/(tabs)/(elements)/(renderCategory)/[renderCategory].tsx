@@ -5,18 +5,13 @@ import { useLocalSearchParams } from "expo-router";
 import RenderItems from "components/RenderItems";
 import { Stack } from "expo-router";
 import useFetchSubCategories from "components/useFetchSubCategories";
+import { useRefetchSubeStore } from "components/refetchSubStore";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
-
-  const {
-    fetchError,
-    subCategories,
-    refetch: fetchItems,
-    isFetchingSub,
-  } = useFetchSubCategories();
-
-
+  const { fetchError, subCategories, refetch, isFetchingSub } =
+    useFetchSubCategories();
+  const { fetchStatus, setRefetch, hasRefetched } = useRefetchSubeStore();
 
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
@@ -28,7 +23,12 @@ export default function RenderCategory() {
   if (!subCategory) {
     return (
       <View style={styles.container}>
-        <RenderItems items={[]} fetchError={fetchError} table='' isFetching={isFetchingSub} />
+        <RenderItems
+          items={[]}
+          fetchError={fetchError}
+          table=''
+          isFetching={isFetchingSub}
+        />
       </View>
     );
   } else {
@@ -36,6 +36,13 @@ export default function RenderCategory() {
       (table) => table.tableName === subCategory
     );
     const filteredItems = matchedTable ? matchedTable.questions : [];
+
+    useLayoutEffect(() => {
+      if (!hasRefetched(subCategory)) {
+        refetch(subCategory);
+        setRefetch(subCategory);
+      }
+    }, [subCategory]);
 
     return (
       <View style={styles.container}>

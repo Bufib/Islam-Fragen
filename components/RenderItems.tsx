@@ -1,6 +1,6 @@
 import { Text, View } from "components/Themed";
 import { Pressable, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useColorScheme } from "react-native";
@@ -8,7 +8,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 import { ActivityIndicator } from "react-native";
-
+import useFetchSubCategories from "./useFetchSubCategories";
 interface Item {
   id: number;
   title: string;
@@ -37,6 +37,8 @@ export default function RenderItems({
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
+  const { refetch } = useFetchSubCategories();
+
 
   return (
     <View style={styles.container}>
