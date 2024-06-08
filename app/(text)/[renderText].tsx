@@ -20,6 +20,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { Picker } from "@react-native-picker/picker";
 import { Modal } from "react-native";
+import { formatTitle } from "components/formatTitle"; 
+
 
 export default function RenderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -208,7 +210,7 @@ export default function RenderText() {
               />
             </View>
           ),
-          headerTitle: item?.title,
+          headerTitle: formatTitle(item.title)
         }}
       />
       {fetchError ? (

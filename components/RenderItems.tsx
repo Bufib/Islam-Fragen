@@ -8,7 +8,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 import { ActivityIndicator } from "react-native";
-import useFetchSubCategories from "./useFetchSubCategories";
+import { formatTitle } from "components/formatTitle";
 interface Item {
   id: number;
   title: string;
@@ -37,8 +37,7 @@ export default function RenderItems({
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
   const appColor = Appearance.getColorScheme();
-console.log(items)
-
+  console.log(items);
 
   return (
     <View style={styles.container}>
@@ -85,7 +84,9 @@ console.log(items)
                   <View
                     style={[styles.renderItem, themeStyles.containerContrast]}
                   >
-                    <Text style={styles.itemText}>{item.title.trim()}</Text>
+                    <Text style={styles.itemText}>
+                      {formatTitle(item.title)}
+                    </Text>
                     <Feather
                       name='arrow-right-circle'
                       size={25}

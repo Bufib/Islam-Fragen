@@ -9,6 +9,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 import { ActivityIndicator } from "react-native";
+import { formatTitle } from "components/formatTitle";
 
 interface NestedItem {
   id: number;
@@ -84,7 +85,9 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
                   <View
                     style={[styles.renderItem, themeStyles.containerContrast]}
                   >
-                    <Text style={styles.itemText}>{item.title.trim()}</Text>
+                    <Text style={styles.itemText}>
+                      {formatTitle(item.title)}
+                    </Text>
                     <Feather
                       name='arrow-right-circle'
                       size={25}
