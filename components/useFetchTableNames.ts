@@ -57,6 +57,7 @@ export const useFetchTableNames = (): TableNamesData => {
       setFetchError("");
     } catch (error) {
       setTableNames([]);
+      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_Table);
       setFetchError(
         "Fehler beim Laden der Fragen. Bitte überpüfe deine Internetverbindung und versuch es zu einem späteren Zeitpunkt nochmal!"
       );
@@ -77,6 +78,7 @@ export const useFetchTableNames = (): TableNamesData => {
       }
     } catch (error) {
       console.error("Error loading initial data:", error);
+      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_Table);
     }
   }, []);
 

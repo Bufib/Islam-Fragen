@@ -78,6 +78,7 @@ export default function useFetchSubCategories() {
       setFetchError("");
     } catch (error) {
       setSubCategories([]);
+      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_SubCategory);
       setFetchError(
         "Elemente konnten nicht geladen werden.\n Überprüfen Sie bitte Ihre Internet Verbindung!"
       );
@@ -112,6 +113,7 @@ export default function useFetchSubCategories() {
       console.log("Loaded items from AsyncStorage successfully.");
     } catch (error) {
       console.log("Failed to load items from storage", error);
+      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_SubCategory);
     } finally {
       setIsFetchingSub(false);
     }

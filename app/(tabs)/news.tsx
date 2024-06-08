@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView } from "components/Themed";
 import Colors from "constants/Colors";
-import fetchNews from "components/fetchNews";
+import fetchNews from "components/useFetchNews";
 import { useAuthStore } from "components/authStore";
 import { useCallback, useState, useRef, useMemo, useLayoutEffect } from "react";
 import { useIsUpLoading } from "components/uploadingStore";
@@ -21,6 +21,7 @@ import { coustomTheme } from "components/coustomTheme";
 import HeaderFlashListIndex from "components/HeaderFlashListIndex";
 import { Image } from "expo-image";
 import { useRefetchNewsStore } from "components/refetchNews";
+import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 
 export default function index() {
   const [refreshing, setRefreshing] = useState(false);
@@ -36,13 +37,18 @@ export default function index() {
   const CONTENT_OFFSET_THRESHOLD_UP = 300;
   const themeStyles = coustomTheme(colorScheme);
   const { hasRefetched, setRefetch } = useRefetchNewsStore();
+  const { newUpdateAvailable, update } = useIsNewUpdateAvailable();
 
   useLayoutEffect(() => {
     if (!hasRefetched) {
-      refetch()
-      setRefetch()
+      refetch();
+      setRefetch();
+
+      if(newUpdateAvailable)  {
+        update(false)
+      }
     }
-  },[]);
+  }, []);
 
   // Update News on either reloading or pressing "Aktualisieren" button
   const updateNews = useCallback(() => {
@@ -59,6 +65,10 @@ export default function index() {
       .finally(() => {
         setRefreshing(false);
       });
+
+    if (newUpdateAvailable) {
+      update(false);
+    }
   }, [applyUpdates]);
 
   return (

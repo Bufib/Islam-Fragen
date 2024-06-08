@@ -10,7 +10,8 @@ import { useAuthStore } from "components/authStore";
 import { Entypo } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { View } from "components/Themed";
-import { Text } from "components/Themed";
+import { StyleSheet } from "react-native";
+import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -38,6 +39,8 @@ export default function TabLayout() {
     colorScheme === "light" ? Colors.light.black : Colors.dark.white;
 
   const { isLoggedIn, logout } = useAuthStore();
+  const {newUpdateAvailable, update} = useIsNewUpdateAvailable()
+
 
   return (
     <Tabs
@@ -67,7 +70,8 @@ export default function TabLayout() {
         options={{
           title: "",
           tabBarIcon: ({ color }) => (
-            <View>
+            <View style={styles.newsContainer}>
+              {newUpdateAvailable && <View style={styles.newsButton}></View>}
               <TabBarIcon name='bars' color={color} />
             </View>
           ),
@@ -128,3 +132,18 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  newsContainer: {
+    backgroundColor: "transparent",
+  },
+  newsButton: {
+    position: "absolute",
+    alignSelf: "flex-end",
+    backgroundColor: "red",
+    borderRadius: 30,
+    width: 10,
+    height: 10,
+    zIndex: 1,
+  },
+});

@@ -13,33 +13,16 @@ export default function impressum() {
  
  **Angaben gemäß § 5 TMG:**
 
-Bund für islamische Bildung e. V.
-Füssener Str. 15
-12309 Berlin
+ Bund für islamische Bildung e. V.
 
-**Vertreten durch:**
-
-Samer Khalil (1. Vorsitzender)
-Anne-Maria Nowak (2. Vorsitzende)
-Mohammad Klait (Schriftführer)
-
-**Kontakt:**
-
-E-Mail: info@bufib.de
-
-**Registereintrag:**
-
-Eintragung im Vereinsregister.
-Registergericht:Amtsgericht Berlin-Charlottenburg
-Registernummer: VR 32921
-
-**Steuernummer:**
-
-27/657/53847
-
-# **Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:**
-
-Bund für islamische Bildung e.V.
+ Füssener Str. 15
+ 12309 Berlin
+ 
+ Kontakt:
+ E-Mail: info@bufib.de
+ 
+ Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:
+ Bund für islamische Bildung e.V.
   `;
 
   const colorScheme = useColorScheme();
@@ -47,12 +30,12 @@ Bund für islamische Bildung e.V.
   const themeStyles = coustomTheme(colorScheme);
 
   return (
-    <View style={[styles.container, themeStyles.background]}>
+    <View style={styles.container}>
       <ScrollView style={styles.textContainer}>
         <Markdown
           style={{
             body: {
-              ...themeStyles.text,
+              textAlign: "justify",
               fontSize: 18,
               lineHeight: 40,
             },

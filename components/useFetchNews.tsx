@@ -2,6 +2,7 @@ import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./authStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 
 interface NewsItem {
   id: number;
@@ -19,6 +20,7 @@ export default function fetchNews() {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const { isLoggedIn } = useAuthStore();
+  const { newUpdateAvailable, update } = useIsNewUpdateAvailable();
 
   const storeItems = async (items: NewsItem[]) => {
     try {
@@ -78,6 +80,7 @@ export default function fetchNews() {
         setPosts([]);
       }
     } catch (error) {
+      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_NEWS);
       setFetchError(
         "Neuigkeiten konnten nicht geladen werden.\n Überprüfen Sie bitte Ihre Internetverbindung!"
       );
@@ -114,6 +117,9 @@ export default function fetchNews() {
             fetchItems();
             setUpdateAvailable(false);
           } else {
+            if(!newUpdateAvailable) {
+              update(true)
+            }
             setUpdateAvailable(true);
           }
         }
@@ -126,6 +132,9 @@ export default function fetchNews() {
             fetchItems();
             setUpdateAvailable(false);
           } else {
+            if(!newUpdateAvailable) {
+              update(true)
+            }
             setUpdateAvailable(true);
           }
         }
