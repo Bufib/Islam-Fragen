@@ -210,7 +210,7 @@ export default function RenderText() {
               />
             </View>
           ),
-          headerTitle: formatTitle(item.title)
+          headerTitle: item? formatTitle(item.title) : ""
         }}
       />
       {fetchError ? (
