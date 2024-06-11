@@ -1,46 +1,105 @@
 import { StatusBar } from "expo-status-bar";
-import { Pressable, StyleSheet, TextInput } from "react-native";
+import { Pressable, StyleSheet, TextInput, Alert } from "react-native";
 import { Link, router } from "expo-router";
 import { Text, View } from "components/Themed";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Colors from "constants/Colors";
 import { supabase } from "@/utils/supabase";
 import Toast from "react-native-toast-message";
 import { useAuthStore } from "components/authStore";
+import * as Network from 'expo-network';
+import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
+
+const siteKey = 'c2a47a96-0c8e-48b8-a6c6-e60a2e9e4228';
+const baseUrl = 'https://hcaptcha.com';
 
 export default function Modal() {
-  // If the page was reloaded or navigated to directly, then the modal should be presented as
-  // a full screen page. You may need to change the UI to account for this.
   const isPresented = router.canGoBack();
-  const [email, onChangeEmail] = useState("hadi@mail.de");
-  const [password, onChangePassword] = useState("hadi@mail.de");
+  const [email, onChangeEmail] = useState("");
+  const [password, onChangePassword] = useState("");
   const [errorMessage, setError] = useState<string>("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  const captchaRef = useRef(null);
+  const [showCaptcha, setShowCaptcha] = useState(false);
 
   const { login } = useAuthStore();
 
-  const adminLogin = async () => {
+  const checkInternetConnection = async () => {
+    const networkState = await Network.getNetworkStateAsync();
+    return networkState.isConnected && networkState.isInternetReachable;
+  };
+
+  const onMessage = async (event) => {
+    if (event && event.nativeEvent.data) {
+      const token = event.nativeEvent.data;
+
+      if (['cancel', 'error', 'expired'].includes(token)) {
+        setShowCaptcha(false);
+        Alert.alert(
+          "Fehler",
+          "Captcha-Überprüfung fehlgeschlagen. Bitte versuche es erneut."
+        );
+      } else if (token === 'open') {
+        console.log('Visual challenge opened');
+      } else {
+        console.log('Verified code from hCaptcha', token);
+        setCaptchaToken(token);
+        handleLogin(token);
+      }
+    }
+  };
+
+  const handleLogin = async (captchaToken) => {
     if (email === "" || password === "") {
       setError("Bitte Email und Passwort eingeben");
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      console.log("Captcha Token:", captchaToken);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+        options: { captchaToken },
+      });
 
-    if (error) {
-      setError("Email oder Passwort sind falsch!");
-      return;
-    } else {
+      console.log("Supabase Response:", data, error);
+
+      if (error) {
+        console.error("Supabase Error:", error);
+        setError("Email oder Passwort sind falsch!");
+        setShowCaptcha(false); 
+        return;
+      }
+
       Toast.show({
         type: "success",
         text1: "Login erfolgreich!",
       });
       router.navigate("/");
       await login();
+      setCaptchaToken(null); // Reset captcha token
+    } catch (err) {
+      setError("Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.");
+      setShowCaptcha(true); // Show captcha again for retry
     }
   };
+
+  const adminLogin = async () => {
+    const isConnected = await checkInternetConnection();
+    if (isConnected) {
+      setShowCaptcha(true); // Show hCaptcha challenge
+    } else {
+      Alert.alert("Bitte stelle sicher, dass du mit dem Internet verbunden bist, bevor du eine Frage schickst");
+    }
+  };
+
+  useEffect(() => {
+    if (showCaptcha && captchaRef.current) {
+      captchaRef.current.show();
+    }
+  }, [showCaptcha]);
 
   return (
     <View style={styles.container}>
@@ -73,6 +132,15 @@ export default function Modal() {
         </View>
       )}
       <StatusBar style="light" />
+      {showCaptcha && (
+        <ConfirmHcaptcha
+          ref={captchaRef}
+          siteKey={siteKey}
+          baseUrl={baseUrl}
+          onMessage={onMessage}
+          languageCode="de"
+        />
+      )}
     </View>
   );
 }
