@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Keyboard,
@@ -21,6 +21,11 @@ import { useSendQuestion } from "components/useSendQuestion";
 import Toast from "react-native-toast-message";
 import { Picker } from "@react-native-picker/picker";
 import { Text } from "components/Themed";
+import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
+import { router } from "expo-router";
+
+const siteKey = '46059823-5a16-4179-98ac-347075bcf465';
+const baseUrl = 'https://hcaptcha.com';
 
 const genderOptions = [
   { label: "-- Wähle bitte dein Geschlecht aus --", value: "default" },
@@ -50,8 +55,18 @@ export default function askQuestion() {
   const [isPickerVisibleMarja, setIsPickerVisibleMarja] = useState(false);
   const [isPickerVisibleGender, setIsPickerVisibleGender] = useState(false);
   const { sendEmail } = useSendQuestion();
+  const captchaRef = useRef(null);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [showCaptcha, setShowCaptcha] = useState(false); // Use this to control captcha visibility
+  const [isFormValid, setIsFormValid] = useState(false); // Track form validation
 
   const scrollViewRef = useRef(null);
+
+  useEffect(() => {
+    if (showCaptcha && captchaRef.current) {
+      captchaRef.current.show();
+    }
+  }, [showCaptcha]);
 
   const validateForm = () => {
     if (
@@ -94,7 +109,7 @@ export default function askQuestion() {
     if (!acceptRules) {
       Alert.alert(
         "Fehler",
-        "Bitte lies die Richtlinen und akzeptiere sie um die E-Mail versenden zu können!"
+        "Bitte lies die Richtlinien und akzeptiere sie um die E-Mail versenden zu können!"
       );
       return false;
     }
@@ -104,27 +119,47 @@ export default function askQuestion() {
 
   const send = async () => {
     if (validateForm()) {
-      const success = await sendEmail(
-        name,
-        age,
-        email,
-        marja,
-        gender,
-        question
-      );
-      if (success) {
-        Toast.show({
-          type: "success",
-          text1: "Frage erfolgreich gesendet!",
-          text2: "Du erhälst die Antwort in wenigen Tagen als Email",
-        });
-        router.navigate("(elements)");
+      setIsFormValid(true); // Mark the form as valid
+      setShowCaptcha(true); // Show hCaptcha challenge
+    }
+  };
+
+  const onMessage = async (event) => {
+    if (event && event.nativeEvent.data) {
+      const token = event.nativeEvent.data;
+
+      if (['cancel', 'error', 'expired'].includes(token)) {
+        captchaRef.current.hide();
+        setShowCaptcha(false);
+        Alert.alert(
+          "Fehler",
+          "Captcha-Überprüfung fehlgeschlagen. Bitte versuche es erneut."
+        );
+      } else if (token === 'open') {
+        console.log('Visual challenge opened');
       } else {
-        Toast.show({
-          type: "error",
-          text1: "Fehler",
-          text2: "Versuch es später erneut",
-        });
+        console.log('Verified code from hCaptcha', token);
+        setCaptchaToken(token);
+        captchaRef.current.hide();
+
+        if (isFormValid) {
+          const success = await sendEmail(name, age, email, marja, gender, question, token);
+          if (success) {
+            setShowCaptcha(false); // Hide captcha on success
+            Toast.show({
+              type: "success",
+              text1: "Frage erfolgreich gesendet!",
+              text2: "Du erhälst die Antwort in wenigen Tagen als Email",
+            });
+            router.navigate("(elements)");
+          } else {
+            Toast.show({
+              type: "error",
+              text1: "Fehler",
+              text2: "Versuch es später erneut",
+            });
+          }
+        }
       }
     }
   };
@@ -209,7 +244,7 @@ export default function askQuestion() {
               onRequestClose={() => setIsPickerVisibleGender(false)}
             >
               <View style={styles.modalContainer}>
-              <View style={styles.pickerContainer}>
+                <View style={styles.pickerContainer}>
                   <Picker
                     selectedValue={gender}
                     onValueChange={(itemValue) => {
@@ -250,7 +285,12 @@ export default function askQuestion() {
               onRequestClose={() => setIsPickerVisibleMarja(false)}
             >
               <View style={styles.modalContainer}>
-                <View style={[styles.pickerContainer, themeStyles.pickerContainerBorder]}>
+                <View
+                  style={[
+                    styles.pickerContainer,
+                    themeStyles.pickerContainerBorder,
+                  ]}
+                >
                   <Picker
                     selectedValue={marja}
                     onValueChange={(itemValue) => {
@@ -300,6 +340,17 @@ export default function askQuestion() {
               keyboardType='default'
             />
           </ScrollView>
+          {showCaptcha && (
+            <View style={styles.captchaContainer}>
+              <ConfirmHcaptcha
+                ref={captchaRef}
+                siteKey={siteKey}
+                baseUrl={baseUrl}
+                onMessage={onMessage}
+                languageCode="de"
+              />
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -347,7 +398,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
-
   modalContainer: {
     flex: 1,
     justifyContent: "center",
@@ -397,5 +447,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     fontSize: 16,
     lineHeight: 30,
+  },
+  captchaContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

@@ -1,6 +1,7 @@
 import { Text, View } from "components/Themed";
 import { StyleSheet, ScrollView } from "react-native";
 import React from "react";
+import { Image } from "expo-image";
 
 const about = () => {
   return (
@@ -37,6 +38,13 @@ const about = () => {
             {"\n"}
             Möge Allah, der Erhabene, diese bescheidenen Anstrengungen annehmen.
           </Text>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("assets/images/bufibLogo.png")}
+              style={styles.image}
+              contentFit="contain"
+            />
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -54,10 +62,18 @@ const styles = StyleSheet.create({
   },
   aboutContainer: {
     marginHorizontal: 15,
-    marginBottom: 60,
+    marginBottom: 40,
     marginTop: 20,
   },
   aboutText: {
     fontSize: 20,
+  },
+  imageContainer: {
+    marginTop: 10,
+    alignItems: "center"
+  },
+  image: {
+    height: 200,
+    width: 300
   },
 });
