@@ -23,9 +23,10 @@ import { Picker } from "@react-native-picker/picker";
 import { Text } from "components/Themed";
 import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
 import { router } from "expo-router";
+import * as Network from "expo-network";
 
-const siteKey = '46059823-5a16-4179-98ac-347075bcf465';
-const baseUrl = 'https://hcaptcha.com';
+const siteKey = "46059823-5a16-4179-98ac-347075bcf465";
+const baseUrl = "https://hcaptcha.com";
 
 const genderOptions = [
   { label: "-- Wähle bitte dein Geschlecht aus --", value: "default" },
@@ -40,25 +41,40 @@ const marjaOptions = [
   { label: "Keine Rechtsfrage", value: "Keine Rechtsfrage" },
 ];
 
+const initialFormState = {
+  name: "",
+  age: "",
+  email: "",
+  validateEmail: "",
+  marja: marjaOptions[0].value,
+  gender: genderOptions[0].value,
+  question: "",
+  acceptRules: false,
+};
+
 export default function askQuestion() {
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme(colorScheme);
 
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [email, setEmail] = useState("");
-  const [validateEmail, setValidateEmail] = useState("");
-  const [marja, setMarja] = useState(marjaOptions[0].value);
-  const [gender, setGender] = useState(genderOptions[0].value);
-  const [question, setQuestion] = useState("");
-  const [acceptRules, setAcceptRules] = useState(false);
+  const [formState, setFormState] = useState(initialFormState);
+  const {
+    name,
+    age,
+    email,
+    validateEmail,
+    marja,
+    gender,
+    question,
+    acceptRules,
+  } = formState;
+
   const [isPickerVisibleMarja, setIsPickerVisibleMarja] = useState(false);
   const [isPickerVisibleGender, setIsPickerVisibleGender] = useState(false);
   const { sendEmail } = useSendQuestion();
   const captchaRef = useRef(null);
   const [captchaToken, setCaptchaToken] = useState("");
-  const [showCaptcha, setShowCaptcha] = useState(false); // Use this to control captcha visibility
-  const [isFormValid, setIsFormValid] = useState(false); // Track form validation
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const scrollViewRef = useRef(null);
 
@@ -67,6 +83,11 @@ export default function askQuestion() {
       captchaRef.current.show();
     }
   }, [showCaptcha]);
+
+  useEffect(() => {
+    // Reset the form state when the component mounts
+    setFormState(initialFormState);
+  }, []);
 
   const validateForm = () => {
     if (
@@ -117,10 +138,26 @@ export default function askQuestion() {
     return true;
   };
 
+  const handleInputChange = (name, value) => {
+    setFormState({ ...formState, [name]: value });
+  };
+
+  const checkInternetConnection = async () => {
+    const networkState = await Network.getNetworkStateAsync();
+    return networkState.isConnected && networkState.isInternetReachable;
+  };
+
   const send = async () => {
     if (validateForm()) {
-      setIsFormValid(true); // Mark the form as valid
-      setShowCaptcha(true); // Show hCaptcha challenge
+      const isConnected = await checkInternetConnection();
+      if (isConnected) {
+        setIsFormValid(true); // Mark the form as valid
+        setShowCaptcha(true); // Show hCaptcha challenge
+      } else {
+        Alert.alert(
+          "Bitte stelle sicher, dass du mit dem Internet verbunden bist, bevor du eine Frage schickst"
+        );
+      }
     }
   };
 
@@ -128,22 +165,30 @@ export default function askQuestion() {
     if (event && event.nativeEvent.data) {
       const token = event.nativeEvent.data;
 
-      if (['cancel', 'error', 'expired'].includes(token)) {
+      if (["cancel", "error", "expired"].includes(token)) {
         captchaRef.current.hide();
         setShowCaptcha(false);
         Alert.alert(
           "Fehler",
           "Captcha-Überprüfung fehlgeschlagen. Bitte versuche es erneut."
         );
-      } else if (token === 'open') {
-        console.log('Visual challenge opened');
+      } else if (token === "open") {
+        console.log("Visual challenge opened");
       } else {
-        console.log('Verified code from hCaptcha', token);
+        console.log("Verified code from hCaptcha", token);
         setCaptchaToken(token);
         captchaRef.current.hide();
 
         if (isFormValid) {
-          const success = await sendEmail(name, age, email, marja, gender, question, token);
+          const success = await sendEmail(
+            name,
+            age,
+            email,
+            marja,
+            gender,
+            question,
+            token
+          );
           if (success) {
             setShowCaptcha(false); // Hide captcha on success
             Toast.show({
@@ -152,6 +197,7 @@ export default function askQuestion() {
               text2: "Du erhälst die Antwort in wenigen Tagen als Email",
             });
             router.navigate("(elements)");
+            setFormState(initialFormState); // Reset form state on success
           } else {
             Toast.show({
               type: "error",
@@ -193,28 +239,30 @@ export default function askQuestion() {
           >
             <TextInput
               style={[styles.input, themeStyles.inverseTextInput]}
-              onChangeText={setName}
+              onChangeText={(value) => handleInputChange("name", value)}
               value={name}
               placeholder='Name (optional)'
               keyboardType='default'
             />
             <TextInput
               style={[styles.input, themeStyles.inverseTextInput]}
-              onChangeText={setAge}
+              onChangeText={(value) => handleInputChange("age", value)}
               value={age}
               placeholder='Alter (Pflicht)'
               keyboardType='numeric'
             />
             <TextInput
               style={[styles.input, themeStyles.inverseTextInput]}
-              onChangeText={setEmail}
+              onChangeText={(value) => handleInputChange("email", value)}
               value={email}
               placeholder='E-Mail (Pflicht)'
               keyboardType='email-address'
             />
             <TextInput
               style={[styles.input, themeStyles.inverseTextInput]}
-              onChangeText={setValidateEmail}
+              onChangeText={(value) =>
+                handleInputChange("validateEmail", value)
+              }
               value={validateEmail}
               placeholder='E-Mail wiederholen (Pflicht)'
               keyboardType='email-address'
@@ -248,7 +296,7 @@ export default function askQuestion() {
                   <Picker
                     selectedValue={gender}
                     onValueChange={(itemValue) => {
-                      setGender(itemValue);
+                      handleInputChange("gender", itemValue);
                       setIsPickerVisibleGender(false);
                     }}
                   >
@@ -294,7 +342,7 @@ export default function askQuestion() {
                   <Picker
                     selectedValue={marja}
                     onValueChange={(itemValue) => {
-                      setMarja(itemValue);
+                      handleInputChange("marja", itemValue);
                       setIsPickerVisibleMarja(false);
                     }}
                   >
@@ -314,7 +362,9 @@ export default function askQuestion() {
               <Checkbox
                 style={styles.rulesCheckbox}
                 value={acceptRules}
-                onValueChange={setAcceptRules}
+                onValueChange={(value) =>
+                  handleInputChange("acceptRules", value)
+                }
               />
               <View style={styles.linkContainer}>
                 <Text style={styles.linkText}>Ich habe die</Text>
@@ -333,7 +383,7 @@ export default function askQuestion() {
                 styles.inputQuestion,
                 themeStyles.inverseTextInput,
               ]}
-              onChangeText={setQuestion}
+              onChangeText={(value) => handleInputChange("question", value)}
               value={question}
               placeholder='Frage (Pflicht)'
               multiline={true}
@@ -341,15 +391,14 @@ export default function askQuestion() {
             />
           </ScrollView>
           {showCaptcha && (
-            <View style={styles.captchaContainer}>
-              <ConfirmHcaptcha
-                ref={captchaRef}
-                siteKey={siteKey}
-                baseUrl={baseUrl}
-                onMessage={onMessage}
-                languageCode="de"
-              />
-            </View>
+            <ConfirmHcaptcha
+              ref={captchaRef}
+              size='invisible'
+              siteKey={siteKey}
+              baseUrl={baseUrl}
+              onMessage={onMessage}
+              languageCode='de'
+            />
           )}
         </View>
       </TouchableWithoutFeedback>
@@ -447,10 +496,5 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     fontSize: 16,
     lineHeight: 30,
-  },
-  captchaContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
