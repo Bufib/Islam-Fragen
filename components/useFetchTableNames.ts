@@ -136,5 +136,6 @@ export const useFetchTableNames = (): TableNamesData => {
     checkStorageAndFetch();
   }, [loadItemsFromStorage, subscribeToTable, fetchTableNames]);
 
+  console.log(tableNames)
   return { tableNames, fetchError, isFetchinTable, fetchTableNames };
 };
