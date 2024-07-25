@@ -1,4 +1,5 @@
-import { View, Text, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
+import { Text, View } from "components/Themed";
 import React from "react";
 import { StyleSheet } from "react-native";
 import Markdown from "react-native-markdown-display";
@@ -35,6 +36,7 @@ export default function impressum() {
         <Markdown
           style={{
             body: {
+              ...themeStyles.markdownText,
               textAlign: "justify",
               fontSize: 18,
               lineHeight: 40,

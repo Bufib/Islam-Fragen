@@ -20,8 +20,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { Picker } from "@react-native-picker/picker";
 import { Modal } from "react-native";
-import { formatTitle } from "components/formatTitle"; 
-
+import { formatTitle } from "components/formatTitle";
 
 export default function RenderText() {
   const { id, table, title } = useLocalSearchParams<{
@@ -80,7 +79,6 @@ export default function RenderText() {
     { label: "Mittel", fontSize: 20, lineHeight: 40 },
     { label: "Groß", fontSize: 25, lineHeight: 40 },
   ];
-
 
   // Clean Timeout
   const cleanTimeout = () => {
@@ -210,7 +208,7 @@ export default function RenderText() {
               />
             </View>
           ),
-          headerTitle: item? formatTitle(item.title) : ""
+          headerTitle: item ? formatTitle(item.title) : "",
         }}
       />
       {fetchError ? (
@@ -533,11 +531,11 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: {},
   marjaCheckbox: {
-    width: 30,
-    height: 30,
+    width: 28,
+    height: 28,
   },
   marjaLable: {
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 5,
     paddingLeft: 5,
     fontWeight: "bold",
