@@ -55,9 +55,9 @@ export default function RenderItems({
             color={colorScheme == "light" ? "black" : "white"}
           />
           <Text style={styles.loadingIndicatorText}>
-            Fragen werden geladen. Das kann je nach Internetverbindung, einige
-            Minuten dauern.
+            Fragen werden geladen. Das kann je nach Internetverbindung, einen kleinen Augenblick dauern!
           </Text>
+          <Text style={styles.loadingIndicatorText}>Allahumma salli ala Muhammad wa aali Muhammad</Text>
         </View>
       )}
       {items.length > 0 && !isFetching && (

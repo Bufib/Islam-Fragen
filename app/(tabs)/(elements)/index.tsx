@@ -1,3 +1,4 @@
+// Test
 import { Pressable, StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
 import QuestionLinks from "components/QuestionLinks";
@@ -21,7 +22,6 @@ export default function index() {
   // Load colorscheme Mode and Font size stored in Asyncstorage
   useLayoutEffect(() => {
     // Check if app has been opened before
-
     const initialFetchDone = async () => {
       const initialTable = await AsyncStorage.getItem("initialFetchDoneTable");
       const initialSub = await AsyncStorage.getItem("initialFetchDoneSub");

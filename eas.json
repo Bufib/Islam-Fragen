@@ -1,14 +1,38 @@
+// {
+//   "build": {
+//     "preview": {
+//       "android": {
+//         "buildType": "apk"
+//       }
+//     },
+//     "production": {
+//       "android": {
+//         "buildType": "app-bundle"
+//       }
+//     }
+//   }
+// }
+
+// {
+//   "build": {
+//     "preview": {
+//       "ios": {
+//         "simulator": true
+//       }
+//     },
+//     "production": {}
+//   }
+// }
+
 {
   "build": {
-    "preview": {
-      "android": {
-        "buildType": "apk"
-      }
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
     },
-    "production": {
-      "android": {
-        "buildType": "app-bundle"
-      }
-    }
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {}
   }
 }

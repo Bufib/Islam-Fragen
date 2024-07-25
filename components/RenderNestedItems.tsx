@@ -55,9 +55,9 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
             color={colorScheme == "light" ? "black" : "white"}
           />
           <Text style={styles.loadingIndicatorText}>
-            Kategorien werden geladen. Das kann je nach Internetverbindung,
-            einige Minuten dauern.
+            Kategorien werden geladen. Das kann je nach Internetverbindung, einen kleinen Augenblick dauern!
           </Text>
+          <Text style={styles.loadingIndicatorText}>Allahumma salli ala Muhammad wa aali Muhammad</Text>
         </View>
       )}
       {items.length > 0 && (
