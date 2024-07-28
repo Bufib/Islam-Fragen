@@ -41,6 +41,7 @@ export default function RenderItems({
 
   return (
     <View style={styles.container}>
+    <>
       {fetchError && (
         <View style={styles.renderError}>
           <Text style={[styles.errorText, themeStyles.error]}>
@@ -99,6 +100,7 @@ export default function RenderItems({
           />
         </View>
       )}
+      </>
     </View>
   );
 }

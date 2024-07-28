@@ -20,42 +20,43 @@ export default function RenderCategory() {
       .replace(/\)/g, "%29");
   };
 
-  if (!subCategory) {
-    return (
-      <View style={styles.container}>
+  // Use effect hook to refetch data when subCategory changes
+  useLayoutEffect(() => {
+    if (subCategory && !hasRefetched(subCategory)) {
+      refetch(subCategory);
+      setRefetch(subCategory);
+    }
+  }, [subCategory, refetch, setRefetch, hasRefetched]);
+
+  // Determine matched table and filtered items based on subCategory
+  const matchedTable = subCategories.find(
+    (table) => table.tableName === subCategory
+  );
+  const filteredItems = matchedTable ? matchedTable.questions : [];
+
+  console.log(subCategory);
+  return (
+    <View style={styles.container}>
+      {!subCategory ? (
         <RenderItems
           items={[]}
           fetchError={fetchError}
           table=''
           isFetching={isFetchingSub}
         />
-      </View>
-    );
-  } else {
-    const matchedTable = subCategories.find(
-      (table) => table.tableName === subCategory
-    );
-    const filteredItems = matchedTable ? matchedTable.questions : [];
-
-    useLayoutEffect(() => {
-      if (!hasRefetched(subCategory)) {
-        refetch(subCategory);
-        setRefetch(subCategory);
-      }
-    }, [subCategory]);
-
-    return (
-      <View style={styles.container}>
-        <Stack.Screen options={{ headerTitle: subCategory }} />
-        <RenderItems
-          items={filteredItems}
-          fetchError={fetchError}
-          table={encodeTable(subCategory)}
-          isFetching={isFetchingSub}
-        />
-      </View>
-    );
-  }
+      ) : (
+        <>
+          <Stack.Screen options={{ headerTitle: subCategory }} />
+          <RenderItems
+            items={filteredItems}
+            fetchError={fetchError}
+            table={encodeTable(subCategory)}
+            isFetching={isFetchingSub}
+          />
+        </>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

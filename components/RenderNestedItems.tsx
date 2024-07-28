@@ -41,6 +41,7 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
 
   return (
     <View style={styles.container}>
+      <>
       {fetchError && (
         <View style={styles.renderError}>
           <Text style={[styles.errorText, themeStyles.error]}>
@@ -100,6 +101,7 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
           />
         </View>
       )}
+      </>
     </View>
   );
 };
