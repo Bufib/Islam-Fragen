@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
 import Colors from "constants/Colors";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Switch } from "react-native";
 import { Appearance } from "react-native";
 import { useLayoutEffect, useState } from "react";
@@ -52,12 +52,12 @@ export default function settings() {
 
       <View style={styles.spacer} />
       <View style={styles.informationContainer}>
-        <Link style={styles.linkText} href='/about'>
+        <Link style={styles.linkText} href='/about' push>
           Über die App
         </Link>
       </View>
       <View style={styles.impressumContainer}>
-        <Link style={styles.linkText} href={"/impressum"}>
+        <Link style={styles.linkText} href={"/impressum"} push>
           Impressum
         </Link>
       </View>

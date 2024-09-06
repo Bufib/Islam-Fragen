@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { useFetchText } from "components/useFetchText";
-import Colors from "constants/Colors";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { useRef } from "react";
@@ -17,6 +16,7 @@ import HeaderRight from "components/HeaderRightRenderText";
 import MultipleAnswers from "components/MultipleAnswersRenderText";
 import { copySingleAnswer } from "components/copySingleAnswer";
 import { copyMultipleAnswers } from "components/copyMultipleAnswers";
+import { getMarjaData } from "components/getMarjaData";
 
 export default function RenderText() {
   // Get local params for each text
@@ -55,20 +55,8 @@ export default function RenderText() {
     "Sayid as-Sistani": false,
   });
 
-  const displayAnswers = [
-    { marja: "Sayid al-Khamenei", answer: item?.answer_khamenei },
-    { marja: "Sayid as-Sistani", answer: item?.answer_sistani },
-  ];
-
-  const images = {
-    "Sayid as-Sistani": require("assets/images/sistani.png"),
-    "Sayid al-Khamenei": require("assets/images/khamenei.png"),
-  };
-
-  const marjaOptions = [
-    { label: "Sayid al-Khamenei", value: "Sayid al-Khamenei" },
-    { label: "Sayid as-Sistani", value: "Sayid as-Sistani" },
-  ];
+  // Get the fiting data
+  const { displayAnswers, images, marjaOptions } = getMarjaData(item || undefined);
 
   const handleCheckboxChange = (value: string) => {
     setMarja((prev) =>
@@ -119,7 +107,7 @@ export default function RenderText() {
       />
       {fetchError ? (
         <View style={styles.renderError}>
-          <Text style={styles.errorText}>{fetchError}</Text>
+          <Text style={[styles.errorText, themeStyles.error]}>{fetchError}</Text>
         </View>
       ) : displaySingleAnswer ? (
         <SingleAnswer
@@ -172,7 +160,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 20,
-    color: Colors.light.error,
     textAlign: "center",
   },
 });

@@ -16,7 +16,7 @@ import { Alert } from "react-native";
 
 export default function index() {
   const colorscheme = useColorScheme();
-  const themeStyles = coustomTheme(colorscheme);
+  const themeStyles = coustomTheme();
   const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
 
   // Load colorscheme Mode and Font size stored in Asyncstorage
