@@ -3,7 +3,6 @@ import { StyleSheet, Platform } from "react-native";
 import { Text, View } from "./Themed";
 import { Link } from "expo-router";
 import { Pressable } from "react-native";
-import Colors from "constants/Colors";
 import { Image } from "expo-image";
 import { useColorScheme } from "react-native";
 import { coustomTheme } from "./coustomTheme";
@@ -11,41 +10,41 @@ import { coustomTheme } from "./coustomTheme";
 
 export default function QuestionLinks() {
   const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
 
   const categoriesLeft = [
     {
       name: "Rechtsfragen",
       image: require("assets/images/rechtsfragen.png"),
-      path: "(renderNestedCategories)/[renderNestedCategories]",
+      path: "getSubCategories/[getSubCategories]",
     },
     {
       name: "Quran",
       image: require("assets/images/quran.png"),
-      path: "(renderNestedCategories)/[renderNestedCategories]",
+      path: "getSubCategories/[getSubCategories]",
     },
     {
       name: "Historie",
       image: require("assets/images/historie.png"),
-      path: "(renderNestedCategories)/[renderNestedCategories]",
+      path: "getSubCategories/[getSubCategories]",
     },
   ];
   const categoriesRight = [
     {
       name: "Glaubensfragen",
       image: require("assets/images/glaubensfragen.png"),
-      path: "(renderNestedCategories)/[renderNestedCategories]",
+      path: "getSubCategories/[getSubCategories]",
     },
     {
       name: "Ethik",
       image: require("assets/images/ethik.png"),
-      path: "(renderNestedCategories)/[renderNestedCategories]",
+      path: "getSubCategories/[getSubCategories]",
     },
 
     {
       name: "Ratschläge",
       image: require("assets/images/ratschlaege.png"),
-      path: "(renderNestedCategories)/[renderNestedCategories]",
+      path: "getSubCategories/[getSubCategories]",
     },
   ];
 

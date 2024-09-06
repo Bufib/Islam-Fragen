@@ -16,14 +16,14 @@ interface NestedItem {
   title: string;
 }
 
-interface RenderNestedItemsProps {
+interface RenderSubCategoriesProps {
   items: NestedItem[];
   fetchError?: string;
   table: string;
   isFetchinTable: boolean;
 }
 
-const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
+const RenderSubCategories: React.FC<RenderSubCategoriesProps> = ({
   items,
   fetchError,
   isFetchinTable,
@@ -36,7 +36,7 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
   };
 
   const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
   const appColor = Appearance.getColorScheme();
 
   return (
@@ -73,7 +73,7 @@ const RenderNestedItems: React.FC<RenderNestedItemsProps> = ({
                 style={styles.FlashListItems}
                 key={item.id.toString()}
                 href={{
-                  pathname: "(renderCategory)/[renderCategory]",
+                  pathname: "/getCategories/[getCategories]",
                   params: {
                     subCategory: `${encodeTitle(item.title)}`,
                     id: item.id.toString(),
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderNestedItems;
+export default RenderSubCategories;

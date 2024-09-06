@@ -1,4 +1,5 @@
 import Colors from "constants/Colors";
+import { useColorScheme } from "react-native";
 
 export const lightTheme = {
   containerDefault: {
@@ -28,7 +29,7 @@ export const lightTheme = {
   indexCategoryTextBorder: {
     borderColor: Colors.light.indexCategoryTextBorder,
   },
-  backgroundIndex: {
+  backgroundIndexHeader: {
     backgroundColor: Colors.light.backgroundIndexHeader,
   },
   link: {
@@ -84,7 +85,6 @@ export const lightTheme = {
     color: Colors.light.inverseQuestionText,
   },
   inverseQuestionBackground: {
-    
     backgroundColor: Colors.light.contrast,
   },
   inverseTextIndex: {
@@ -94,17 +94,10 @@ export const lightTheme = {
     color: Colors.light.black,
     backgroundColor: Colors.light.contrast,
   },
-  pickerContainerBorder:
-  {
+  pickerContainerBorder: {
     borderColor: Colors.light.pickerContainerBorder,
-  }
+  },
 };
-
-
-
-
-
-
 
 export const darkTheme = {
   containerDefault: {
@@ -143,7 +136,7 @@ export const darkTheme = {
     borderColor: Colors.dark.indexBorderDash,
     color: Colors.dark.indexBorderDash,
   },
-  backgroundIndex: {
+  backgroundIndexHeader: {
     backgroundColor: Colors.dark.backgroundIndexHeader,
   },
   shadow: {
@@ -204,14 +197,14 @@ export const darkTheme = {
   inverseTextIndex: {
     color: Colors.dark.inverseTextIndex,
   },
-  pickerContainerBorder:
-  {
+  pickerContainerBorder: {
     borderColor: Colors.dark.pickerContainerBorder,
-  }
+  },
 };
 
-type ColorScheme = "light" | "dark" | undefined | null;
 
-export const coustomTheme = (colorScheme: ColorScheme) => {
+
+export const coustomTheme = () => {
+  const colorScheme = useColorScheme();
   return colorScheme === "light" ? lightTheme : darkTheme;
 };

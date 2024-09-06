@@ -57,7 +57,7 @@ export default function settings() {
         </Link>
       </View>
       <View style={styles.impressumContainer}>
-        <Link style={styles.linkText} href='/impressum'>
+        <Link style={styles.linkText} href={"/impressum"}>
           Impressum
         </Link>
       </View>

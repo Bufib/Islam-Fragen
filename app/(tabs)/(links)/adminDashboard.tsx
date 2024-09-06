@@ -12,7 +12,7 @@ import { useUploadImages } from "components/useUploadImages";
 import { coustomTheme } from "components/coustomTheme";
 export default function adminDashboard() {
   const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
 
   const {
     title,

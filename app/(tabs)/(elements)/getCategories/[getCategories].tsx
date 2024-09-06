@@ -2,7 +2,7 @@ import { View, Text } from "components/Themed";
 import { StyleSheet } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
-import RenderItems from "components/RenderItems";
+import RenderCategories from "components/RenderCategories";
 import { Stack } from "expo-router";
 import useFetchSubCategories from "components/useFetchSubCategories";
 import { useRefetchSubeStore } from "components/refetchSubStore";
@@ -38,7 +38,7 @@ export default function RenderCategory() {
   return (
     <View style={styles.container}>
       {!subCategory ? (
-        <RenderItems
+        <RenderCategories
           items={[]}
           fetchError={fetchError}
           table=''
@@ -47,7 +47,7 @@ export default function RenderCategory() {
       ) : (
         <>
           <Stack.Screen options={{ headerTitle: subCategory }} />
-          <RenderItems
+          <RenderCategories
             items={filteredItems}
             fetchError={fetchError}
             table={encodeTable(subCategory)}

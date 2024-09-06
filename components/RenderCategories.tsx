@@ -14,19 +14,19 @@ interface Item {
   title: string;
 }
 
-interface RenderItemsProps {
+interface RenderCategoriesProps {
   items: Item[];
   fetchError?: string;
   table: string;
   isFetching: boolean;
 }
 
-export default function RenderItems({
+export default function RenderCategories({
   items,
   fetchError,
   table,
   isFetching,
-}: RenderItemsProps) {
+}: RenderCategoriesProps) {
   const encodeTitle = (title: string) => {
     const cleanedTitle = title.trim().replace(/\n/g, "");
     return encodeURIComponent(cleanedTitle)
@@ -35,7 +35,7 @@ export default function RenderItems({
   };
 
   const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
   const appColor = Appearance.getColorScheme();
   console.log(items);
 

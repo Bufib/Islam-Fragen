@@ -39,8 +39,7 @@ export default function TabLayout() {
     colorScheme === "light" ? Colors.light.black : Colors.dark.white;
 
   const { isLoggedIn, logout } = useAuthStore();
-  const {newUpdateAvailable, update} = useIsNewUpdateAvailable()
-
+  const { newUpdateAvailable, update } = useIsNewUpdateAvailable();
 
   return (
     <Tabs
@@ -60,7 +59,6 @@ export default function TabLayout() {
         options={{
           title: "",
           headerShown: false,
-          // tabBarIcon: ({ color }) => <Image source={require("assets/images/category.png")} style={{height: 28, width: 28, marginTop: 20}}/>,
           tabBarIcon: ({ color }) => <TabBarIcon name='home' color={color} />,
         }}
       />
@@ -127,6 +125,31 @@ export default function TabLayout() {
               </Link>
             ),
           tabBarIcon: ({ color }) => <TabBarIcon name='cog' color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name='(links)/impressum'
+        options={{
+          headerShown: true,
+          headerTitle: "Impressum",
+          tabBarButton: () => null,
+        }}
+      />
+      <Tabs.Screen
+        name='(links)/about'
+        options={{
+          headerShown: true,
+          headerTitle: "Über",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name='(links)/adminDashboard'
+        options={{
+          headerShown: true,
+          headerTitle: "Admin Dashboard",
+          tabBarButton: () => null,
         }}
       />
     </Tabs>

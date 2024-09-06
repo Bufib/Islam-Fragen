@@ -67,37 +67,17 @@ function RootLayoutNav() {
           }}
         />
         <Stack.Screen
-          name='adminDashboard'
-          options={{
-            headerShown: true,
-            headerTitle: "Neuer Beitrag",
-          }}
-        />
-        <Stack.Screen
           name='(text)/[renderText]'
           options={{
             headerShown: true,
           }}
         />
-        <Stack.Screen
-          name='impressum'
-          options={{
-            headerShown: true,
-            headerTitle: "Impressum",
-          }}
-        />
+
         <Stack.Screen
           name='rulesModal'
           options={{
             headerShown: false,
             presentation: "modal",
-          }}
-        />
-         <Stack.Screen
-          name='about'
-          options={{
-            headerShown: true,
-            headerTitle: "Über diese App",
           }}
         />
       </Stack>

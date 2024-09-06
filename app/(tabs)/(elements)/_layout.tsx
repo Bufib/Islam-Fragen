@@ -69,7 +69,7 @@ function RootLayoutNav() {
         />
 
         <Stack.Screen
-          name='(renderCategory)/[renderCategory]'
+          name='getCategories/[getCategories]'
           options={{
             headerShown: true,
            
@@ -77,7 +77,7 @@ function RootLayoutNav() {
         />
 
         <Stack.Screen
-          name='(renderNestedCategories)/[renderNestedCategories]'
+          name='getSubCategories/[getSubCategories]'
           options={{
             headerShown: true,
             
