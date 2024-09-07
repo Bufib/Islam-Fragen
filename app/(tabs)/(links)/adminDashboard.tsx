@@ -1,11 +1,11 @@
 //dasboard-neu:
 import { Keyboard, StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
-import Colors from "constants/Colors";
+import Entypo from '@expo/vector-icons/Entypo';
+import Feather from '@expo/vector-icons/Feather';
 import { TextInput, Pressable, TouchableWithoutFeedback } from "react-native";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { useColorScheme } from "react-native";
 import { ScrollView } from "react-native";
 import { useUploadImages } from "components/useUploadImages";
@@ -34,11 +34,13 @@ export default function adminDashboard() {
             headerRight: () => (
               <View style={styles.headerButtons}>
                 <Pressable onPress={pickImage}>
-                  <FontAwesome name='image' size={24} color='green' />
+                <Entypo name="image" size={24} color="green" />
                 </Pressable>
 
                 <Pressable onPress={submitPost}>
-                  <Text style={styles.submitButtonText}>Erstellen</Text>
+                  <Text style={[styles.submitButtonText, themeStyles.link]}>
+                    Erstellen
+                  </Text>
                 </Pressable>
               </View>
             ),
@@ -50,7 +52,6 @@ export default function adminDashboard() {
             onChangeText={setTitle}
             value={title}
             placeholder='Title (optional)'
-           
             editable
             onSubmitEditing={Keyboard.dismiss}
           />
@@ -60,7 +61,6 @@ export default function adminDashboard() {
             onChangeText={setContent}
             value={content}
             placeholder='Beitrag'
-          
             multiline
             editable
             autoCapitalize='none'
@@ -83,7 +83,7 @@ export default function adminDashboard() {
                   style={styles.deleteImage}
                   onPress={() => deleteImage(img)}
                 >
-                  <FontAwesome name='remove' size={21} color='red' />
+                <Text style={[styles.deleteImageText, themeStyles.error]}>X</Text>
                 </Pressable>
 
                 <Image
@@ -108,11 +108,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     backgroundColor: "transparent",
-    marginRight: -5,
+    marginRight: 15,
   },
   submitButtonText: {
     fontSize: 20,
-    color: Colors.light.link,
   },
   inputFieldsContainer: {
     flex: 0.82,
@@ -144,11 +143,13 @@ const styles = StyleSheet.create({
     flex: 0.18,
     marginBottom: 20,
     marginTop: 15,
+   
   },
 
   imagesScrollViewContent: {
     paddingLeft: 15,
     paddingRight: 15,
+    gap: 25,
   },
   images: {
     flex: 1,
@@ -159,5 +160,9 @@ const styles = StyleSheet.create({
   },
   deleteImage: {
     marginLeft: 100,
+  },
+  deleteImageText: {
+    fontSize: 17,
+    fontWeight: "bold"
   },
 });
