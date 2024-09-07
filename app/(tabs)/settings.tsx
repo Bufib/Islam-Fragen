@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
 import Colors from "constants/Colors";
 import { Link, router } from "expo-router";
@@ -33,7 +33,7 @@ export default function settings() {
     setIsDarkMode(!isDarkMode);
   };
 
-  const saveSwitchStatus = async (colorMode) => {
+  const saveSwitchStatus = async (colorMode: "light" | "dark") => {
     await AsyncStorage.setItem("ColorMode", colorMode);
   };
 

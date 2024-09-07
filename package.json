@@ -40,6 +40,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "formik": "^2.4.6",
     "install": "^0.13.0",
     "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
@@ -59,7 +60,9 @@
     "react-native-webview": "13.8.6",
     "use-debounce": "^10.0.0",
     "uuid": "^9.0.1",
-    "zustand": "^4.5.2"
+    "yup": "^1.4.0",
+    "zustand": "^4.5.2",
+    "@react-native-community/netinfo": "11.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",

@@ -12,6 +12,9 @@ import { Platform } from "react-native";
 import { View } from "components/Themed";
 import { StyleSheet } from "react-native";
 import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { coustomTheme } from "components/coustomTheme";
+import BackIcon from "components/BackIcon";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -30,6 +33,8 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  const themeStyles = coustomTheme();
+
   const colorScheme = useColorScheme();
 
   const headerBackground =
@@ -133,6 +138,9 @@ export default function TabLayout() {
           headerShown: true,
           headerTitle: "Impressum",
           tabBarButton: () => null,
+          headerLeft: () => (
+            <BackIcon />
+          ),
         }}
       />
       <Tabs.Screen
@@ -141,6 +149,9 @@ export default function TabLayout() {
           headerShown: true,
           headerTitle: "Über",
           tabBarButton: () => null,
+          headerLeft: () => (
+            <BackIcon />
+          ),
         }}
       />
 
@@ -150,6 +161,9 @@ export default function TabLayout() {
           headerShown: true,
           headerTitle: "Admin Dashboard",
           tabBarButton: () => null,
+          headerLeft: () => (
+            <BackIcon />
+          ),
         }}
       />
     </Tabs>
@@ -169,4 +183,5 @@ const styles = StyleSheet.create({
     height: 10,
     zIndex: 1,
   },
+
 });
