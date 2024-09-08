@@ -1,8 +1,14 @@
 import { View, Text, SafeAreaView } from "components/Themed";
 import Colors from "constants/Colors";
-import fetchNews from "components/useFetchNews";
+import useFetchNews from "components/useFetchNews";
 import { useAuthStore } from "components/authStore";
-import { useCallback, useState, useRef, useMemo, useLayoutEffect } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import { useIsUpLoading } from "components/uploadingStore";
 import { FlashList } from "@shopify/flash-list";
 import { Feather } from "@expo/vector-icons";
@@ -18,15 +24,18 @@ import {
   useColorScheme,
 } from "react-native";
 import { coustomTheme } from "components/coustomTheme";
-import HeaderFlashListIndex from "components/HeaderFlashListIndex";
+import HeaderFlashListNews from "components/HeaderFlashListNews";
 import { Image } from "expo-image";
 import { useRefetchNewsStore } from "components/refetchNews";
 import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
+import NoConnection from "components/NoConnection";
+import useNetworkStatus from "components/useNetworkStatus";
+import Toast from "react-native-toast-message";
 
 export default function index() {
   const [refreshing, setRefreshing] = useState(false);
-  const { posts, fetchError, refetch, updateAvailable, applyUpdates } =
-    fetchNews();
+  const { posts, fetchError, refetch, updateAvailable, applyUpdates, isFetchingNews } =
+  useFetchNews();
   const { isLoading } = useIsUpLoading();
   const { isLoggedIn } = useAuthStore();
   const scrollRef = useRef<any>();
@@ -38,14 +47,28 @@ export default function index() {
   const themeStyles = coustomTheme();
   const { hasRefetched, setRefetch } = useRefetchNewsStore();
   const { newUpdateAvailable, update } = useIsNewUpdateAvailable();
+  const { isConnected } = useNetworkStatus();
 
+  // Check if internet connection availabe
+  useEffect(() => {
+    if (isConnected === false) {
+      Toast.show({
+        type: "error",
+        text1: "Keine Verbindung",
+        text2:
+          "Du hast keine Internetverbindung! Änderungen und neue Fragen könne somit nicht geladen werden!",
+      });
+    }
+  }, [isConnected]);
+
+  // Check if updated if not do so
   useLayoutEffect(() => {
     if (!hasRefetched) {
       refetch();
       setRefetch();
 
-      if(newUpdateAvailable)  {
-        update(false)
+      if (newUpdateAvailable) {
+        update(false);
       }
     }
   }, []);
@@ -73,6 +96,9 @@ export default function index() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      {!isConnected && (
+        <NoConnection message='Es besteht akutell keine Internetverbindung! Änderungen können nicht angezeigt werden!' />
+      )}
       <View style={styles.mainContainer}>
         {isLoading ? (
           <View style={styles.activityContainer}>
@@ -113,14 +139,14 @@ export default function index() {
               {fetchError}
             </Text>
           </ScrollView>
-        ) : posts.length == 0 && !fetchError ? (
+        ) : posts.length == 0 && !fetchError && !isFetchingNews? (
           <ScrollView
             style={styles.noNewsScrollView}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={updateNews} />
             }
           >
-            <HeaderFlashListIndex isLoggedIn={isLoggedIn} />
+            <HeaderFlashListNews isLoggedIn={isLoggedIn} />
             <Text style={styles.emptyText}>
               Es gibt derzeit noch keine {"\n"} Neugikeiten!
             </Text>
@@ -146,7 +172,7 @@ export default function index() {
               data={posts}
               extraData={[appColor, isLoggedIn]}
               ListHeaderComponent={
-                <HeaderFlashListIndex
+                <HeaderFlashListNews
                   isLoggedIn={isLoggedIn}
                   themeStyles={themeStyles}
                 />
@@ -186,7 +212,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    marginBottom: 10,
+
   },
   newsContainer: {
     marginTop: 5,

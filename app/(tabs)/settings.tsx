@@ -7,12 +7,14 @@ import { Appearance } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useVersionStore from "components/versionStore";
+import { useAuthStore } from "components/authStore";
 
 export default function settings() {
   const colorScheme = Appearance.getColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme == "dark");
   const [selectSize, setSelectSize] = useState<number>();
   const { dataVersion } = useVersionStore();
+  const { isLoggedIn } = useAuthStore();
 
   // Save Font mode and Color mode in Asyncstorage
   useLayoutEffect(() => {
@@ -53,8 +55,12 @@ export default function settings() {
       </View>
 
       <View style={styles.spacer} />
+      {!isLoggedIn && (
+        <View style={styles.versionTextContainer}>
+          <Text style={styles.versionText}>Version: {dataVersion}</Text>
+        </View>
+      )}
       <View style={styles.informationContainer}>
-        <Text>{dataVersion}</Text>
         <Link style={styles.linkText} href='/about' push>
           Über die App
         </Link>
@@ -92,6 +98,14 @@ const styles = StyleSheet.create({
   informationContainer: {
     alignSelf: "center",
   },
+  versionTextContainer: {
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  versionText: {
+    fontWeight: "bold",
+  },
+
   impressumContainer: {
     alignSelf: "center",
   },

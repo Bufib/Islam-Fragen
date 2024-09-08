@@ -9,12 +9,26 @@ import { useFetchStore } from "components/fetchStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "react-native";
 import Colors from "constants/Colors";
+import { useEffect } from "react";
+import useNetworkStatus from "components/useNetworkStatus";
+import Toast from "react-native-toast-message";
 
 export default function index() {
   const themeStyles = coustomTheme();
   const { isfetching } = useFetchStore();
   const { isRefetching } = useRefetchStore();
   const colorScheme = useColorScheme();
+  const { isConnected } = useNetworkStatus();
+
+  useEffect(() => {
+    if (isConnected === false) {
+      Toast.show({
+        type: "error",
+        text1: "Keine Verbindung",
+        text2: "Du hast keine Internetverbindung! Änderungen und neue Fragen könne somit nicht geladen werden!"
+      })
+    }
+  }, [isConnected]);
 
   return (
     <View style={styles.container}>

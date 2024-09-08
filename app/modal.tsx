@@ -7,11 +7,11 @@ import Colors from "constants/Colors";
 import { supabase } from "@/utils/supabase";
 import Toast from "react-native-toast-message";
 import { useAuthStore } from "components/authStore";
-import * as Network from 'expo-network';
+import * as Network from "expo-network";
 import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
 
-const siteKey = 'c2a47a96-0c8e-48b8-a6c6-e60a2e9e4228';
-const baseUrl = 'https://hcaptcha.com';
+const siteKey = "c2a47a96-0c8e-48b8-a6c6-e60a2e9e4228";
+const baseUrl = "https://hcaptcha.com";
 
 export default function Modal() {
   const isPresented = router.canGoBack();
@@ -30,46 +30,43 @@ export default function Modal() {
     return networkState.isConnected && networkState.isInternetReachable;
   };
 
-  const onMessage = async (event) => {
+  const onMessage = async (event: any) => {
     if (event && event.nativeEvent.data) {
       const token = event.nativeEvent.data;
 
-      if (['cancel', 'error', 'expired'].includes(token)) {
+      if (["cancel", "error", "expired"].includes(token)) {
         setShowCaptcha(false);
         Alert.alert(
           "Fehler",
           "Captcha-Überprüfung fehlgeschlagen. Bitte versuche es erneut."
         );
-      } else if (token === 'open') {
-        console.log('Visual challenge opened');
       } else {
-        console.log('Verified code from hCaptcha', token);
         setCaptchaToken(token);
         handleLogin(token);
       }
     }
   };
 
-  const handleLogin = async (captchaToken) => {
+  const handleLogin = async (captchaToken: any) => {
     if (email === "" || password === "") {
       setError("Bitte Email und Passwort eingeben");
       return;
     }
 
     try {
-      console.log("Captcha Token:", captchaToken);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
         options: { captchaToken },
       });
 
-      console.log("Supabase Response:", data, error);
+
 
       if (error) {
         console.error("Supabase Error:", error);
         setError("Email oder Passwort sind falsch!");
-        setShowCaptcha(false); 
+        setShowCaptcha(false);
         return;
       }
 
@@ -81,7 +78,9 @@ export default function Modal() {
       await login();
       setCaptchaToken(null); // Reset captcha token
     } catch (err) {
-      setError("Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.");
+      setError(
+        "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut."
+      );
       setShowCaptcha(true); // Show captcha again for retry
     }
   };
@@ -91,7 +90,9 @@ export default function Modal() {
     if (isConnected) {
       setShowCaptcha(true); // Show hCaptcha challenge
     } else {
-      Alert.alert("Bitte stelle sicher, dass du mit dem Internet verbunden bist, bevor du eine Frage schickst");
+      Alert.alert(
+        "Bitte stelle sicher, dass du mit dem Internet verbunden bist, bevor du eine Frage schickst"
+      );
     }
   };
 
@@ -131,14 +132,15 @@ export default function Modal() {
           <Text style={styles.errorText}>{errorMessage}</Text>
         </View>
       )}
-      <StatusBar style="light" />
+      <StatusBar style='light' />
       {showCaptcha && (
         <ConfirmHcaptcha
           ref={captchaRef}
           siteKey={siteKey}
           baseUrl={baseUrl}
           onMessage={onMessage}
-          languageCode="de"
+          languageCode='de'
+          size="invisible"
         />
       )}
     </View>

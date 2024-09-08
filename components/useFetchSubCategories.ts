@@ -1,7 +1,7 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import  useFetchTableNames  from "./useFetchTableNames";
+import useFetchTableNames from "./useFetchTableNames";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 
@@ -121,7 +121,7 @@ export default function useFetchSubCategories() {
 
   const subscribeToTable = async () => {
     if (tableNames && tableNames.length > 0) {
-      const subscriptions = [];
+      const subscriptions: any = [];
       for (const table of tableNames) {
         const tablesArray = table.tableNames.split(",").map((t) => t.trim());
         for (const tableName of tablesArray) {
@@ -131,9 +131,10 @@ export default function useFetchSubCategories() {
               "postgres_changes",
               { event: "INSERT", schema: "public", table: tableName },
               (payload) => {
-                console.log(payload);
-                console.log("INSERT");
-                Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
+                Toast.show({
+                  type: "info",
+                  text1: "Die Fragen und Antworten wurden aktualisiert!",
+                });
                 fetchSubCategories(tableName);
                 router.navigate("/");
               }
@@ -142,9 +143,10 @@ export default function useFetchSubCategories() {
               "postgres_changes",
               { event: "UPDATE", schema: "public", table: tableName },
               (payload) => {
-                console.log(payload);
-                console.log("UPDATE");
-                Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
+                Toast.show({
+                  type: "info",
+                  text1: "Die Fragen und Antworten wurden aktualisiert!",
+                });
                 fetchSubCategories(tableName);
                 router.navigate("/");
               }
@@ -153,9 +155,10 @@ export default function useFetchSubCategories() {
               "postgres_changes",
               { event: "DELETE", schema: "public", table: tableName },
               (payload) => {
-                console.log(payload);
-                console.log("DELETE");
-                Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
+                Toast.show({
+                  type: "info",
+                  text1: "Die Fragen und Antworten wurden aktualisiert!",
+                });
                 fetchSubCategories(tableName);
                 router.navigate("/");
               }
@@ -167,7 +170,7 @@ export default function useFetchSubCategories() {
       }
 
       return () => {
-        subscriptions.forEach((subscription) => subscription.unsubscribe());
+        subscriptions.forEach((subscription: any) => subscription.unsubscribe());
       };
     }
   };
@@ -192,7 +195,7 @@ export default function useFetchSubCategories() {
   return {
     fetchError,
     subCategories,
- fetchSubCategories,
+    fetchSubCategories,
     isFetchingSub,
   };
 }

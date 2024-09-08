@@ -7,12 +7,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useRefetchStore } from "components/refetchStore";
+import useVersionStore from "./versionStore";
 
 export const useRefetchOnAppStateChange = () => {
   const { fetchTableNames } = useFetchTableNames();
   const { fetchSubCategories } = useFetchSubCategories();
-  const { fetchVersionNumber, versionNumber } = useFetchVersion();
+  const { fetchVersionNumber } = useFetchVersion();
   const { isRefetching, setIsRefetching } = useRefetchStore();
+  const { dataVersion } = useVersionStore();
 
   useEffect(() => {
     const handleAppStateChange = async (nextAppState: any) => {
@@ -21,9 +23,11 @@ export const useRefetchOnAppStateChange = () => {
 
         // Fetch current version after coming to the foreground
         await fetchVersionNumber();
-        const storedVersion = (await AsyncStorage.getItem("dataVersion"))?.trim();
+        const storedVersion = (
+          await AsyncStorage.getItem("dataVersion")
+        )?.trim();
 
-        if (storedVersion !== null && storedVersion !== versionNumber?.trim()) {
+        if (storedVersion !== null && storedVersion !== dataVersion?.trim()) {
           refetchData();
         }
       }
@@ -57,11 +61,14 @@ export const useRefetchOnAppStateChange = () => {
     };
 
     // Add AppState change listener
-    const subscription = AppState.addEventListener("change", handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
 
     // Cleanup the listener on unmount
     return () => {
       subscription.remove();
     };
-  }, [fetchTableNames, fetchSubCategories, fetchVersionNumber, versionNumber, isRefetching]);
+  }, [fetchTableNames, fetchSubCategories, fetchVersionNumber, isRefetching]);
 };

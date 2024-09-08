@@ -37,7 +37,7 @@ export default function RenderCategories({
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme();
   const appColor = Appearance.getColorScheme();
-  console.log(items);
+
 
   return (
     <View style={styles.container}>

@@ -4,13 +4,10 @@ import React from "react";
 import { Link } from "expo-router";
 import { Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useColorScheme } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 
-const HeaderFlashListIndex = ({ isLoggedIn }: any) => {
-
-  const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme)
+const HeaderFlashListNews = ({ isLoggedIn }: any) => {
+  const themeStyles = coustomTheme();
   return (
     <View style={styles.headerContainer}>
       <Text style={styles.headerTitle}>Neuigkeiten</Text>
@@ -29,13 +26,13 @@ const HeaderFlashListIndex = ({ isLoggedIn }: any) => {
   );
 };
 
-export default HeaderFlashListIndex;
+export default HeaderFlashListNews;
 
 const styles = StyleSheet.create({
   headerContainer: {
     flex: 1,
     flexDirection: "row",
-    marginTop: 20,
+    
     marginBottom: 20,
     marginHorizontal: 14,
   },
