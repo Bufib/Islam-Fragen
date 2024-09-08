@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import Colors from "constants/Colors";
@@ -12,9 +12,14 @@ import { Platform } from "react-native";
 import { View } from "components/Themed";
 import { StyleSheet } from "react-native";
 import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { coustomTheme } from "components/coustomTheme";
+import { useLayoutEffect } from "react";
+import useFetchTableNames from "components/useFetchTableNames";
+import useFetchSubCategories from "components/useFetchSubCategories";
+useFetchVersion;
 import BackIcon from "components/BackIcon";
+import { useRefetchOnAppStateChange } from "components/useRefetchOnAppStateChange";
+import useFetchVersion from "components/useFetchVersion";
+import { useFetchStore } from "components/fetchStore";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -33,7 +38,31 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const themeStyles = coustomTheme();
+  const { fetchTableNames } = useFetchTableNames();
+  const { fetchSubCategories } = useFetchSubCategories();
+  const { fetchVersionNumber, versionNumber } = useFetchVersion();
+  const { isfetching, setIsfetching } = useFetchStore();
+
+  // Initialize data
+  useLayoutEffect(() => {
+    const initialFetchDone = async () => {
+      setIsfetching(true);
+      try {
+        await fetchTableNames();
+        await fetchSubCategories();
+        await fetchVersionNumber();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsfetching(false);
+      }
+    };
+
+    initialFetchDone();
+  }, []);
+
+  // Refetch when app was in background and active again
+  useRefetchOnAppStateChange();
 
   const colorScheme = useColorScheme();
 
@@ -51,11 +80,6 @@ export default function TabLayout() {
       initialRouteName='(elements)'
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        // tabBarStyle: {
-        //   backgroundColor: Colors[colorScheme ?? "light"].tabarBackground
-        // },
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, false),
       }}
     >
@@ -138,9 +162,7 @@ export default function TabLayout() {
           headerShown: true,
           headerTitle: "Impressum",
           tabBarButton: () => null,
-          headerLeft: () => (
-            <BackIcon />
-          ),
+          headerLeft: () => <BackIcon />,
         }}
       />
       <Tabs.Screen
@@ -149,9 +171,7 @@ export default function TabLayout() {
           headerShown: true,
           headerTitle: "Über",
           tabBarButton: () => null,
-          headerLeft: () => (
-            <BackIcon />
-          ),
+          headerLeft: () => <BackIcon />,
         }}
       />
 
@@ -161,9 +181,7 @@ export default function TabLayout() {
           headerShown: true,
           headerTitle: "Admin Dashboard",
           tabBarButton: () => null,
-          headerLeft: () => (
-            <BackIcon />
-          ),
+          headerLeft: () => <BackIcon />,
         }}
       />
     </Tabs>
@@ -183,5 +201,4 @@ const styles = StyleSheet.create({
     height: 10,
     zIndex: 1,
   },
-
 });

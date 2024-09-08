@@ -17,12 +17,12 @@ export const useFetchText = (table: string, title: string) => {
   const [item, setItem] = useState<Item | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const { refetch } = useFetchSubCategories();
+  const { fetchSubCategories } = useFetchSubCategories();
 
   const fetchData = async () => {
     try {
       setIsFetching(true);
-      await refetch(); // Ensure latest data is available
+      await fetchSubCategories(); // Ensure latest data is available
 
       const storageKey = createStorageKey(table);
       const storedData = await AsyncStorage.getItem(storageKey);

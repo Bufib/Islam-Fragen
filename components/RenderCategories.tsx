@@ -41,65 +41,61 @@ export default function RenderCategories({
 
   return (
     <View style={styles.container}>
-    <>
-      {fetchError && (
-        <View style={styles.renderError}>
-          <Text style={[styles.errorText, themeStyles.error]}>
-            {fetchError}
-          </Text>
-        </View>
-      )}
-      {isFetching && (
-        <View style={styles.loadingIndicator}>
-          <ActivityIndicator
-            size='large'
-            color={colorScheme == "light" ? "black" : "white"}
-          />
-          <Text style={styles.loadingIndicatorText}>
-            Fragen werden geladen. Das kann je nach Internetverbindung, einen kleinen Augenblick dauern!
-          </Text>
-          <Text style={styles.loadingIndicatorText}>Allahumma salli ala Muhammad wa aali Muhammad</Text>
-        </View>
-      )}
-      {items.length > 0 && !isFetching && (
-        <View style={styles.itemsContainer}>
-          <FlashList
-            data={items}
-            extraData={appColor}
-            estimatedItemSize={82}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Link
-                style={styles.FlashListItems}
-                href={{
-                  pathname: `(text)/${encodeTitle(item.title)}`,
-                  params: {
-                    id: item.id,
-                    table: table,
-                    title: `${encodeTitle(item.title)}`,
-                  },
-                }}
-                asChild
-              >
-                <Pressable>
-                  <View
-                    style={[styles.renderItem, themeStyles.containerContrast]}
-                  >
-                    <Text style={styles.itemText}>
-                      {formatTitle(item.title)}
-                    </Text>
-                    <Feather
-                      name='arrow-right-circle'
-                      size={25}
-                      color={colorScheme == "light" ? "black" : "white"}
-                    />
-                  </View>
-                </Pressable>
-              </Link>
-            )}
-          />
-        </View>
-      )}
+      <>
+        {fetchError && (
+          <View style={styles.renderError}>
+            <Text style={[styles.errorText, themeStyles.error]}>
+              {fetchError}
+            </Text>
+          </View>
+        )}
+        {isFetching && (
+          <View style={styles.loadingIndicator}>
+            <ActivityIndicator
+              size='large'
+              color={colorScheme == "light" ? "black" : "white"}
+            />
+          </View>
+        )}
+        {items.length > 0 && !isFetching && (
+          <View style={styles.itemsContainer}>
+            <FlashList
+              data={items}
+              extraData={appColor}
+              estimatedItemSize={82}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Link
+                  style={styles.FlashListItems}
+                  href={{
+                    pathname: `(text)/${encodeTitle(item.title)}`,
+                    params: {
+                      id: item.id,
+                      table: table,
+                      title: `${encodeTitle(item.title)}`,
+                    },
+                  }}
+                  asChild
+                >
+                  <Pressable>
+                    <View
+                      style={[styles.renderItem, themeStyles.containerContrast]}
+                    >
+                      <Text style={styles.itemText}>
+                        {formatTitle(item.title)}
+                      </Text>
+                      <Feather
+                        name='arrow-right-circle'
+                        size={25}
+                        color={colorScheme == "light" ? "black" : "white"}
+                      />
+                    </View>
+                  </Pressable>
+                </Link>
+              )}
+            />
+          </View>
+        )}
       </>
     </View>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Modal, View, StyleSheet, Pressable } from "react-native";
+import { Modal, StyleSheet, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "constants/Colors";

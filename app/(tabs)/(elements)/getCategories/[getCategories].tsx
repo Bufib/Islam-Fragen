@@ -9,9 +9,8 @@ import { useRefetchSubeStore } from "components/refetchSubStore";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
-  const { fetchError, subCategories, refetch, isFetchingSub } =
+  const { fetchError, subCategories, fetchSubCategories, isFetchingSub } =
     useFetchSubCategories();
-  const { fetchStatus, setRefetch, hasRefetched } = useRefetchSubeStore();
 
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
@@ -20,21 +19,12 @@ export default function RenderCategory() {
       .replace(/\)/g, "%29");
   };
 
-  // Use effect hook to refetch data when subCategory changes
-  useLayoutEffect(() => {
-    if (subCategory && !hasRefetched(subCategory)) {
-      refetch(subCategory);
-      setRefetch(subCategory);
-    }
-  }, [subCategory, refetch, setRefetch, hasRefetched]);
 
-  // Determine matched table and filtered items based on subCategory
   const matchedTable = subCategories.find(
     (table) => table.tableName === subCategory
   );
   const filteredItems = matchedTable ? matchedTable.questions : [];
 
-  console.log(subCategory);
   return (
     <View style={styles.container}>
       {!subCategory ? (

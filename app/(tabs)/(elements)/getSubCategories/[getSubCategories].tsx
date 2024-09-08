@@ -4,8 +4,7 @@ import React, { useEffect, useLayoutEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderSubCategories from "components/RenderSubCategories";
 import { Stack } from "expo-router";
-import { useFetchTableNames } from "components/useFetchTableNames";
-import { useRefetchTableStore } from "components/refetchTableStore";
+import  useFetchTableNames  from "components/useFetchTableNames";
 
 export default function getSubCategories() {
   const { category } = useLocalSearchParams<{ category: string }>();
@@ -16,19 +15,9 @@ export default function getSubCategories() {
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-  const { tableNames, fetchError, isFetchinTable, fetchTableNames } =
+  const { tableNames, fetchError, isFetchinTable } =
     useFetchTableNames();
-  const { hasRefetched, setRefetch } = useRefetchTableStore();
 
-  useLayoutEffect(() => {
-    const refetchTable = async () => {
-      if (!hasRefetched) {
-        await fetchTableNames();
-        setRefetch();
-      }
-    };
-    refetchTable();
-  }, []);
 
   if (!category) {
     return (

@@ -20,7 +20,7 @@ const useSearchItems = (search: string) => {
   const [searchResults, setSearchResults] = useState<Item[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { subCategories, isFetching } = useFetchSubCategories();
+  const { subCategories, isFetchingSub } = useFetchSubCategories();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,7 +74,7 @@ const useSearchItems = (search: string) => {
     searchResults,
     fetchError,
     isLoading,
-    isFetching,
+    isFetchingSub,
   };
 };
 

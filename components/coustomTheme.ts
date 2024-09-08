@@ -45,9 +45,7 @@ export const lightTheme = {
   characterCountNewsImage: {
     color: Colors.light.characterCountNewsImage,
   },
-  activityIndicator: {
-    color: Colors.light.activityIndicator,
-  },
+
   arrowUp: {
     color: Colors.light.arrowUp,
   },
@@ -152,9 +150,6 @@ export const darkTheme = {
   characterCountNewsImage: {
     color: Colors.dark.characterCountNewsImage,
   },
-  activityIndicator: {
-    color: Colors.dark.activityIndicator,
-  },
   arrowUp: {
     color: Colors.dark.arrowUp,
   },
@@ -201,8 +196,6 @@ export const darkTheme = {
     borderColor: Colors.dark.pickerContainerBorder,
   },
 };
-
-
 
 export const coustomTheme = () => {
   const colorScheme = useColorScheme();

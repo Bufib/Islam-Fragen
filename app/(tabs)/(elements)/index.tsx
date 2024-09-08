@@ -1,99 +1,71 @@
-
-import { Pressable, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
 import QuestionLinks from "components/QuestionLinks";
 import { coustomTheme } from "components/coustomTheme";
-import { useColorScheme } from "react-native";
 import { Image } from "expo-image";
-import Colors from "constants/Colors";
 import { ImageBackground } from "react-native";
-import { useLayoutEffect } from "react";
-import { Appearance } from "react-native";
+import { useRefetchStore } from "components/refetchStore";
+import { useFetchStore } from "components/fetchStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSetFontSize } from "components/fontSizeStore";
-import useFetchSubCategories from "components/useFetchSubCategories";
-import { Alert } from "react-native";
+import { useColorScheme } from "react-native";
+import Colors from "constants/Colors";
 
 export default function index() {
-  const colorscheme = useColorScheme();
   const themeStyles = coustomTheme();
-  const { fontSize, setLineHeight, setFontSize } = useSetFontSize();
-
-  // Load colorscheme Mode and Font size stored in Asyncstorage
-  useLayoutEffect(() => {
-    // Check if app has been opened before
-    const initialFetchDone = async () => {
-      const initialTable = await AsyncStorage.getItem("initialFetchDoneTable");
-      const initialSub = await AsyncStorage.getItem("initialFetchDoneSub");
-      console.log("initialTable " + initialTable);
-      console.log("initialSub " + initialSub);
-      if (!initialTable || !initialSub) {
-        Alert.alert(
-          "Daten werden geladen! Es kann einige Minuten dauern, bis du alle Fragen angezeigt bekommst"
-        );
-      }
-    };
-
-    // Get saved colormode: light or darkmode
-    const getColorMode = async () => {
-      const colorMode = await AsyncStorage.getItem("ColorMode");
-      if (colorMode) {
-        Appearance.setColorScheme(colorMode);
-      }
-    };
-
-    // Get saved fontsettings (Size and Lineheight)
-    const getFontSetting = async () => {
-      const storedFontSize = await AsyncStorage.getItem("fontSize");
-      const storedLineHeight = await AsyncStorage.getItem("lineHeight");
-      if (storedFontSize) {
-        setFontSize(Number(storedFontSize));
-      }
-
-      if (storedLineHeight) {
-        setLineHeight(Number(storedLineHeight));
-      }
-    };
-
-    const initializeSettings = async () => {
-      await getFontSetting();
-      await getColorMode();
-    };
-    initialFetchDone();
-    initializeSettings();
-  }, []);
+  const { isfetching } = useFetchStore();
+  const { isRefetching } = useRefetchStore();
+  const colorScheme = useColorScheme();
 
   return (
     <View style={styles.container}>
-      <View style={[styles.headerContainer, themeStyles.indexBorderDash]}>
-        <View style={[styles.header, themeStyles.backgroundIndex]}>
-          <ImageBackground
-            source={require("assets/images/background.png")}
-            style={styles.calligraphyBackground}
-          >
-            <View style={styles.headerElements}>
-              <View style={styles.headerImageContainer}>
-                <Image
-                  style={styles.headerImage}
-                  source={require("assets/images/logo.png")}
-                  contentFit='contain'
-                />
-              </View>
-              <View style={styles.headerTextContainer}>
-                <Text style={[styles.headerText, themeStyles.inverseTextIndex]}>
-                  Islam-Fragen
-                </Text>
-                <Text style={[styles.headerDash, themeStyles.indexBorderDash]}>
-                  __________
-                </Text>
-              </View>
-            </View>
-          </ImageBackground>
+      {isRefetching || isfetching ? (
+        <View style={styles.activityIndicatorContainer}>
+          <ActivityIndicator
+            size='large'
+            color={
+              colorScheme == "light"
+                ? Colors.light.activityIndicator
+                : Colors.dark.activityIndicator
+            }
+          />
         </View>
-      </View>
-      <View style={styles.categoryContainer}>
-        <QuestionLinks />
-      </View>
+      ) : (
+        <>
+          <View style={[styles.headerContainer, themeStyles.indexBorderDash]}>
+            <View style={[styles.header, themeStyles.backgroundIndexHeader]}>
+              <ImageBackground
+                source={require("assets/images/background.png")}
+                style={styles.calligraphyBackground}
+              >
+                <View style={styles.headerElements}>
+                  <View style={styles.headerImageContainer}>
+                    <Image
+                      style={styles.headerImage}
+                      source={require("assets/images/logo.png")}
+                      contentFit='contain'
+                    />
+                  </View>
+                  <View style={styles.headerTextContainer}>
+                    <Text
+                      style={[styles.headerText, themeStyles.inverseTextIndex]}
+                    >
+                      Islam-Fragen
+                    </Text>
+                    <Text
+                      style={[styles.headerDash, themeStyles.indexBorderDash]}
+                    >
+                      __________
+                    </Text>
+                  </View>
+                </View>
+              </ImageBackground>
+            </View>
+          </View>
+          <View style={styles.categoryContainer}>
+            <QuestionLinks />
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -102,6 +74,10 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     backgroundColor: "transparent",
+  },
+  activityIndicatorContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
   headerContainer: {
     height: "40%",

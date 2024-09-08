@@ -14,7 +14,7 @@ interface TableNamesData {
   fetchTableNames: () => Promise<void>;
 }
 
-export const useFetchTableNames = (): TableNamesData => {
+export default function useFetchTableNames(): TableNamesData {
   const [tableNames, setTableNames] = useState<
     { category: string; tableNames: string }[]
   >([]);
@@ -89,28 +89,36 @@ export const useFetchTableNames = (): TableNamesData => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "AllTableNames" },
         (payload) => {
-          Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
+          Toast.show({
+            type: "info",
+            text1: "Die Fragen und Antworten wurden aktualisiert!",
+          });
           fetchTableNames();
-          router.navigate("/")
-
+          router.navigate("/");
         }
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "AllTableNames" },
         (payload) => {
-          Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
+          Toast.show({
+            type: "info",
+            text1: "Die Fragen und Antworten wurden aktualisiert!",
+          });
           fetchTableNames();
-          router.navigate("/")
+          router.navigate("/");
         }
       )
       .on(
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "AllTableNames" },
         (payload) => {
-          Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
+          Toast.show({
+            type: "info",
+            text1: "Die Fragen und Antworten wurden aktualisiert!",
+          });
           fetchTableNames();
-          router.navigate("/")
+          router.navigate("/");
         }
       )
       .subscribe();
@@ -137,4 +145,4 @@ export const useFetchTableNames = (): TableNamesData => {
   }, [loadItemsFromStorage, subscribeToTable, fetchTableNames]);
 
   return { tableNames, fetchError, isFetchinTable, fetchTableNames };
-};
+}

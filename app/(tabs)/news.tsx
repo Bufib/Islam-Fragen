@@ -35,7 +35,7 @@ export default function index() {
   const [contentVerticalOffset, setContentVerticalOffset] = useState(0);
   const CONTENT_OFFSET_THRESHOLD_NEW_UPDATE = 5;
   const CONTENT_OFFSET_THRESHOLD_UP = 300;
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
   const { hasRefetched, setRefetch } = useRefetchNewsStore();
   const { newUpdateAvailable, update } = useIsNewUpdateAvailable();
 

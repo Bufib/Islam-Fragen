@@ -1,7 +1,7 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFetchTableNames } from "./useFetchTableNames";
+import  useFetchTableNames  from "./useFetchTableNames";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 
@@ -23,7 +23,7 @@ export default function useFetchSubCategories() {
   const [isFetchingSub, setIsFetchingSub] = useState(false);
   const { tableNames } = useFetchTableNames();
 
-  const fetchItems = async (specificTableName?: string) => {
+  const fetchSubCategories = async (specificTableName?: string) => {
     try {
       setIsFetchingSub(true);
       const newSubCategories: TableData[] = [];
@@ -134,7 +134,7 @@ export default function useFetchSubCategories() {
                 console.log(payload);
                 console.log("INSERT");
                 Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
-                fetchItems(tableName);
+                fetchSubCategories(tableName);
                 router.navigate("/");
               }
             )
@@ -145,7 +145,7 @@ export default function useFetchSubCategories() {
                 console.log(payload);
                 console.log("UPDATE");
                 Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
-                fetchItems(tableName);
+                fetchSubCategories(tableName);
                 router.navigate("/");
               }
             )
@@ -156,7 +156,7 @@ export default function useFetchSubCategories() {
                 console.log(payload);
                 console.log("DELETE");
                 Toast.show({type:"info", text1: "Die Fragen und Antworten wurden aktualisiert!"})
-                fetchItems(tableName);
+                fetchSubCategories(tableName);
                 router.navigate("/");
               }
             )
@@ -182,7 +182,7 @@ export default function useFetchSubCategories() {
         await subscribeToTable();
         await loadItemsFromStorage();
       } else {
-        await fetchItems();
+        await fetchSubCategories();
       }
     };
 
@@ -192,7 +192,7 @@ export default function useFetchSubCategories() {
   return {
     fetchError,
     subCategories,
-    refetch: fetchItems,
+ fetchSubCategories,
     isFetchingSub,
   };
 }
