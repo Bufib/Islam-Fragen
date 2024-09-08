@@ -1,33 +1,29 @@
-import { useState } from "react";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import useFetchTableNames from "components/useFetchTableNames";
 import useFetchSubCategories from "components/useFetchSubCategories";
-useFetchVersion;
-
 import useFetchVersion from "components/useFetchVersion";
 import { useFetchStore } from "components/fetchStore";
 
 export default function useFetchData() {
   const { fetchTableNames } = useFetchTableNames();
   const { fetchSubCategories } = useFetchSubCategories();
-  const { fetchVersionNumber, versionNumber } = useFetchVersion();
-  const [initialFetchDone, setInitialFetchDone] = useState(true);
+  const { fetchVersionNumber } = useFetchVersion();
   const { isfetching, setIsfetching } = useFetchStore();
 
-  useLayoutEffect(() => {
-    const initialFetchDone = async () => {
+  useEffect(() => {
+    const initialFetchData = async () => {
       setIsfetching(true);
       try {
-        await fetchTableNames();
-        await fetchSubCategories();
-        await fetchVersionNumber();
+        await fetchTableNames();         // Fetch table names from Supabase
+        await fetchSubCategories();      // Fetch subcategories based on table names
+        await fetchVersionNumber();      // Fetch the current version number
       } catch (error) {
-        console.log(error);
+        console.log("Error fetching data:", error);
       } finally {
         setIsfetching(false);
       }
     };
 
-    initialFetchDone();
+    initialFetchData();
   }, []);
 }

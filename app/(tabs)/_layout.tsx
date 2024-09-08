@@ -20,6 +20,7 @@ import BackIcon from "components/BackIcon";
 import { useRefetchOnAppStateChange } from "components/useRefetchOnAppStateChange";
 import useFetchVersion from "components/useFetchVersion";
 import { useFetchStore } from "components/fetchStore";
+import useFetchData from "components/useFetchData";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -38,31 +39,9 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const { fetchTableNames } = useFetchTableNames();
-  const { fetchSubCategories } = useFetchSubCategories();
-  const { fetchVersionNumber, versionNumber } = useFetchVersion();
-  const { isfetching, setIsfetching } = useFetchStore();
-
   // Initialize data
-  useLayoutEffect(() => {
-    const initialFetchDone = async () => {
-      setIsfetching(true);
-      try {
-        await fetchTableNames();
-        await fetchSubCategories();
-        await fetchVersionNumber();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsfetching(false);
-      }
-    };
-
-    initialFetchDone();
-  }, []);
-
-  // Refetch when app was in background and active again
-  useRefetchOnAppStateChange();
+  useFetchData(); 
+  useRefetchOnAppStateChange(); 
 
   const colorScheme = useColorScheme();
 

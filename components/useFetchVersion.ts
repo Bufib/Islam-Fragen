@@ -7,7 +7,7 @@ import useVersionStore from "components/versionStore";
 export default function useFetchVersion() {
   const [versionNumber, setVersionNumber] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
-  const { setIsDifferent, setIsEqual } = useVersionStore();
+  const { setIsDifferent, setIsEqual, setVersion } = useVersionStore();
 
   // Function to load the version number
   const fetchVersionNumber = async (): Promise<void> => {
@@ -31,15 +31,17 @@ export default function useFetchVersion() {
         if (storedVersion !== fetchedVersion) {
           // If versions are different, set new version in AsyncStorage and update state
           await AsyncStorage.setItem("dataVersion", fetchedVersion);
+          setVersion(fetchedVersion)
           setIsDifferent();
         } else {
           setIsEqual();
         }
-
         setVersionNumber(fetchedVersion);
+        setVersion(fetchedVersion)
       } else {
         console.log("No data found");
         setVersionNumber("");
+        setVersion("")
       }
     } catch (error) {
       console.error("Error loading version number:", error);
@@ -47,45 +49,6 @@ export default function useFetchVersion() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    // Initial fetch of the version number
-    fetchVersionNumber();
-
-    // Subscribe to changes in the 'Version' table
-    const subscription = supabase
-      .channel("Version-updates")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "Version" },
-        async (payload) => {
-          console.log("Version table updated:", payload);
-          await fetchVersionNumber(); // Refetch version number on any update
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "Version" },
-        async (payload) => {
-          console.log("Version table updated:", payload);
-          await fetchVersionNumber(); // Refetch version number on any update
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "Version" },
-        async (payload) => {
-          console.log("Version table updated:", payload);
-          await fetchVersionNumber(); // Refetch version number on any update
-        }
-      )
-      .subscribe();
-
-    // Cleanup subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []); // Empty dependency array ensures this runs only once on mount
 
   return { versionNumber, loading, fetchVersionNumber };
 }
