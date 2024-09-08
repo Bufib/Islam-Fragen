@@ -7,6 +7,7 @@ import CustomMarkdown from "components/MarkdownRenderText";
 import { Image } from "expo-image";
 import Checkbox from "expo-checkbox";
 import { regex } from "./regexPatternRenderText";
+import NoConnection from "components/NoConnection";
 
 interface MultipleAnswersProps {
   themeStyles: any;
@@ -25,6 +26,7 @@ interface MultipleAnswersProps {
   colorScheme: string | undefined | null;
   images: { [key: string]: any };
   displayAnswers: { marja: string; answer: string | undefined }[];
+  isConnected: boolean | undefined | null;
 }
 
 const MultipleAnswers: React.FC<MultipleAnswersProps> = ({
@@ -44,6 +46,7 @@ const MultipleAnswers: React.FC<MultipleAnswersProps> = ({
   timeoutRef,
   colorScheme,
   images,
+  isConnected,
 }) => {
   const filteredAnswers =
     marja.length > 0
@@ -69,6 +72,7 @@ const MultipleAnswers: React.FC<MultipleAnswersProps> = ({
             {displayQuestion}
           </Text>
         </View>
+        {!isConnected && <NoConnection />}
         <View style={styles.marjaChoiceContainer}>
           {marjaOptions.map((option) => (
             <View key={option.value} style={styles.marjaChoice}>

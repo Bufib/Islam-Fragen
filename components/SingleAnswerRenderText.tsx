@@ -5,6 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import CustomMarkdown from "components/MarkdownRenderText";
 import { regex } from "components/regexPatternRenderText";
+import NoConnection from "components/NoConnection";
 
 interface AnswersScrollViewProps {
   themeStyles: any;
@@ -19,6 +20,7 @@ interface AnswersScrollViewProps {
   cleanTimeout: () => void;
   timeoutRef: React.MutableRefObject<any>;
   colorScheme: string | undefined | null;
+  isConnected: boolean | undefined | null;
 }
 const SingleAnswer: React.FC<AnswersScrollViewProps> = ({
   themeStyles,
@@ -33,6 +35,7 @@ const SingleAnswer: React.FC<AnswersScrollViewProps> = ({
   cleanTimeout,
   timeoutRef,
   colorScheme,
+  isConnected
 
 }) => {
   return (
@@ -51,6 +54,7 @@ const SingleAnswer: React.FC<AnswersScrollViewProps> = ({
             {displayQuestion}
           </Text>
         </View>
+        {!isConnected && <NoConnection />}
         <View style={styles.answersContainer}>
           <View style={[styles.singleAnswers, themeStyles.containerContrast]}>
             <View style={styles.copyContainerSingle}>

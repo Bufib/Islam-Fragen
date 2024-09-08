@@ -17,6 +17,8 @@ import MultipleAnswers from "components/MultipleAnswersRenderText";
 import { copySingleAnswer } from "components/copySingleAnswer";
 import { copyMultipleAnswers } from "components/copyMultipleAnswers";
 import { getMarjaData } from "components/getMarjaData";
+import useNetworkStatus from "components/useNetworkStatus";
+import Toast from "react-native-toast-message";
 
 export default function RenderText() {
   // Get local params for each text
@@ -49,6 +51,7 @@ export default function RenderText() {
   const displaySingleAnswer = item?.answer;
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme();
+  const { isConnected } = useNetworkStatus();
 
   const [isCopiedMultiple, setIsCopiedMultiple] = useState({
     "Sayid al-Khamenei": false,
@@ -56,7 +59,9 @@ export default function RenderText() {
   });
 
   // Get the fiting data
-  const { displayAnswers, images, marjaOptions } = getMarjaData(item || undefined);
+  const { displayAnswers, images, marjaOptions } = getMarjaData(
+    item || undefined
+  );
 
   const handleCheckboxChange = (value: string) => {
     setMarja((prev) =>
@@ -78,6 +83,16 @@ export default function RenderText() {
       cleanTimeout();
     };
   }, []);
+
+  // Check for internet conncetion
+  useEffect(() => {
+    if (isConnected === false) {
+      Toast.show({
+        type: "error",
+        text1: "Keine Internetverbindung!",
+      });
+    }
+  }, [isConnected]);
 
   return (
     <View style={styles.container}>
@@ -107,7 +122,9 @@ export default function RenderText() {
       />
       {fetchError ? (
         <View style={styles.renderError}>
-          <Text style={[styles.errorText, themeStyles.error]}>{fetchError}</Text>
+          <Text style={[styles.errorText, themeStyles.error]}>
+            {fetchError}
+          </Text>
         </View>
       ) : displaySingleAnswer ? (
         <SingleAnswer
@@ -123,6 +140,7 @@ export default function RenderText() {
           cleanTimeout={cleanTimeout}
           timeoutRef={timeoutRef}
           colorScheme={colorScheme}
+          isConnected={isConnected}
         />
       ) : (
         <MultipleAnswers
@@ -142,6 +160,7 @@ export default function RenderText() {
           timeoutRef={timeoutRef}
           colorScheme={colorScheme}
           images={images}
+          isConnected={isConnected}
         />
       )}
     </View>
