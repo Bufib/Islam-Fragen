@@ -13,10 +13,8 @@ import { View } from "components/Themed";
 import { StyleSheet } from "react-native";
 import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 import BackIcon from "components/BackIcon";
-import { useRefetchOnAppStateChange } from "components/useRefetchOnAppStateChange";
-import useFetchData from "components/useFetchData";
 import Toast from "react-native-toast-message";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -34,12 +32,8 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  // Initialize data
-  useFetchData();
-  useRefetchOnAppStateChange();
-
   const colorScheme = useColorScheme();
-
+  const queryClient = new QueryClient();
   const headerBackground =
     colorScheme === "light" ? Colors.light.white : Colors.dark.black;
 

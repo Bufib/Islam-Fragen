@@ -163,6 +163,7 @@ export default function RenderText() {
           isConnected={isConnected}
         />
       )}
+      <Toast />
     </View>
   );
 }

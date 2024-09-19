@@ -1,9 +1,10 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import useFetchTableNames from "./useFetchTableNames";
+import { useFetchTableNames } from "./useFetchTableNames";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import { useHasFetchedSuperCategories } from "components/hasFetchtedSuperCategories";
 
 interface SubCategoryItem {
   id: number;
@@ -15,15 +16,15 @@ interface TableData {
   questions: SubCategoryItem[];
 }
 
-const INITIAL_FETCH_KEY_SubCategory = "initialFetchDoneSub";
-
 export default function useFetchSubCategories() {
-  const [fetchError, setFetchError] = useState<string>("");
+  const [fetchErrorSuperCategories, setFetchErrorSuperCategories] = useState<string>("");
   const [subCategories, setSubCategories] = useState<TableData[]>([]);
   const [isFetchingSub, setIsFetchingSub] = useState(false);
   const { tableNames } = useFetchTableNames();
+  const { hasFetchedSuperCategories, setHasFetchedSuperCategories } =
+    useHasFetchedSuperCategories();
 
-  const fetchSubCategories = async (specificTableName?: string) => {
+  const fetchItems = async (specificTableName?: string) => {
     try {
       setIsFetchingSub(true);
       const newSubCategories: TableData[] = [];
@@ -55,7 +56,7 @@ export default function useFetchSubCategories() {
 
           // Update AsyncStorage with new data
           await AsyncStorage.setItem(tableName, JSON.stringify(data));
-          await AsyncStorage.setItem(INITIAL_FETCH_KEY_SubCategory, "true");
+          setHasFetchedSuperCategories(true);
         }
       };
 
@@ -75,11 +76,11 @@ export default function useFetchSubCategories() {
         }
       }
 
-      setFetchError("");
+      setFetchErrorSuperCategories("");
     } catch (error) {
       setSubCategories([]);
-      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_SubCategory);
-      setFetchError(
+      setHasFetchedSuperCategories(false);
+      setFetchErrorSuperCategories(
         "Elemente konnten nicht geladen werden.\n Überprüfen Sie bitte Ihre Internet Verbindung!"
       );
       console.error("Error fetching items:", error);
@@ -113,7 +114,7 @@ export default function useFetchSubCategories() {
       console.log("Loaded items from AsyncStorage successfully.");
     } catch (error) {
       console.log("Failed to load items from storage", error);
-      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_SubCategory);
+      setHasFetchedSuperCategories(false);
     } finally {
       setIsFetchingSub(false);
     }
@@ -129,40 +130,19 @@ export default function useFetchSubCategories() {
             .channel(tableName)
             .on(
               "postgres_changes",
-              { event: "INSERT", schema: "public", table: tableName },
+              { event: "*", schema: "public", table: tableName },
               (payload) => {
+                console.log(payload);
+                console.log("INSERT");
                 Toast.show({
                   type: "info",
                   text1: "Die Fragen und Antworten wurden aktualisiert!",
                 });
-                fetchSubCategories(tableName);
+                fetchItems(tableName);
                 router.navigate("/");
               }
             )
-            .on(
-              "postgres_changes",
-              { event: "UPDATE", schema: "public", table: tableName },
-              (payload) => {
-                Toast.show({
-                  type: "info",
-                  text1: "Die Fragen und Antworten wurden aktualisiert!",
-                });
-                fetchSubCategories(tableName);
-                router.navigate("/");
-              }
-            )
-            .on(
-              "postgres_changes",
-              { event: "DELETE", schema: "public", table: tableName },
-              (payload) => {
-                Toast.show({
-                  type: "info",
-                  text1: "Die Fragen und Antworten wurden aktualisiert!",
-                });
-                fetchSubCategories(tableName);
-                router.navigate("/");
-              }
-            )
+
             .subscribe();
 
           subscriptions.push(subscription);
@@ -170,22 +150,20 @@ export default function useFetchSubCategories() {
       }
 
       return () => {
-        subscriptions.forEach((subscription: any) => subscription.unsubscribe());
+        subscriptions.forEach((subscription: any) =>
+          subscription.unsubscribe()
+        );
       };
     }
   };
 
   useEffect(() => {
     const checkStorageAndFetch = async () => {
-      const initialFetchDone = await AsyncStorage.getItem(
-        INITIAL_FETCH_KEY_SubCategory
-      );
-
-      if (initialFetchDone == "true") {
+      if (hasFetchedSuperCategories == true) {
         await subscribeToTable();
         await loadItemsFromStorage();
       } else {
-        await fetchSubCategories();
+        await fetchItems();
       }
     };
 
@@ -193,9 +171,9 @@ export default function useFetchSubCategories() {
   }, [tableNames]);
 
   return {
-    fetchError,
+    fetchErrorSuperCategories,
     subCategories,
-    fetchSubCategories,
+    refetch: fetchItems,
     isFetchingSub,
   };
 }

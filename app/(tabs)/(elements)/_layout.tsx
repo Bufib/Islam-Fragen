@@ -10,7 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "components/useColorScheme";
 import { Header } from "react-native/Libraries/NewAppScreen";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -59,6 +59,7 @@ const separateWords = (name: string) => {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const queryClient = new QueryClient();
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -72,15 +73,13 @@ function RootLayoutNav() {
           name='getCategories/[getCategories]'
           options={{
             headerShown: true,
-           
           }}
         />
 
         <Stack.Screen
-          name='getSubCategories/[getSubCategories]'
+          name='getSuperCategories/[getSuperCategories]'
           options={{
             headerShown: true,
-            
           }}
         />
       </Stack>

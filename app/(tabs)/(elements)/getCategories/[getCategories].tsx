@@ -1,16 +1,17 @@
-import { View, Text } from "components/Themed";
-import { StyleSheet } from "react-native";
-import React, { useLayoutEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderCategories from "components/RenderCategories";
 import { Stack } from "expo-router";
 import useFetchSubCategories from "components/useFetchSubCategories";
-import { useRefetchSubeStore } from "components/refetchSubStore";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
-  const { fetchError, subCategories, fetchSubCategories, isFetchingSub } =
-    useFetchSubCategories();
+  const {
+    fetchErrorSuperCategories,
+    subCategories = [], // Ensure subCategories is initialized as an empty array
+    isFetchingSub,
+  } = useFetchSubCategories();
 
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");
@@ -19,10 +20,11 @@ export default function RenderCategory() {
       .replace(/\)/g, "%29");
   };
 
+  // Make sure subCategories is an array before using find method
+  const matchedTable = Array.isArray(subCategories)
+    ? subCategories.find((table) => table.tableName === subCategory)
+    : undefined;
 
-  const matchedTable = subCategories.find(
-    (table) => table.tableName === subCategory
-  );
   const filteredItems = matchedTable ? matchedTable.questions : [];
 
   return (
@@ -30,7 +32,7 @@ export default function RenderCategory() {
       {!subCategory ? (
         <RenderCategories
           items={[]}
-          fetchError={fetchError}
+          fetchError={fetchErrorSuperCategories}
           table=''
           isFetching={isFetchingSub}
         />
@@ -39,7 +41,7 @@ export default function RenderCategory() {
           <Stack.Screen options={{ headerTitle: subCategory }} />
           <RenderCategories
             items={filteredItems}
-            fetchError={fetchError}
+            fetchError={fetchErrorSuperCategories}
             table={encodeTable(subCategory)}
             isFetching={isFetchingSub}
           />

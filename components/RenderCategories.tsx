@@ -9,6 +9,7 @@ import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 import { ActivityIndicator } from "react-native";
 import { formatTitle } from "components/formatTitle";
+import Colors from "constants/Colors";
 interface Item {
   id: number;
   title: string;
@@ -38,14 +39,13 @@ export default function RenderCategories({
   const themeStyles = coustomTheme();
   const appColor = Appearance.getColorScheme();
 
-
   return (
     <View style={styles.container}>
       <>
         {fetchError && (
           <View style={styles.renderError}>
             <Text style={[styles.errorText, themeStyles.error]}>
-              {fetchError}
+              {fetchError.toString()}
             </Text>
           </View>
         )}
@@ -53,7 +53,11 @@ export default function RenderCategories({
           <View style={styles.loadingIndicator}>
             <ActivityIndicator
               size='large'
-              color={colorScheme == "light" ? "black" : "white"}
+              color={
+                colorScheme == "light"
+                  ? Colors.light.activityIndicator
+                  : Colors.dark.activityIndicator
+              }
             />
           </View>
         )}

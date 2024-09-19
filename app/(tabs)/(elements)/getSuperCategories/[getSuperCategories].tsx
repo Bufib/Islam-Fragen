@@ -4,9 +4,9 @@ import React, { useEffect, useLayoutEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderSubCategories from "components/RenderSubCategories";
 import { Stack } from "expo-router";
-import  useFetchTableNames  from "components/useFetchTableNames";
+import { useFetchTableNames } from "components/useFetchTableNames";
 
-export default function getSubCategories() {
+export default function getSuperCategories() {
   const { category } = useLocalSearchParams<{ category: string }>();
 
   const encodeTable = (title: string) => {
@@ -15,18 +15,16 @@ export default function getSubCategories() {
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-  const { tableNames, fetchError, isFetchinTable } =
-    useFetchTableNames();
-
+  const { tableNames, fetchErrorTableNames, isFetchingTable } = useFetchTableNames();
 
   if (!category) {
     return (
       <View style={styles.container}>
         <RenderSubCategories
           items={[]}
-          fetchError='Invalid category'
+          fetchError='Kategorien konnten nicht geladen wereden. Bitte Überprüfe deine Internetverbindung und starte die App neu!'
           table=''
-          isFetchinTable={isFetchinTable}
+          isFetchinTable={isFetchingTable}
         />
       </View>
     );
@@ -47,9 +45,9 @@ export default function getSubCategories() {
       <Stack.Screen options={{ headerTitle: category }} />
       <RenderSubCategories
         items={categoryItems}
-        fetchError={fetchError}
+        fetchError={fetchErrorTableNames}
         table={encodeTable(category)}
-        isFetchinTable={isFetchinTable}
+        isFetchinTable={isFetchingTable}
       />
     </View>
   );

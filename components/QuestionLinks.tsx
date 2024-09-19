@@ -12,39 +12,40 @@ export default function QuestionLinks() {
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme();
 
+
   const categoriesLeft = [
     {
       name: "Rechtsfragen",
       image: require("assets/images/rechtsfragen.png"),
-      path: "getSubCategories/[getSubCategories]",
+      path: "getSuperCategories/[getSuperCategories]",
     },
     {
       name: "Quran",
       image: require("assets/images/quran.png"),
-      path: "getSubCategories/[getSubCategories]",
+      path: "getSuperCategories/[getSuperCategories]",
     },
     {
       name: "Historie",
       image: require("assets/images/historie.png"),
-      path: "getSubCategories/[getSubCategories]",
+      path: "getSuperCategories/[getSuperCategories]",
     },
   ];
   const categoriesRight = [
     {
       name: "Glaubensfragen",
       image: require("assets/images/glaubensfragen.png"),
-      path: "getSubCategories/[getSubCategories]",
+      path: "getSuperCategories/[getSuperCategories]",
     },
     {
       name: "Ethik",
       image: require("assets/images/ethik.png"),
-      path: "getSubCategories/[getSubCategories]",
+      path: "getSuperCategories/[getSuperCategories]",
     },
 
     {
       name: "Ratschläge",
       image: require("assets/images/ratschlaege.png"),
-      path: "getSubCategories/[getSubCategories]",
+      path: "getSuperCategories/[getSuperCategories]",
     },
   ];
 

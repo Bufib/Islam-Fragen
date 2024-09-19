@@ -3,26 +3,28 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "utils/supabase";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import { useHasFetchedTableNames } from "components/hasFetchedTableNamesStore";
 
 const TABLE_NAMES_KEY = "tableNames";
-const INITIAL_FETCH_KEY_Table = "initialFetchDoneTable";
 
 interface TableNamesData {
   tableNames: { category: string; tableNames: string }[];
-  isFetchinTable: boolean;
-  fetchError: string;
+  isFetchingTable: boolean;
+  fetchErrorTableNames: string;
   fetchTableNames: () => Promise<void>;
 }
 
-export default function useFetchTableNames(): TableNamesData {
+export const useFetchTableNames = (): TableNamesData => {
+  const { hasFetchedTableNames, setHasFetchedTableNames } =
+    useHasFetchedTableNames();
   const [tableNames, setTableNames] = useState<
     { category: string; tableNames: string }[]
   >([]);
-  const [fetchError, setFetchError] = useState<string>("");
-  const [isFetchinTable, setIsFetchinTable] = useState<boolean>(true);
+  const [fetchErrorTableNames, setFetchErrorTableNames] = useState<string>("");
+  const [isFetchingTable, setisFetchingTable] = useState<boolean>(true);
 
   const fetchTableNames = useCallback(async () => {
-    setIsFetchinTable(true);
+    setisFetchingTable(true);
     try {
       const { data, error } = await supabase
         .from("AllTableNames")
@@ -50,19 +52,19 @@ export default function useFetchTableNames(): TableNamesData {
         TABLE_NAMES_KEY,
         JSON.stringify(tableNamesArray)
       );
-      await AsyncStorage.setItem(INITIAL_FETCH_KEY_Table, "true");
+      setHasFetchedTableNames(true);
 
       setTableNames(tableNamesArray);
-      setIsFetchinTable(false);
-      setFetchError("");
+      setisFetchingTable(false);
+      setFetchErrorTableNames("");
     } catch (error) {
       setTableNames([]);
-      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_Table);
-      setFetchError(
+      setHasFetchedTableNames(false);
+      setFetchErrorTableNames(
         "Fehler beim Laden der Fragen. Bitte überpüfe deine Internetverbindung und versuch es zu einem späteren Zeitpunkt nochmal!"
       );
       console.error("Error fetching table names:", error);
-      setIsFetchinTable(false);
+      setisFetchingTable(false);
     }
   }, []);
 
@@ -72,13 +74,13 @@ export default function useFetchTableNames(): TableNamesData {
       if (storedTableNames) {
         const parsedTableNames = JSON.parse(storedTableNames);
         setTableNames(parsedTableNames);
-        setIsFetchinTable(false);
+        setisFetchingTable(false);
       } else {
         throw new Error("Error loading initial data:");
       }
     } catch (error) {
       console.error("Error loading initial data:", error);
-      await AsyncStorage.removeItem(INITIAL_FETCH_KEY_Table);
+      setHasFetchedTableNames(false);
     }
   }, []);
 
@@ -87,31 +89,7 @@ export default function useFetchTableNames(): TableNamesData {
       .channel("AllTableNames")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "AllTableNames" },
-        (payload) => {
-          Toast.show({
-            type: "info",
-            text1: "Die Fragen und Antworten wurden aktualisiert!",
-          });
-          fetchTableNames();
-          router.navigate("/");
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "AllTableNames" },
-        (payload) => {
-          Toast.show({
-            type: "info",
-            text1: "Die Fragen und Antworten wurden aktualisiert!",
-          });
-          fetchTableNames();
-          router.navigate("/");
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "AllTableNames" },
+        { event: "*", schema: "public", table: "AllTableNames" },
         (payload) => {
           Toast.show({
             type: "info",
@@ -130,10 +108,7 @@ export default function useFetchTableNames(): TableNamesData {
 
   useEffect(() => {
     const checkStorageAndFetch = async () => {
-      const initialFetchDone = await AsyncStorage.getItem(
-        INITIAL_FETCH_KEY_Table
-      );
-      if (initialFetchDone === "true") {
+      if (hasFetchedTableNames === true) {
         await subscribeToTable();
         await loadItemsFromStorage();
       } else {
@@ -144,5 +119,5 @@ export default function useFetchTableNames(): TableNamesData {
     checkStorageAndFetch();
   }, [loadItemsFromStorage, subscribeToTable, fetchTableNames]);
 
-  return { tableNames, fetchError, isFetchinTable, fetchTableNames };
-}
+  return { tableNames, fetchErrorTableNames, isFetchingTable, fetchTableNames };
+};
