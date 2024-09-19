@@ -17,7 +17,8 @@ interface TableData {
 }
 
 export default function useFetchSubCategories() {
-  const [fetchErrorSuperCategories, setFetchErrorSuperCategories] = useState<string>("");
+  const [fetchErrorSuperCategories, setFetchErrorSuperCategories] =
+    useState<string>("");
   const [subCategories, setSubCategories] = useState<TableData[]>([]);
   const [isFetchingSub, setIsFetchingSub] = useState(false);
   const { tableNames } = useFetchTableNames();
@@ -27,8 +28,6 @@ export default function useFetchSubCategories() {
   const fetchItems = async (specificTableName?: string) => {
     try {
       setIsFetchingSub(true);
-      const newSubCategories: TableData[] = [];
-
       // Fetch data for a specific table if provided
       const fetchTableData = async (tableName: string) => {
         const { data, error } = await supabase
