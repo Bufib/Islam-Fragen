@@ -1,6 +1,6 @@
 import { View, Text } from "components/Themed";
 import { StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { useFetchText } from "components/useFetchText";
 import { Stack } from "expo-router";
@@ -40,6 +40,7 @@ export default function RenderText() {
     setFontSize,
     setLineHeight,
     setPickerValue,
+    initializeSettings,
   } = useSetFontSize();
   const { toggleFavorite, isInFavorites } = useFavorites();
   const [marja, setMarja] = useState<string[]>([]);
@@ -94,6 +95,12 @@ export default function RenderText() {
     }
   }, [isConnected]);
 
+  // Initialize Fontsettings
+  useLayoutEffect(() => {
+    initializeSettings();
+  }, []);
+
+  
   return (
     <View style={styles.container}>
       {/* Change header Title */}

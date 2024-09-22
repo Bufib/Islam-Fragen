@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "constants/Colors";
 import { useColorScheme } from "react-native";
 import { coustomTheme } from "./coustomTheme";
+import { useSetFontSize } from "./fontSizeStore";
 
 interface FontSizePickerModalProps {
   visible: boolean;
@@ -24,13 +25,17 @@ const fontSizeOptions = [
 const FontSizePickerModal: React.FC<FontSizePickerModalProps> = ({
   visible,
   onClose,
-  pickerValue,
-  setPickerValue,
-  setFontSize,
-  setLineHeight,
 }) => {
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme();
+  const {
+    fontSize,
+    lineHeight,
+    pickerValue,
+    setFontSize,
+    setLineHeight,
+    setPickerValue,
+  } = useSetFontSize();
 
   useEffect(() => {
     const loadSavedFontSize = async () => {
@@ -65,7 +70,10 @@ const FontSizePickerModal: React.FC<FontSizePickerModalProps> = ({
         ]}
         onPress={onClose}
       >
-        <Pressable style={[styles.pickerContainer, themeStyles.modalQuestion]} onPress={() => {}}>
+        <Pressable
+          style={[styles.pickerContainer, themeStyles.modalQuestion]}
+          onPress={() => {}}
+        >
           <Picker
             selectedValue={pickerValue}
             onValueChange={(itemValue) => {

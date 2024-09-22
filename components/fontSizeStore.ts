@@ -31,7 +31,6 @@ export const useSetFontSize = create<IsChangingState>((set) => ({
   initializeSettings: async () => {
     const fontSize = await AsyncStorage.getItem('fontSize');
     const lineHeight = await AsyncStorage.getItem('lineHeight');
-    
     set({ 
       fontSize: fontSize ? parseInt(fontSize, 10) : 20, 
       lineHeight: lineHeight ? parseInt(lineHeight, 10) : 40 
