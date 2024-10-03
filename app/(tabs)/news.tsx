@@ -29,13 +29,20 @@ import { Image } from "expo-image";
 import { useRefetchNewsStore } from "components/refetchNews";
 import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 import NoConnection from "components/NoConnection";
-import useNetworkStatus from "components/useNetworkStatus";
+import checkInternetConnectivity from "components/useNetworkStatus";
 import Toast from "react-native-toast-message";
+import useNetworkStore from "components/useNetworkStore";
 
 export default function index() {
   const [refreshing, setRefreshing] = useState(false);
-  const { posts, fetchError, refetch, updateAvailable, applyUpdates, isFetchingNews } =
-  useFetchNews();
+  const {
+    posts,
+    fetchError,
+    refetch,
+    updateAvailable,
+    applyUpdates,
+    isFetchingNews,
+  } = useFetchNews();
   const { isLoading } = useIsUpLoading();
   const { isLoggedIn } = useAuthStore();
   const scrollRef = useRef<any>();
@@ -47,10 +54,15 @@ export default function index() {
   const themeStyles = coustomTheme();
   const { hasRefetched, setRefetch } = useRefetchNewsStore();
   const { newUpdateAvailable, update } = useIsNewUpdateAvailable();
-  const { isConnected } = useNetworkStatus();
+  const isConnected = useNetworkStore((state) => state.isConnected);
 
+ 
   // Check if internet connection availabe
   useEffect(() => {
+    if (isConnected === null) {
+      // Waiting for network state to be determined, so do nothing for now
+      return;
+    }
     if (isConnected === false) {
       Toast.show({
         type: "error",
@@ -139,7 +151,7 @@ export default function index() {
               {fetchError}
             </Text>
           </ScrollView>
-        ) : posts.length == 0 && !fetchError && !isFetchingNews? (
+        ) : posts.length == 0 && !fetchError && !isFetchingNews ? (
           <ScrollView
             style={styles.noNewsScrollView}
             refreshControl={
@@ -212,7 +224,6 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-
   },
   newsContainer: {
     marginTop: 5,

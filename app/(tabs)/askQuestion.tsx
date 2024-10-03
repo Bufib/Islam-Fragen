@@ -24,9 +24,10 @@ import { router } from "expo-router";
 import * as Network from "expo-network";
 import { useFormikSetup } from "components/useFormikSetup";
 import { genderOptions, marjaOptions } from "components/emailOptions";
-import useNetworkStatus from "components/useNetworkStatus";
+
 import { boolean } from "yup";
 
+import useNetworkStore from "components/useNetworkStore";
 const initialFormState = {
   name: "",
   age: "",
@@ -60,7 +61,7 @@ export default function askQuestion() {
   const [captchaToken, setCaptchaToken] = useState("");
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const { isConnected } = useNetworkStatus();
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const formik = useFormikSetup(
     isConnected,
     sendEmail,
@@ -69,17 +70,6 @@ export default function askQuestion() {
   );
 
   const scrollViewRef: any | null = useRef(null);
-
-  useEffect(() => {
-    if (showCaptcha && captchaRef.current) {
-      captchaRef.current.show();
-    }
-  }, [showCaptcha]);
-
-  useEffect(() => {
-    // Reset the form state when the component mounts
-    setFormState(initialFormState);
-  }, []);
 
   const send = async () => {
     if (isConnected) {
@@ -147,6 +137,17 @@ export default function askQuestion() {
       }
     }
   };
+
+  useEffect(() => {
+    if (showCaptcha && captchaRef.current) {
+      captchaRef.current.show();
+    }
+  }, [showCaptcha]);
+
+  useEffect(() => {
+    // Reset the form state when the component mounts
+    setFormState(initialFormState);
+  }, []);
 
   return (
     <KeyboardAvoidingView

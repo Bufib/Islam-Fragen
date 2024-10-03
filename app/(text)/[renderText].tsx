@@ -17,8 +17,9 @@ import MultipleAnswers from "components/MultipleAnswersRenderText";
 import { copySingleAnswer } from "components/copySingleAnswer";
 import { copyMultipleAnswers } from "components/copyMultipleAnswers";
 import { getMarjaData } from "components/getMarjaData";
-import useNetworkStatus from "components/useNetworkStatus";
+
 import Toast from "react-native-toast-message";
+import useNetworkStore from "components/useNetworkStore";
 
 export default function RenderText() {
   // Get local params for each text
@@ -52,7 +53,6 @@ export default function RenderText() {
   const displaySingleAnswer = item?.answer;
   const colorScheme = useColorScheme();
   const themeStyles = coustomTheme();
-  const { isConnected } = useNetworkStatus();
 
   const [isCopiedMultiple, setIsCopiedMultiple] = useState({
     "Sayid al-Khamenei": false,
@@ -78,6 +78,9 @@ export default function RenderText() {
     }
   };
 
+  //  Network status tracking
+  const isConnected = useNetworkStore((state) => state.isConnected);
+
   useEffect(() => {
     return () => {
       // Clear timeout when component unmounts
@@ -87,6 +90,11 @@ export default function RenderText() {
 
   // Check for internet conncetion
   useEffect(() => {
+    if (isConnected === null) {
+      // Waiting for network state to be determined, so do nothing for now
+      return;
+    }
+
     if (isConnected === false) {
       Toast.show({
         type: "error",
@@ -100,7 +108,6 @@ export default function RenderText() {
     initializeSettings();
   }, []);
 
-  
   return (
     <View style={styles.container}>
       {/* Change header Title */}

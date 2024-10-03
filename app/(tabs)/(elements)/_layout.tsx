@@ -7,10 +7,16 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useColorScheme } from "components/useColorScheme";
 import { Header } from "react-native/Libraries/NewAppScreen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+import useFetchVersion from "components/useFetchVersion";
+import Toast from "react-native-toast-message";
+import useVersionStore from "components/versionStore";
+import useNetworkStore from "components/useNetworkStore";
+import { useNetworkInitializer } from "components/useNetworkInitializer";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -26,9 +32,28 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { fetchVersionNumber, versionNumber } = useFetchVersion();
+  useNetworkInitializer();
+  const isConnected = useNetworkStore((state) => state.isConnected);
+
+  // Check the internet connection when opening app and get the version number
   useEffect(() => {
+    if (isConnected === null) {
+      // Waiting for network state to be determined, so do nothing for now
+      return;
+    }
+    if (isConnected === false) {
+      Toast.show({
+        type: "error",
+        text1: "Keine Verbindung",
+        text2:
+          "Du hast keine Internetverbindung! Änderungen und neue Fragen könne somit nicht geladen werden!",
+      });
+    }
+    // Get the current Version Number
+    fetchVersionNumber();
     SplashScreen.hideAsync();
-  }, []);
+  }, [isConnected]);
 
   return <RootLayoutNav />;
 }
@@ -67,7 +92,7 @@ function RootLayoutNav() {
           }}
         />
       </Stack>
-      {/* <Toast /> */}
+      <Toast />
     </ThemeProvider>
   );
 }

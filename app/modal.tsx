@@ -10,6 +10,8 @@ import { useAuthStore } from "components/authStore";
 import * as Network from "expo-network";
 import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
 
+import useNetworkStore from "components/useNetworkStore";
+
 const siteKey = "c2a47a96-0c8e-48b8-a6c6-e60a2e9e4228";
 const baseUrl = "https://hcaptcha.com";
 
@@ -22,13 +24,8 @@ export default function Modal() {
 
   const captchaRef = useRef(null);
   const [showCaptcha, setShowCaptcha] = useState(false);
-
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const { login } = useAuthStore();
-
-  const checkInternetConnection = async () => {
-    const networkState = await Network.getNetworkStateAsync();
-    return networkState.isConnected && networkState.isInternetReachable;
-  };
 
   const onMessage = async (event: any) => {
     if (event && event.nativeEvent.data) {
@@ -54,14 +51,11 @@ export default function Modal() {
     }
 
     try {
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
         options: { captchaToken },
       });
-
-
 
       if (error) {
         console.error("Supabase Error:", error);
@@ -86,7 +80,6 @@ export default function Modal() {
   };
 
   const adminLogin = async () => {
-    const isConnected = await checkInternetConnection();
     if (isConnected) {
       setShowCaptcha(true); // Show hCaptcha challenge
     } else {
@@ -98,7 +91,7 @@ export default function Modal() {
 
   useEffect(() => {
     if (showCaptcha && captchaRef.current) {
-      captchaRef.current.show();
+      captchaRef.current?.show();
     }
   }, [showCaptcha]);
 
@@ -140,7 +133,7 @@ export default function Modal() {
           baseUrl={baseUrl}
           onMessage={onMessage}
           languageCode='de'
-          size="invisible"
+          size='invisible'
         />
       )}
     </View>

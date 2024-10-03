@@ -2,17 +2,18 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "utils/supabase";
 import useVersionStore from "components/versionStore";
-import useNetworkStatus from "components/useNetworkStatus";
+import useNetworkStore from "./useNetworkStore";
+
 import Toast from "react-native-toast-message";
 import { NO_INTERNET, NO_UPADTES_FETCHABLE } from "components/messages";
+
 
 // Custom hook to load and subscribe to version number updates
 export default function useFetchVersion() {
   const [versionNumber, setVersionNumber] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
   const { setIsDifferent, setIsEqual, setVersion } = useVersionStore();
-  const { isConnected } = useNetworkStatus();
-
+  const isConnected = useNetworkStore((state) => state.isConnected);
   // Function to get the version number
   const fetchVersionNumber = async (): Promise<void> => {
     if (isConnected) {
@@ -40,7 +41,7 @@ export default function useFetchVersion() {
             setIsDifferent();
           } else {
             setIsEqual();
-          } 
+          }
           setVersionNumber(fetchedVersion);
           setVersion(fetchedVersion);
         } else {
@@ -54,7 +55,9 @@ export default function useFetchVersion() {
         setLoading(false);
       }
     } else {
-      const storedVersion = (await AsyncStorage.getItem("dataVersion") || "")?.trim();
+      const storedVersion = (
+        (await AsyncStorage.getItem("dataVersion")) || ""
+      )?.trim();
       setVersionNumber(storedVersion);
       setVersion(storedVersion);
       Toast.show({
@@ -64,6 +67,6 @@ export default function useFetchVersion() {
       });
     }
   };
-
+ 
   return { versionNumber, loading, fetchVersionNumber };
 }

@@ -4,19 +4,11 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import { useColorScheme } from "components/useColorScheme";
 import Toast from "react-native-toast-message";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useRefetchOnAppStateChange } from "components/useRefetchOnAppStateChange";
-import useFetchData from "components/useFetchData";
-import useNetworkStatus from "components/useNetworkStatus";
-import { useFetchTableNames } from "components/useFetchTableNames";
-import useFetchSubCategories from "components/useFetchSubCategories";
-import useFetchVersion from "components/useFetchVersion";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -39,21 +31,6 @@ const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const { isConnected } = useNetworkStatus();
-  const { fetchVersionNumber } = useFetchVersion();
-
-  // Check the internet connection when opening app and get the version number
-  useEffect(() => {
-    if (isConnected === false) {
-      Toast.show({
-        type: "error",
-        text1: "Keine Verbindung",
-        text2:
-          "Du hast keine Internetverbindung! Änderungen und neue Fragen könne somit nicht geladen werden!",
-      });
-    }
-    fetchVersionNumber();
-  }, [isConnected]);
 
   return (
     <QueryClientProvider client={queryClient}>

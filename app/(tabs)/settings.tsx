@@ -12,7 +12,6 @@ import { useAuthStore } from "components/authStore";
 export default function settings() {
   const colorScheme = Appearance.getColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme == "dark");
-  const [selectSize, setSelectSize] = useState<number>();
   const { dataVersion } = useVersionStore();
   const { isLoggedIn } = useAuthStore();
 
@@ -55,11 +54,11 @@ export default function settings() {
       </View>
 
       <View style={styles.spacer} />
-      {/* {isLoggedIn && (
+      {isLoggedIn && (
         <View style={styles.versionTextContainer}>
           <Text style={styles.versionText}>Version: {dataVersion}</Text>
         </View>
-      )} */}
+      )}
       <View style={styles.informationContainer}>
         <Link style={styles.linkText} href='/about' push>
           Über die App

@@ -4,7 +4,7 @@ import { supabase } from "utils/supabase";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useHasFetchedTableNames } from "components/hasFetchedTableNamesStore";
-import useNetworkStatus from "components/useNetworkStatus";
+import useNetworkStore from "./useNetworkStore";
 import useVersionStore from "components/versionStore";
 import {
   UPDATED_MESSAGE,
@@ -30,7 +30,7 @@ export const useFetchTableNames = (): TableNamesData => {
   >([]);
   const [fetchErrorTableNames, setFetchErrorTableNames] = useState<string>("");
   const [isFetchingTable, setisFetchingTable] = useState<boolean>(true);
-  const { isConnected } = useNetworkStatus();
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const { isDifferent } = useVersionStore();
 
   const fetchTableNames = useCallback(async () => {
@@ -47,7 +47,7 @@ export const useFetchTableNames = (): TableNamesData => {
       }
 
       // Set first Fetch to true
-      AsyncStorage.setItem(FIRST_FETCH_TABLE_NAMES, "true");
+      await AsyncStorage.setItem(FIRST_FETCH_TABLE_NAMES, "true");
 
       // Get the format: [{"category": "Glaubensfragen", "tableNames": "Ahlulbayt(a.)"}, ...
       const tableNamesObject = data.reduce((acc, item) => {
@@ -87,7 +87,7 @@ export const useFetchTableNames = (): TableNamesData => {
       console.error("Error fetching table names:", error);
 
       // Initial Fetch not done due to error:
-      AsyncStorage.setItem(FIRST_FETCH_TABLE_NAMES, "false");
+      await AsyncStorage.setItem(FIRST_FETCH_TABLE_NAMES, "false");
 
       // Not fetching anymore
       setisFetchingTable(false);
@@ -141,23 +141,25 @@ export const useFetchTableNames = (): TableNamesData => {
   }, [fetchTableNames]);
 
   useEffect(() => {
-    const checkStorageAndFetch = async () => {
-      // Fetch date when:
-      // 1. First open
-      // 2. Explicit called to do so
-      // 3. Upadtes available
-      // 4. Error while first open
-      // 5. New Version
+    /* Fetch date when:
+       1. First open
+       2. Explicit called to do so
+       3. Upadtes available
+       4. Error while first open
+       5. New Version */
 
-      // Check if first Fetch has happend:
+    const checkStorageAndFetch = async () => {
+      // Get first fetch status from AsyncStorage
       const firstFetch = await AsyncStorage.getItem(FIRST_FETCH_TABLE_NAMES);
 
+      // Add logic to check network status and handle no internet case
       if (
         (isDifferent || firstFetch === "false" || firstFetch === null) &&
-        isConnected
+        isConnected &&
+        !isFetchingTable // Ensure is connected before fetching
       ) {
         await fetchTableNames();
-      } else if (!isConnected) {
+      } else if (isConnected === false && isConnected != null) {
         Toast.show({
           type: "info",
           text1: NO_INTERNET,
@@ -171,7 +173,7 @@ export const useFetchTableNames = (): TableNamesData => {
     };
 
     checkStorageAndFetch();
-  }, [loadItemsFromStorage, subscribeToTable, fetchTableNames]);
+  }, [isConnected, isDifferent]);
 
   return { tableNames, fetchErrorTableNames, isFetchingTable, fetchTableNames };
 };

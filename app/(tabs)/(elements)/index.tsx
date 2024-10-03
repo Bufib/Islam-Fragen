@@ -8,14 +8,17 @@ import { useRefetchStore } from "components/refetchStore";
 import { useFetchStore } from "components/fetchStore";
 import { useColorScheme } from "react-native";
 import Colors from "constants/Colors";
-import useNetworkStatus from "components/useNetworkStatus";
+import { useState, useEffect } from "react";
+import useNetworkStore from "components/useNetworkStore";
 import { useFetchTableNames } from "components/useFetchTableNames";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function index() {
   const themeStyles = coustomTheme();
   const { isfetching } = useFetchStore();
   const { isRefetching } = useRefetchStore();
   const colorScheme = useColorScheme();
-  const { isConnected } = useNetworkStatus();
+
 
   return (
     <View style={styles.container}>

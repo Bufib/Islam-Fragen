@@ -5,7 +5,15 @@ import { useFetchTableNames } from "./useFetchTableNames";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useHasFetchedSuperCategories } from "components/hasFetchtedSuperCategories";
-
+import {
+  UPDATED_MESSAGE,
+  ERROR_LOADING_DATA,
+  CHECK_CONNECTION_RESTART_APP,
+  NO_UPADTES_FETCHABLE,
+  NO_INTERNET,
+} from "components/messages";
+import useNetworkStore from "./useNetworkStore";
+import useVersionStore from "components/versionStore";
 interface SubCategoryItem {
   id: number;
   title: string;
@@ -16,7 +24,6 @@ interface TableData {
   questions: SubCategoryItem[];
 }
 
-
 const FIRST_FETCH_SUBCATEGORY = "firstFetchSubCategory";
 
 export default function useFetchSubCategories() {
@@ -25,9 +32,9 @@ export default function useFetchSubCategories() {
   const [subCategories, setSubCategories] = useState<TableData[]>([]);
   const [isFetchingSub, setIsFetchingSub] = useState(false);
   const { tableNames } = useFetchTableNames();
-  const { hasFetchedSuperCategories, setHasFetchedSuperCategories } =
-    useHasFetchedSuperCategories();
-
+  const isConnected = useNetworkStore((state) => state.isConnected);
+  const { isDifferent, setIsEqual } = useVersionStore();
+  console.log("isDifferent" + isDifferent);
   const fetchSuperCategories = async (specificTableName?: string) => {
     try {
       setIsFetchingSub(true);
@@ -40,14 +47,14 @@ export default function useFetchSubCategories() {
         console.log("Fetching Supercategories");
         if (error) {
           console.error(`Error fetching data for table ${tableName}:`, error);
-          throw error;
+          throw new Error(error.message);
         }
-
         if (data) {
           const updatedData = {
             tableName,
             questions: data as SubCategoryItem[],
           };
+
           // Update state with new data
           setSubCategories((prevSubCategories) => {
             const otherTables = prevSubCategories.filter(
@@ -58,7 +65,6 @@ export default function useFetchSubCategories() {
 
           // Update AsyncStorage with new data
           await AsyncStorage.setItem(tableName, JSON.stringify(data));
-          setHasFetchedSuperCategories(true);
         }
       };
 
@@ -72,20 +78,21 @@ export default function useFetchSubCategories() {
               .split(",")
               .map((t) => t.trim());
             for (const tableName of tablesArray) {
+              console.log("YES");
               await fetchTableData(tableName);
             }
           }
         }
       }
-
       setFetchErrorSuperCategories("");
+      await AsyncStorage.setItem(FIRST_FETCH_SUBCATEGORY, "true");
+      // Refetched now we can say the version is equal
+      setIsEqual();
     } catch (error) {
       setSubCategories([]);
-      setHasFetchedSuperCategories(false);
-      setFetchErrorSuperCategories(
-        "Elemente konnten nicht geladen werden.\n Überprüfen Sie bitte Ihre Internet Verbindung!"
-      );
+      setFetchErrorSuperCategories(ERROR_LOADING_DATA);
       console.error("Error fetching items:", error);
+      await AsyncStorage.setItem(FIRST_FETCH_SUBCATEGORY, "false");
     } finally {
       setIsFetchingSub(false);
     }
@@ -93,8 +100,6 @@ export default function useFetchSubCategories() {
 
   const loadItemsFromStorage = async () => {
     try {
-      setIsFetchingSub(true);
-
       const storedCategories: TableData[] = [];
       if (tableNames && tableNames.length > 0) {
         for (const table of tableNames) {
@@ -111,12 +116,12 @@ export default function useFetchSubCategories() {
         }
       } else {
         console.log("No table names available to load data from storage.");
+        throw new Error();
       }
       setSubCategories(storedCategories);
       console.log("Loaded items from AsyncStorage successfully.");
     } catch (error) {
-      console.log("Failed to load items from storage", error);
-      setHasFetchedSuperCategories(false);
+      console.log("Failed to load items from storage");
     } finally {
       setIsFetchingSub(false);
     }
@@ -144,9 +149,7 @@ export default function useFetchSubCategories() {
                 router.navigate("/");
               }
             )
-
             .subscribe();
-
           subscriptions.push(subscription);
         }
       }
@@ -161,16 +164,36 @@ export default function useFetchSubCategories() {
 
   useEffect(() => {
     const checkStorageAndFetch = async () => {
-      if (hasFetchedSuperCategories == true) {
-        await subscribeToTable();
+      // Get first fetch status from AsyncStorage
+      const firstFetch = await AsyncStorage.getItem(FIRST_FETCH_SUBCATEGORY);
+      console.log(firstFetch);
+
+      if (!tableNames || tableNames.length === 0) {
+        console.log("Table names not yet available.");
+        return;
+      }
+      // Add logic to check network status and handle no internet case
+      if (
+        (isDifferent || firstFetch === "false" || firstFetch === null) &&
+        isConnected &&
+        !isFetchingSub
+      ) {
+        await fetchSuperCategories();
+      } else if (isConnected === false && isConnected != null) {
+        Toast.show({
+          type: "info",
+          text1: NO_INTERNET,
+          text2: NO_UPADTES_FETCHABLE,
+        });
         await loadItemsFromStorage();
       } else {
-        await fetchSuperCategories();
+        await loadItemsFromStorage();
+        await subscribeToTable();
       }
     };
 
     checkStorageAndFetch();
-  }, [tableNames]);
+  }, [isConnected, tableNames]);
 
   return {
     fetchErrorSuperCategories,
@@ -179,5 +202,3 @@ export default function useFetchSubCategories() {
     isFetchingSub,
   };
 }
-
-
