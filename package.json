@@ -63,7 +63,8 @@
     "use-debounce": "^10.0.0",
     "uuid": "^9.0.1",
     "yup": "^1.4.0",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "expo-updates": "~0.25.25"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",

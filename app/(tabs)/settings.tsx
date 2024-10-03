@@ -55,11 +55,11 @@ export default function settings() {
       </View>
 
       <View style={styles.spacer} />
-      {!isLoggedIn && (
+      {/* {isLoggedIn && (
         <View style={styles.versionTextContainer}>
           <Text style={styles.versionText}>Version: {dataVersion}</Text>
         </View>
-      )}
+      )} */}
       <View style={styles.informationContainer}>
         <Link style={styles.linkText} href='/about' push>
           Über die App

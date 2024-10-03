@@ -9,7 +9,7 @@ import { useFetchStore } from "components/fetchStore";
 import { useColorScheme } from "react-native";
 import Colors from "constants/Colors";
 import useNetworkStatus from "components/useNetworkStatus";
-
+import { useFetchTableNames } from "components/useFetchTableNames";
 export default function index() {
   const themeStyles = coustomTheme();
   const { isfetching } = useFetchStore();

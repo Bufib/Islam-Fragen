@@ -5,6 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import RenderSubCategories from "components/RenderSubCategories";
 import { Stack } from "expo-router";
 import { useFetchTableNames } from "components/useFetchTableNames";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function getSuperCategories() {
   const { category } = useLocalSearchParams<{ category: string }>();
@@ -15,7 +16,10 @@ export default function getSuperCategories() {
       .replace(/\(/g, "%28")
       .replace(/\)/g, "%29");
   };
-  const { tableNames, fetchErrorTableNames, isFetchingTable } = useFetchTableNames();
+  const { tableNames, fetchErrorTableNames, isFetchingTable } =
+    useFetchTableNames();
+
+
 
   if (!category) {
     return (
