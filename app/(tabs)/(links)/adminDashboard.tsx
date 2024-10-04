@@ -8,10 +8,9 @@ import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { ScrollView } from "react-native";
-import { useUploadImages } from "components/useUploadImages";
+import { useUploadPost } from "components/useUploadPost";
 import { coustomTheme } from "components/coustomTheme";
 export default function adminDashboard() {
-  const colorScheme = useColorScheme();
   const themeStyles = coustomTheme();
 
   const {
@@ -23,7 +22,7 @@ export default function adminDashboard() {
     submitPost,
     pickImage,
     deleteImage,
-  } = useUploadImages();
+  } = useUploadPost();
 
   return (
     <TouchableWithoutFeedback accessible={false} onPress={Keyboard.dismiss}>
@@ -34,7 +33,7 @@ export default function adminDashboard() {
             headerRight: () => (
               <View style={styles.headerButtons}>
                 <Pressable onPress={pickImage}>
-                <Entypo name="image" size={24} color="green" />
+                <Entypo name="image" size={23} color="green" />
                 </Pressable>
 
                 <Pressable onPress={submitPost}>
@@ -108,7 +107,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     backgroundColor: "transparent",
-    marginRight: 15,
+    marginRight: 10,
+   
   },
   submitButtonText: {
     fontSize: 20,

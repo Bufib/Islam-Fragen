@@ -23,7 +23,7 @@ export const RenderItemsFlashList = ({
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
 
   // Get the current index of image for setting the icon
   const handleScroll = (event: any) => {

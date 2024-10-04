@@ -19,7 +19,7 @@ const updateNews = useCallback(() => {
   }
   refetch()
     .then(() => applyUpdates())
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     })
     .finally(() => {

@@ -29,7 +29,6 @@ import { Image } from "expo-image";
 import { useRefetchNewsStore } from "components/refetchNews";
 import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 import NoConnection from "components/NoConnection";
-import checkInternetConnectivity from "components/useNetworkStatus";
 import Toast from "react-native-toast-message";
 import useNetworkStore from "components/useNetworkStore";
 

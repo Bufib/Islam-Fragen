@@ -12,9 +12,6 @@ import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
 
 import useNetworkStore from "components/useNetworkStore";
 
-const siteKey = "c2a47a96-0c8e-48b8-a6c6-e60a2e9e4228";
-const baseUrl = "https://hcaptcha.com";
-
 export default function Modal() {
   const isPresented = router.canGoBack();
   const [email, onChangeEmail] = useState("");
@@ -37,6 +34,8 @@ export default function Modal() {
           "Fehler",
           "Captcha-Überprüfung fehlgeschlagen. Bitte versuche es erneut."
         );
+      } else if (token === "open") {
+        console.log("Visual challenge opened");
       } else {
         setCaptchaToken(token);
         handleLogin(token);
@@ -76,12 +75,12 @@ export default function Modal() {
         "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut."
       );
       setShowCaptcha(true); // Show captcha again for retry
-    }
+    } 
   };
 
   const adminLogin = async () => {
     if (isConnected) {
-      setShowCaptcha(true); // Show hCaptcha challenge
+      setShowCaptcha(true); //Show hCaptcha challenge
     } else {
       Alert.alert(
         "Bitte stelle sicher, dass du mit dem Internet verbunden bist, bevor du eine Frage schickst"
@@ -129,8 +128,8 @@ export default function Modal() {
       {showCaptcha && (
         <ConfirmHcaptcha
           ref={captchaRef}
-          siteKey={siteKey}
-          baseUrl={baseUrl}
+          siteKey='c2a47a96-0c8e-48b8-a6c6-e60a2e9e4228'
+          baseUrl='https://hcaptcha.com'
           onMessage={onMessage}
           languageCode='de'
           size='invisible'
@@ -183,3 +182,4 @@ const styles = StyleSheet.create({
     color: Colors.light.error,
   },
 });
+

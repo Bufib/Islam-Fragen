@@ -12,7 +12,7 @@ const HeaderFlashListNews = ({ isLoggedIn }: any) => {
     <View style={styles.headerContainer}>
       <Text style={styles.headerTitle}>Neuigkeiten</Text>
       {isLoggedIn ? (
-        <Link href='/adminDashboard' asChild>
+        <Link push href='/(links)/adminDashboard' asChild>
           <Pressable>
             <MaterialIcons
               name='add-circle-outline'
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flex: 1,
     flexDirection: "row",
-    
+
     marginBottom: 20,
     marginHorizontal: 14,
   },

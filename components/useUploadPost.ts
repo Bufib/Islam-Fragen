@@ -7,7 +7,7 @@ import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 import { useIsUpLoading } from "components/uploadingStore";
 
-export function useUploadImages() {
+export function useUploadPost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState<string[]>([]);
@@ -69,7 +69,7 @@ export function useUploadImages() {
       return;
     }
     startLoading();
-    router.navigate("news");
+    router.navigate("/news");
 
     const uploadedImageUrls = await Promise.all(
       images.map((image) => uploadImage(image))
@@ -78,6 +78,7 @@ export function useUploadImages() {
     const validImageUrls = uploadedImageUrls.filter((url) => url != null);
 
     const textUploaded = await uploadText(validImageUrls as string[]);
+    console.log(textUploaded)
 
     if (uploadedImageUrls && textUploaded) {
       Toast.show({
