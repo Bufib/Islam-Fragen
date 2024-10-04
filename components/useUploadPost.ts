@@ -21,6 +21,7 @@ export function useUploadPost() {
 
     if (error) {
       setContent("");
+      console.log(error)
       return false;
     } else {
       setContent("");
