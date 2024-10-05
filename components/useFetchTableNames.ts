@@ -3,7 +3,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "utils/supabase";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
-import { useHasFetchedTableNames } from "components/hasFetchedTableNamesStore";
 import useNetworkStore from "./useNetworkStore";
 import useVersionStore from "components/versionStore";
 import {
@@ -151,12 +150,12 @@ export const useFetchTableNames = (): TableNamesData => {
     const checkStorageAndFetch = async () => {
       // Get first fetch status from AsyncStorage
       const firstFetch = await AsyncStorage.getItem(FIRST_FETCH_TABLE_NAMES);
+      console.log(firstFetch);
 
       // Add logic to check network status and handle no internet case
       if (
         (isDifferent || firstFetch === "false" || firstFetch === null) &&
-        isConnected &&
-        !isFetchingTable // Ensure is connected before fetching
+        isConnected
       ) {
         await fetchTableNames();
       } else if (isConnected === false && isConnected != null) {

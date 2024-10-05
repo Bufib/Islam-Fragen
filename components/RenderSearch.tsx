@@ -22,7 +22,7 @@ interface RenderSearchProps {
 
 const RenderSearch: React.FC<RenderSearchProps> = ({ item }) => {
   const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
 
   const encodeTitle = (title: string) => {
     const cleanedTitle = title.trim().replace(/\n/g, "");

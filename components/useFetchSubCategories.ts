@@ -175,9 +175,7 @@ export default function useFetchSubCategories() {
       // Add logic to check network status and handle no internet case
       if (
         (isDifferent || firstFetch === "false" || firstFetch === null) &&
-        isConnected &&
-        !isFetchingSub
-      ) {
+        isConnected) {
         await fetchSuperCategories();
       } else if (isConnected === false && isConnected != null) {
         Toast.show({

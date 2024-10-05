@@ -8,7 +8,7 @@ import { Feather } from "@expo/vector-icons";
 import { Appearance } from "react-native";
 import { coustomTheme } from "./coustomTheme";
 
-export default function RenderFavorites({ items }) {
+export default function RenderFavorites({ items } : any) {
   const encodeTitle = (title: string) => {
     // Clean the title by trimming and removing new lines
     // Encode all characters with encodeURIComponent and manually encode parentheses since the cause trouble in the url
@@ -19,10 +19,10 @@ export default function RenderFavorites({ items }) {
   };
 
   const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
   const appColor = Appearance.getColorScheme();
 
-  const renderItems = ({ item }) => (
+  const renderItems = ({ item }: any) => (
     <Link
       style={styles.FlashListItems}
       key={`${item.table}-${item.id}`}

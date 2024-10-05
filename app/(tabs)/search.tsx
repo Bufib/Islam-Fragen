@@ -7,7 +7,6 @@ import {
 import { View, Text, SafeAreaView } from "components/Themed";
 import { TextInput } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { useColorScheme } from "react-native";
 import { useState } from "react";
 import ItemSearch from "components/ItemSearch";
 import { Feather } from "@expo/vector-icons";
@@ -17,8 +16,7 @@ import { useRef, useEffect } from "react";
 export default function TabOneScreen() {
   const [search, setSearch] = useState("");
 
-  const colorScheme = useColorScheme();
-  const themeStyles = coustomTheme(colorScheme);
+  const themeStyles = coustomTheme();
   const searchInputRef = useRef(null);
 
   useEffect(() => {

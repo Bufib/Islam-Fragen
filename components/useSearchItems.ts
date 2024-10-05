@@ -8,12 +8,7 @@ interface Item {
   answer_sistani?: string;
   answer_khamenei?: string;
   question: string;
-  tableName: string; // Add tableName to store the category name
-}
-
-interface TopCategoryItem {
-  tableName: string;
-  questions: Item[];
+  tableName: string; 
 }
 
 const useSearchItems = (search: string) => {
@@ -34,13 +29,13 @@ const useSearchItems = (search: string) => {
         let flatQuestions: Item[] = [];
 
         // Flatten the questions into a single array and include tableName
-        subCategories.forEach((category: TopCategoryItem) => {
-          category.questions.forEach((question, index) => {
+        subCategories.forEach((category: any) => {
+          category.questions.forEach((question: any, index: any) => {
             if (question && question.question && question.title) {
-              flatQuestions.push({ 
-                ...question, 
+              flatQuestions.push({
+                ...question,
                 tableName: category.tableName, // Ensure tableName is added here
-                id: `${category.tableName}-${index}` // Ensure unique id
+                id: `${category.tableName}-${index}`, // Ensure unique id
               });
             } else {
               console.error("Invalid question format", question);
