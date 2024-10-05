@@ -134,6 +134,7 @@ export default function RenderText() {
           headerTitle: item ? formatTitle(item.title) : "",
         }}
       />
+
       {fetchError ? (
         <View style={styles.renderError}>
           <Text style={[styles.errorText, themeStyles.error]}>

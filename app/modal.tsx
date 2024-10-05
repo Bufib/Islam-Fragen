@@ -7,9 +7,7 @@ import Colors from "constants/Colors";
 import { supabase } from "@/utils/supabase";
 import Toast from "react-native-toast-message";
 import { useAuthStore } from "components/authStore";
-import * as Network from "expo-network";
 import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
-
 import useNetworkStore from "components/useNetworkStore";
 
 export default function Modal() {

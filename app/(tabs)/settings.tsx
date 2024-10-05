@@ -19,11 +19,10 @@ export default function settings() {
   useLayoutEffect(() => {
     const getColorMode = async () => {
       const colorMode = await AsyncStorage.getItem("ColorMode");
-      if (colorMode) {
-        setIsDarkMode(colorMode === "dark");
-      } else {
-        setIsDarkMode(colorMode === "dark");
-      }
+
+      // Set Colormode according to last session
+      setIsDarkMode(colorMode === "dark");
+      Appearance.setColorScheme(colorMode === "dark" ? "dark" : "light");
     };
 
     getColorMode();
