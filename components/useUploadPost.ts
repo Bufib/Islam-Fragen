@@ -21,7 +21,7 @@ export function useUploadPost() {
 
     if (error) {
       setContent("");
-      console.log(error)
+      console.log(error);
       return false;
     } else {
       setContent("");
@@ -60,7 +60,7 @@ export function useUploadPost() {
       return false;
     }
   };
-  
+
   const submitPost = async () => {
     if (images.length === 0 && !content.trim()) {
       Toast.show({
@@ -79,7 +79,6 @@ export function useUploadPost() {
     const validImageUrls = uploadedImageUrls.filter((url) => url != null);
 
     const textUploaded = await uploadText(validImageUrls as string[]);
-    console.log(textUploaded)
 
     if (uploadedImageUrls && textUploaded) {
       Toast.show({
@@ -129,4 +128,3 @@ export function useUploadPost() {
     deleteImage,
   };
 }
-

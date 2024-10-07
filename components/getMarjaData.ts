@@ -1,5 +1,3 @@
-// src/utils/getMarjaData.ts
-
 export interface Item {
   answer_khamenei?: string;
   answer_sistani?: string;

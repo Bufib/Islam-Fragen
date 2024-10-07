@@ -1,4 +1,3 @@
-import Colors from "constants/Colors";
 import { Text, View } from "components/Themed";
 import { StyleSheet } from "react-native";
 import React, { useEffect } from "react";
@@ -76,7 +75,6 @@ export default function favourites() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
- 
   },
   favoriteContainer: {
     flex: 1,
@@ -93,5 +91,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
-  
 });

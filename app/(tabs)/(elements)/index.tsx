@@ -8,13 +8,18 @@ import { useRefetchStore } from "components/refetchStore";
 import { useFetchStore } from "components/fetchStore";
 import { useColorScheme } from "react-native";
 import Colors from "constants/Colors";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import useGetCategories from "components/useGetCategories";
+import { useGetSuperCategories } from "components/useGetSuperCategories";
 
 export default function index() {
   const themeStyles = coustomTheme();
   const { isfetching } = useFetchStore();
   const { isRefetching } = useRefetchStore();
   const colorScheme = useColorScheme();
+
+  // To listen to updates
+  const { tableNames } = useGetSuperCategories();
+  const { subCategories } = useGetCategories();
 
   return (
     <View style={styles.container}>

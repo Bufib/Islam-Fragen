@@ -7,11 +7,10 @@ export const deletePosts = async (id: number) => {
     {
       text: "Abbrechen",
       style: "cancel",
-      onPress: () => console.log("Ask me later pressed"),
     },
     {
       text: "Ja",
-      onPress:  async () => {
+      onPress: async () => {
         const { error } = await supabase.from("News").delete().eq("id", id);
 
         if (error) {

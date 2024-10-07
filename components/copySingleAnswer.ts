@@ -1,5 +1,4 @@
-// copySingleAnswer.ts
-import * as Clipboard from 'expo-clipboard';
+import * as Clipboard from "expo-clipboard";
 
 type CopySingleAnswerParams = {
   text: string;
@@ -16,10 +15,10 @@ export const copySingleAnswer = async ({
   setCopiedText,
   setIsCopiedSingle,
   cleanTimeout,
-  timeoutRef
+  timeoutRef,
 }: CopySingleAnswerParams) => {
-  if (typeof text !== 'string') return;
-  const cleanedText = text.replace(regex, '');
+  if (typeof text !== "string") return;
+  const cleanedText = text.replace(regex, "");
   await Clipboard.setStringAsync(cleanedText);
   setCopiedText(cleanedText);
   setIsCopiedSingle(true);

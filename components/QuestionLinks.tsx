@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 import { Text, View } from "./Themed";
 import { Link } from "expo-router";
 import { Pressable } from "react-native";

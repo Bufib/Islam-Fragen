@@ -5,7 +5,6 @@ import { Image } from "expo-image";
 import { FontAwesome } from "@expo/vector-icons";
 import { deletePosts } from "components/deletePosts";
 import { Dimensions } from "react-native";
-import Colors from "constants/Colors";
 import { StyleSheet } from "react-native";
 import ImageCount from "./ImageCount";
 import { useState } from "react";

@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet } from "react-native";
+import {  StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
 import Colors from "constants/Colors";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { Switch } from "react-native";
 import { Appearance } from "react-native";
 import { useLayoutEffect, useState } from "react";

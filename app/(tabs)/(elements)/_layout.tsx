@@ -7,14 +7,11 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useColorScheme } from "components/useColorScheme";
-import { Header } from "react-native/Libraries/NewAppScreen";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { QueryClient } from "@tanstack/react-query";
 import useFetchVersion from "components/useFetchVersion";
 import Toast from "react-native-toast-message";
-import useVersionStore from "components/versionStore";
 import useNetworkStore from "components/useNetworkStore";
 import { useNetworkInitializer } from "components/useNetworkInitializer";
 

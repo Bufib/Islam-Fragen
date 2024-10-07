@@ -1,14 +1,11 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFetchTableNames } from "./useFetchTableNames";
+import { useGetSuperCategories } from "components/useGetSuperCategories";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
-import { useHasFetchedSuperCategories } from "components/hasFetchtedSuperCategories";
 import {
-  UPDATED_MESSAGE,
   ERROR_LOADING_DATA,
-  CHECK_CONNECTION_RESTART_APP,
   NO_UPADTES_FETCHABLE,
   NO_INTERNET,
 } from "components/messages";
@@ -26,15 +23,15 @@ interface TableData {
 
 const FIRST_FETCH_SUBCATEGORY = "firstFetchSubCategory";
 
-export default function useFetchSubCategories() {
+export default function useGetCategories() {
   const [fetchErrorSuperCategories, setFetchErrorSuperCategories] =
     useState<string>("");
   const [subCategories, setSubCategories] = useState<TableData[]>([]);
   const [isFetchingSub, setIsFetchingSub] = useState(false);
-  const { tableNames } = useFetchTableNames();
+  const { tableNames } = useGetSuperCategories();
   const isConnected = useNetworkStore((state) => state.isConnected);
   const { isDifferent, setIsEqual } = useVersionStore();
-  console.log("isDifferent" + isDifferent);
+
   const fetchSuperCategories = async (specificTableName?: string) => {
     try {
       setIsFetchingSub(true);
@@ -44,7 +41,7 @@ export default function useFetchSubCategories() {
           .from(tableName)
           .select("*")
           .order("title", { ascending: true });
-        console.log("Fetching Supercategories");
+
         if (error) {
           console.error(`Error fetching data for table ${tableName}:`, error);
           throw new Error(error.message);
@@ -78,7 +75,6 @@ export default function useFetchSubCategories() {
               .split(",")
               .map((t) => t.trim());
             for (const tableName of tablesArray) {
-              console.log("YES");
               await fetchTableData(tableName);
             }
           }
@@ -139,8 +135,6 @@ export default function useFetchSubCategories() {
               "postgres_changes",
               { event: "*", schema: "public", table: tableName },
               (payload) => {
-                console.log(payload);
-                console.log("INSERT");
                 Toast.show({
                   type: "info",
                   text1: "Die Fragen und Antworten wurden aktualisiert!",
@@ -166,7 +160,6 @@ export default function useFetchSubCategories() {
     const checkStorageAndFetch = async () => {
       // Get first fetch status from AsyncStorage
       const firstFetch = await AsyncStorage.getItem(FIRST_FETCH_SUBCATEGORY);
-      console.log(firstFetch);
 
       if (!tableNames || tableNames.length === 0) {
         console.log("Table names not yet available.");
@@ -175,7 +168,8 @@ export default function useFetchSubCategories() {
       // Add logic to check network status and handle no internet case
       if (
         (isDifferent || firstFetch === "false" || firstFetch === null) &&
-        isConnected) {
+        isConnected
+      ) {
         await fetchSuperCategories();
       } else if (isConnected === false && isConnected != null) {
         Toast.show({

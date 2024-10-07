@@ -33,7 +33,6 @@ export default function Modal() {
           "Captcha-Überprüfung fehlgeschlagen. Bitte versuche es erneut."
         );
       } else if (token === "open") {
-        console.log("Visual challenge opened");
       } else {
         setCaptchaToken(token);
         handleLogin(token);
@@ -73,7 +72,7 @@ export default function Modal() {
         "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut."
       );
       setShowCaptcha(true); // Show captcha again for retry
-    } 
+    }
   };
 
   const adminLogin = async () => {
@@ -180,4 +179,3 @@ const styles = StyleSheet.create({
     color: Colors.light.error,
   },
 });
-

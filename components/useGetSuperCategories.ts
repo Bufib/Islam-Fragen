@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "utils/supabase";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
-import useNetworkStore from "./useNetworkStore";
+import useNetworkStore from "components/useNetworkStore";
 import useVersionStore from "components/versionStore";
 import {
   UPDATED_MESSAGE,
@@ -23,7 +23,7 @@ interface TableNamesData {
   fetchTableNames: () => Promise<void>;
 }
 
-export const useFetchTableNames = (): TableNamesData => {
+export const useGetSuperCategories = (): TableNamesData => {
   const [tableNames, setTableNames] = useState<
     { category: string; tableNames: string }[]
   >([]);
@@ -150,7 +150,6 @@ export const useFetchTableNames = (): TableNamesData => {
     const checkStorageAndFetch = async () => {
       // Get first fetch status from AsyncStorage
       const firstFetch = await AsyncStorage.getItem(FIRST_FETCH_TABLE_NAMES);
-      console.log(firstFetch);
 
       // Add logic to check network status and handle no internet case
       if (

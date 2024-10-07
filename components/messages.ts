@@ -1,4 +1,3 @@
-// messages.js
 export const UPDATED_MESSAGE = "Die Fragen und Antworten wurden aktualisiert!";
 export const ERROR_LOADING_DATA =
   " Fehler beim Laden der Fragen. Bitte überpüfe deine Internetverbindung und starte die App neu!";

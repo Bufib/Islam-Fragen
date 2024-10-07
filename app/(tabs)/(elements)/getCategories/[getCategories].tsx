@@ -3,7 +3,7 @@ import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import RenderCategories from "components/RenderCategories";
 import { Stack } from "expo-router";
-import useFetchSubCategories from "components/useFetchSubCategories";
+import useGetCategories from "components/useGetCategories";
 
 export default function RenderCategory() {
   const { subCategory } = useLocalSearchParams<{ subCategory: string }>();
@@ -11,7 +11,7 @@ export default function RenderCategory() {
     fetchErrorSuperCategories,
     subCategories = [], // Ensure subCategories is initialized as an empty array
     isFetchingSub,
-  } = useFetchSubCategories();
+  } = useGetCategories();
 
   const encodeTable = (title: string) => {
     const cleanTable = title.trim().replace(/\n/g, "");

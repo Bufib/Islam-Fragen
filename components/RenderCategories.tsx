@@ -1,6 +1,6 @@
 import { Text, View } from "components/Themed";
 import { Pressable, StyleSheet } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useColorScheme } from "react-native";

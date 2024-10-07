@@ -2,11 +2,9 @@
 import { Keyboard, StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
 import Entypo from '@expo/vector-icons/Entypo';
-import Feather from '@expo/vector-icons/Feather';
 import { TextInput, Pressable, TouchableWithoutFeedback } from "react-native";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
-import { useColorScheme } from "react-native";
 import { ScrollView } from "react-native";
 import { useUploadPost } from "components/useUploadPost";
 import { coustomTheme } from "components/coustomTheme";

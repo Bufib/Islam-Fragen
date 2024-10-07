@@ -2,9 +2,9 @@ import { View, Text } from "components/Themed";
 import { StyleSheet } from "react-native";
 import React, { useEffect, useLayoutEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
-import RenderSubCategories from "components/RenderSubCategories";
+import RenderSuperCategories from "components/RenderSuperCategories";
 import { Stack } from "expo-router";
-import { useFetchTableNames } from "components/useFetchTableNames";
+import { useGetSuperCategories } from "components/useGetSuperCategories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function getSuperCategories() {
@@ -17,14 +17,14 @@ export default function getSuperCategories() {
       .replace(/\)/g, "%29");
   };
   const { tableNames, fetchErrorTableNames, isFetchingTable } =
-    useFetchTableNames();
+  useGetSuperCategories();
 
 
 
   if (!category) {
     return (
       <View style={styles.container}>
-        <RenderSubCategories
+        <RenderSuperCategories
           items={[]}
           fetchError='Kategorien konnten nicht geladen wereden. Bitte Überprüfe deine Internetverbindung und starte die App neu!'
           table=''
@@ -47,7 +47,7 @@ export default function getSuperCategories() {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ headerTitle: category }} />
-      <RenderSubCategories
+      <RenderSuperCategories
         items={categoryItems}
         fetchError={fetchErrorTableNames}
         table={encodeTable(category)}

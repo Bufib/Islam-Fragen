@@ -1,5 +1,4 @@
 import React from "react";
-import { Platform } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { coustomTheme } from "components/coustomTheme";
 import { useColorScheme } from "react-native";
@@ -10,7 +9,6 @@ interface CustomMarkdownProps {
 }
 
 const CustomMarkdown: React.FC<CustomMarkdownProps> = ({ content }) => {
-  const colorScheme = useColorScheme();
   const themeStyles = coustomTheme();
   const { fontSize, lineHeight } = useSetFontSize();
 

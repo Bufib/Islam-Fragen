@@ -1,7 +1,7 @@
 import Colors from "constants/Colors";
 import { Text, View } from "components/Themed";
-import { FlatList, Pressable, StyleSheet } from "react-native";
-import React, { useEffect } from "react";
+import { Pressable, StyleSheet } from "react-native";
+import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useColorScheme } from "react-native";
@@ -16,14 +16,14 @@ interface NestedItem {
   title: string;
 }
 
-interface RenderSubCategoriesProps {
+interface RenderSuperCategoriesProps {
   items: NestedItem[];
   fetchError?: string;
   table: string;
   isFetchinTable: boolean;
 }
 
-const RenderSubCategories: React.FC<RenderSubCategoriesProps> = ({
+const RenderSuperCategories: React.FC<RenderSuperCategoriesProps> = ({
   items,
   fetchError,
   isFetchinTable,
@@ -160,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderSubCategories;
+export default RenderSuperCategories;

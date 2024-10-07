@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import Colors from "constants/Colors";
@@ -14,7 +14,7 @@ import { StyleSheet } from "react-native";
 import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 import BackIcon from "components/BackIcon";
 import Toast from "react-native-toast-message";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];

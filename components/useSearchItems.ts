@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useFetchSubCategories from "components/useFetchSubCategories";
+import useGetCategories from "components/useGetCategories";
 import { ERROR_LOADING_DATA } from "components/messages";
 
 interface Item {
@@ -16,7 +16,7 @@ const useSearchItems = (search: string) => {
   const [searchResults, setSearchResults] = useState<Item[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { subCategories, isFetchingSub } = useFetchSubCategories();
+  const { subCategories, isFetchingSub } = useGetCategories();
 
   useEffect(() => {
     const fetchData = async () => {
