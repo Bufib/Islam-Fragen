@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 12,
     backgroundColor: "transparent",
-   
   },
 });
 

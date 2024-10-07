@@ -35,8 +35,7 @@ const SingleAnswer: React.FC<AnswersScrollViewProps> = ({
   cleanTimeout,
   timeoutRef,
   colorScheme,
-  isConnected
-
+  isConnected,
 }) => {
   return (
     <ScrollView

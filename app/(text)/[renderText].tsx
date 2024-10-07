@@ -17,7 +17,6 @@ import MultipleAnswers from "components/MultipleAnswersRenderText";
 import { copySingleAnswer } from "components/copySingleAnswer";
 import { copyMultipleAnswers } from "components/copyMultipleAnswers";
 import { getMarjaData } from "components/getMarjaData";
-
 import Toast from "react-native-toast-message";
 import useNetworkStore from "components/useNetworkStore";
 
