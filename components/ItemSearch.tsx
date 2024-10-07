@@ -5,6 +5,7 @@ import RenderSearch from "./RenderSearch";
 import { FlashList } from "@shopify/flash-list";
 import { Appearance } from "react-native";
 import useSearchItems from "components/useSearchItems";
+import { NO_SEARCH_RESULT } from "components/messages";
 
 const appColor = Appearance.getColorScheme();
 
@@ -32,9 +33,7 @@ const ItemSearch: React.FC<ItemSearchProps> = ({ search }) => {
         </View>
       ) : (
         <View style={styles.notFoundContainer}>
-          <Text style={styles.notFoundText}>
-            Leider konnten wir nichts finden!
-          </Text>
+          <Text style={styles.notFoundText}>{NO_SEARCH_RESULT}</Text>
         </View>
       )}
     </View>
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
     paddingRight: 12,
   },
   notFoundText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
   },

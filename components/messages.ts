@@ -7,3 +7,5 @@ export const CHECK_CONNECTION_RESTART_APP =
   "Keine Internetverbindung!";
   export const NO_UPADTES_FETCHABLE =
   "Fragen sowie Updates können nicht geladen werden!";
+  export const NO_SEARCH_RESULT =
+  "Leider gibt es zu diesem Thema noch keine Frage! \n \n Du kannst sie aber gerne über das 'Fragezeichen' stellen";
