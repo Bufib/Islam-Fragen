@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useFetchSubCategories from "components/useFetchSubCategories";
+import { ERROR_LOADING_DATA } from "components/messages";
 
 interface Item {
   id: number;
@@ -8,7 +9,7 @@ interface Item {
   answer_sistani?: string;
   answer_khamenei?: string;
   question: string;
-  tableName: string; 
+  tableName: string;
 }
 
 const useSearchItems = (search: string) => {
@@ -20,7 +21,7 @@ const useSearchItems = (search: string) => {
   useEffect(() => {
     const fetchData = async () => {
       if (!subCategories) {
-        setFetchError("Failed to fetch subcategories");
+        setFetchError(ERROR_LOADING_DATA);
         setIsLoading(false);
         return;
       }
@@ -56,15 +57,14 @@ const useSearchItems = (search: string) => {
         setSearchResults(filteredResults);
       } catch (error) {
         console.error("Error processing subcategories:", error);
-        setFetchError("Error processing subcategories");
+        setFetchError(ERROR_LOADING_DATA);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [subCategories, search]); // Add 'search' as a dependency
-
+  }, [subCategories, search]);
   return {
     searchResults,
     fetchError,

@@ -7,7 +7,6 @@ import useNetworkStore from "./useNetworkStore";
 import Toast from "react-native-toast-message";
 import { NO_INTERNET, NO_UPADTES_FETCHABLE } from "components/messages";
 
-
 // Custom hook to load and subscribe to version number updates
 export default function useFetchVersion() {
   const [versionNumber, setVersionNumber] = useState<string>();
@@ -24,7 +23,7 @@ export default function useFetchVersion() {
           .from("Version")
           .select("version")
           .single();
-
+        console.log("fetching version");
         if (error) {
           throw error;
         }
@@ -67,6 +66,6 @@ export default function useFetchVersion() {
       });
     }
   };
- 
+
   return { versionNumber, loading, fetchVersionNumber };
 }
