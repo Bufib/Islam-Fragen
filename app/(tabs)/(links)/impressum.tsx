@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import { View, Text } from "components/Themed";
+import { View, } from "components/Themed";
 import React from "react";
 import { StyleSheet } from "react-native";
 import Markdown from "react-native-markdown-display";
@@ -127,3 +127,4 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
   },
 });
+

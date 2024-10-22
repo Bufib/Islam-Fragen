@@ -21,7 +21,6 @@ import { Picker } from "@react-native-picker/picker";
 import { Text } from "components/Themed";
 import ConfirmHcaptcha from "@hcaptcha/react-native-hcaptcha";
 import { router } from "expo-router";
-import * as Network from "expo-network";
 import { useFormikSetup } from "components/useFormikSetup";
 import { genderOptions, marjaOptions } from "components/emailOptions";
 

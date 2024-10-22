@@ -15,6 +15,7 @@ import { useIsNewUpdateAvailable } from "components/newsUpdateStore";
 import BackIcon from "components/BackIcon";
 import Toast from "react-native-toast-message";
 import { QueryClient } from "@tanstack/react-query";
+
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -145,7 +146,15 @@ export default function TabLayout() {
             headerLeft: () => <BackIcon />,
           }}
         />
-
+        <Tabs.Screen
+          name='(links)/datenschutz'
+          options={{
+            headerShown: true,
+            headerTitle: "Datenschutz",
+            tabBarButton: () => null,
+            headerLeft: () => <BackIcon />,
+          }}
+        />
         <Tabs.Screen
           name='(links)/adminDashboard'
           options={{

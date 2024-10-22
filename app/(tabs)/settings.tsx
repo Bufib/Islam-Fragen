@@ -1,8 +1,8 @@
-import {  StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
 import Colors from "constants/Colors";
 import { Link } from "expo-router";
-import { Switch } from "react-native";
+import { Switch, Linking } from "react-native";
 import { Appearance } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -46,7 +46,7 @@ export default function settings() {
         <Switch
           trackColor={{ false: "#3e3e3e", true: "#4dd964" }}
           thumbColor={isDarkMode ? "#000000" : "#f4f3f4"}
-          ios_backgroundColor='#3e3e3e'
+          ios_backgroundColor="#3e3e3e"
           onValueChange={toggleSwitchColor}
           value={isDarkMode}
         />
@@ -59,11 +59,25 @@ export default function settings() {
         </View>
       )}
       <View style={styles.informationContainer}>
-        <Link style={styles.linkText} href='/about' push>
+        <Link style={styles.linkText} href="/about" push>
           Über die App
         </Link>
       </View>
-      <View style={styles.impressumContainer}>
+
+      <View style={styles.linkContainer}>
+        <Text
+          style={styles.linkText}
+          onPress={() =>
+            Linking.openURL(
+              "https://bufib.github.io/Islam-Fragen-App-rechtliches/datenschutz"
+            )
+          }
+        >
+          Datenschutz
+        </Text>
+      </View>
+
+      <View style={styles.linkContainer}>
         <Link style={styles.linkText} href={"/impressum"} push>
           Impressum
         </Link>
@@ -104,9 +118,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  impressumContainer: {
+  linkContainer: {
     alignSelf: "center",
   },
+
   linkText: {
     color: Colors.light.link,
     fontSize: 20,

@@ -102,16 +102,9 @@ export const useGetSuperCategories = (): TableNamesData => {
         const parsedTableNames = JSON.parse(storedTableNames);
         setTableNames(parsedTableNames);
         setisFetchingTable(false);
-      } else {
-        throw new Error("Keine Daten Gefunden");
       }
     } catch (error) {
       console.error("Error loading initial data:", error);
-      Toast.show({
-        type: "error",
-        text1: `${error}`,
-        text2: CHECK_CONNECTION_RESTART_APP,
-      });
     }
   }, []);
 
