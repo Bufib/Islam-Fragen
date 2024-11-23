@@ -146,15 +146,7 @@ export default function TabLayout() {
             headerLeft: () => <BackIcon />,
           }}
         />
-        <Tabs.Screen
-          name='(links)/datenschutz'
-          options={{
-            headerShown: true,
-            headerTitle: "Datenschutz",
-            tabBarButton: () => null,
-            headerLeft: () => <BackIcon />,
-          }}
-        />
+      
         <Tabs.Screen
           name='(links)/adminDashboard'
           options={{

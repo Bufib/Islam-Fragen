@@ -2,7 +2,7 @@
   "expo": {
     "name": "Islam-Fragen",
     "slug": "islamische-fragen",
-    "version": "1.0.3",
+    "version": "5.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -15,7 +15,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.hadiea.islamischefragen",
+      "bundleIdentifier": "com.bufib.islamFragen",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select images."
       }
@@ -26,7 +26,8 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["READ_EXTERNAL_STORAGE"],
-      "package": "com.hadi_ea.islamischefragen"
+      "package": "com.bufib.islamFragen",
+      "versionCode": 4 
     },
     "web": {
       "bundler": "metro",

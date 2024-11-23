@@ -13,6 +13,8 @@ import useFetchVersion from "components/useFetchVersion";
 import Toast from "react-native-toast-message";
 import useNetworkStore from "components/useNetworkStore";
 import { useNetworkInitializer } from "components/useNetworkInitializer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Appearance } from "react-native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -46,8 +48,17 @@ export default function RootLayout() {
           "Du hast keine Internetverbindung! Änderungen und neue Fragen könne somit nicht geladen werden!",
       });
     }
+
+    // Set color Mode before opening
+    const getColorMode = async () => {
+      const colorMode = await AsyncStorage.getItem("ColorMode");
+      // Set Colormode according to last session
+      Appearance.setColorScheme(colorMode === "dark" ? "dark" : "light");
+    };
+
     // Get the current Version Number
     fetchVersionNumber();
+    getColorMode();
     SplashScreen.hideAsync();
   }, [isConnected]);
 
@@ -70,19 +81,19 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen
-          name='index'
+          name="index"
           options={{ headerShown: false, headerTitle: "" }}
         />
 
         <Stack.Screen
-          name='getCategories/[getCategories]'
+          name="getCategories/[getCategories]"
           options={{
             headerShown: true,
           }}
         />
 
         <Stack.Screen
-          name='getSuperCategories/[getSuperCategories]'
+          name="getSuperCategories/[getSuperCategories]"
           options={{
             headerShown: true,
           }}

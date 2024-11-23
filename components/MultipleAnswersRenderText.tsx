@@ -185,13 +185,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     margin: 20,
     justifyContent: "space-between",
+  
   },
   marjaChoice: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    backgroundColor: "red"
   },
-  checkboxContainer: {},
+  checkboxContainer: {
+    
+  },
   marjaCheckbox: {
     width: 28,
     height: 28,
