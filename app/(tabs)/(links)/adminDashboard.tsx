@@ -1,7 +1,7 @@
 //dasboard-neu:
 import { Keyboard, StyleSheet } from "react-native";
 import { View, Text } from "components/Themed";
-import Entypo from '@expo/vector-icons/Entypo';
+import Entypo from "@expo/vector-icons/Entypo";
 import { TextInput, Pressable, TouchableWithoutFeedback } from "react-native";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
@@ -20,6 +20,10 @@ export default function adminDashboard() {
     submitPost,
     pickImage,
     deleteImage,
+    link,
+    setLink,
+    linkName,
+    setLinkName
   } = useUploadPost();
 
   return (
@@ -31,7 +35,7 @@ export default function adminDashboard() {
             headerRight: () => (
               <View style={styles.headerButtons}>
                 <Pressable onPress={pickImage}>
-                <Entypo name="image" size={23} color="green" />
+                  <Entypo name="image" size={23} color="green" />
                 </Pressable>
 
                 <Pressable onPress={submitPost}>
@@ -48,7 +52,7 @@ export default function adminDashboard() {
             style={[styles.headerInput, themeStyles.inverseTextInput]}
             onChangeText={setTitle}
             value={title}
-            placeholder='Title (optional)'
+            placeholder="Title (optional)"
             editable
             onSubmitEditing={Keyboard.dismiss}
           />
@@ -57,10 +61,26 @@ export default function adminDashboard() {
             style={[styles.ContentInput, themeStyles.inverseTextInput]}
             onChangeText={setContent}
             value={content}
-            placeholder='Beitrag'
+            placeholder="Beitrag"
             multiline
             editable
-            autoCapitalize='none'
+            autoCapitalize="none"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+          <TextInput
+            style={[styles.headerInput, themeStyles.inverseTextInput]}
+            onChangeText={setLink}
+            value={link}
+            placeholder="Link"
+            autoCapitalize="none"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+          <TextInput
+            style={[styles.headerInput, themeStyles.inverseTextInput]}
+            onChangeText={setLinkName}
+            value={linkName}
+            placeholder="Link Title"
+            autoCapitalize="none"
             onSubmitEditing={Keyboard.dismiss}
           />
         </View>
@@ -80,13 +100,15 @@ export default function adminDashboard() {
                   style={styles.deleteImage}
                   onPress={() => deleteImage(img)}
                 >
-                <Text style={[styles.deleteImageText, themeStyles.error]}>X</Text>
+                  <Text style={[styles.deleteImageText, themeStyles.error]}>
+                    X
+                  </Text>
                 </Pressable>
 
                 <Image
                   style={styles.image}
                   source={{ uri: img }}
-                  contentFit='cover'
+                  contentFit="cover"
                 />
               </View>
             ))}
@@ -106,7 +128,6 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: "transparent",
     marginRight: 10,
-   
   },
   submitButtonText: {
     fontSize: 20,
@@ -123,6 +144,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     fontSize: 16,
   },
+  titleInput: {
+    marginHorizontal: 10,
+    paddingHorizontal: 12,
+    marginTop: 20,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: 20,
+    fontSize: 16,
+  },
+
   ContentInput: {
     flex: 1,
     maxHeight: "90%",
@@ -141,7 +172,6 @@ const styles = StyleSheet.create({
     flex: 0.18,
     marginBottom: 20,
     marginTop: 15,
-   
   },
 
   imagesScrollViewContent: {
@@ -161,6 +191,6 @@ const styles = StyleSheet.create({
   },
   deleteImageText: {
     fontSize: 17,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
 });

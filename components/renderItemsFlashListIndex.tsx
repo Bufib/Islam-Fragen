@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, useColorScheme } from "react-native";
+import { FlatList, Pressable, useColorScheme } from "react-native";
 import { View, Text } from "./Themed";
 import { Image } from "expo-image";
 import { FontAwesome } from "@expo/vector-icons";
@@ -9,6 +9,10 @@ import { StyleSheet } from "react-native";
 import ImageCount from "./ImageCount";
 import { useState } from "react";
 import { coustomTheme } from "./coustomTheme";
+import { Linking } from "react-native";
+import Toast from "react-native-toast-message";
+import { CANT_OPEN_LINK } from "./messages";
+import Colors from "constants/Colors";
 interface RenderItemsFlashListProps {
   item: any;
   isLoggedIn: boolean;
@@ -31,18 +35,31 @@ export const RenderItemsFlashList = ({
     setCurrentIndex(index);
   };
 
+  const openExternalLink = async (url: string) => {
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      Toast.show({
+        type: "error",
+        text1: CANT_OPEN_LINK,
+      });
+    }
+  };
+
   return (
     <View style={[styles.newsContainer, themeStyles.containerContrast]}>
       <View style={styles.newsHeader}>
         <Image
           style={styles.newsImageMaher}
           source={require("assets/images/ask.png")}
-          contentFit='contain'
+          contentFit="contain"
         />
         <Text style={styles.newsHeaderText}>Islam-Fragen</Text>
         {isLoggedIn ? (
           <FontAwesome
-            name='trash-o'
+            name="trash-o"
             size={24}
             style={themeStyles.trashIcon}
             onPress={() => deletePosts(item.id)}
@@ -57,7 +74,7 @@ export const RenderItemsFlashList = ({
         {item.imagePaths && item.imagePaths.length == 1 ? (
           <View style={styles.ImageContainer}>
             <Image
-              contentFit='cover'
+              contentFit="cover"
               style={styles.newsImageSingle}
               source={{ uri: item.imagePaths[0] }}
               recyclingKey={`${item.imagePaths[0]}`}
@@ -69,15 +86,16 @@ export const RenderItemsFlashList = ({
 
             const characterCurrent = (
               <FontAwesome
-                name='circle'
+                name="circle"
                 size={10}
-                style={themeStyles. characterCountNewsImage} />
+                style={themeStyles.characterCountNewsImage}
+              />
             );
             const characterNext = (
               <FontAwesome
-                name='circle-o'
+                name="circle-o"
                 size={10}
-                style={themeStyles. characterCountNewsImage}
+                style={themeStyles.characterCountNewsImage}
               />
             );
 
@@ -95,7 +113,7 @@ export const RenderItemsFlashList = ({
                   pagingEnabled
                   disableIntervalMomentum
                   showsHorizontalScrollIndicator={false}
-                  decelerationRate='fast'
+                  decelerationRate="fast"
                   keyExtractor={(item, index) => `${item}-${index}`}
                   snapToInterval={screenWidth - 40}
                   snapToAlignment={"start"}
@@ -103,7 +121,7 @@ export const RenderItemsFlashList = ({
                   renderItem={({ item, index }) => (
                     <View style={styles.ImageContainer}>
                       <Image
-                        contentFit='cover'
+                        contentFit="cover"
                         style={styles.newsImageSeveral}
                         source={{ uri: item }}
                         recyclingKey={`${item}-${index}`}
@@ -120,6 +138,17 @@ export const RenderItemsFlashList = ({
             );
           })()
         ) : null}
+        {item.link && item.link != "" && (
+          <View style={styles.linkContainer}>
+            <Pressable onPress={() => openExternalLink(item.link)}>
+              {item.linkName ? (
+                <Text style={styles.linkText}>{item.linkName}</Text>
+              ) : (
+                <Text style={styles.linkText}>{item.link}</Text>
+              )}
+            </Pressable>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -235,6 +264,16 @@ const styles = StyleSheet.create({
     width: screenWidth - 50,
     height: "auto",
     aspectRatio: 0.8,
+  },
+  linkContainer: {
+    marginTop: 10,
+    backgroundColor: "transparent",
+  },
+  linkText: {
+    color: Colors.light.link,
+    textDecorationLine: "underline",
+    fontSize: 16,
+    fontWeight: "500",
   },
 
   FlatListContainer: {

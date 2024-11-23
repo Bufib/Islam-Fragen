@@ -9,3 +9,5 @@ export const CHECK_CONNECTION_RESTART_APP =
   "Fragen sowie Updates können nicht geladen werden!";
   export const NO_SEARCH_RESULT =
   "Leider gibt es zu diesem Thema noch keine Frage! \n \n Du kannst sie aber gerne über das 'Fragezeichen' stellen";
+  export const CANT_OPEN_LINK =
+  "Der Link konnte leider nicht geöffnet werden. Versuch es später noch einmal";

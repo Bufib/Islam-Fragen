@@ -11,13 +11,15 @@ export function useUploadPost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const [link, setLink] = useState<string>();
+  const [linkName, setLinkName] = useState<string>();
 
   const { startLoading, finishLoading } = useIsUpLoading();
 
   const uploadText = async (imageUrls: string[]) => {
     const { error } = await supabase
       .from("News")
-      .insert({ title: title, content: content, imagePaths: imageUrls });
+      .insert({ title: title, content: content, imagePaths: imageUrls, link: link, linkName: linkName });
 
     if (error) {
       setContent("");
@@ -126,5 +128,9 @@ export function useUploadPost() {
     submitPost,
     pickImage,
     deleteImage,
+    link,
+    setLink,
+    linkName,
+    setLinkName
   };
 }
