@@ -75,7 +75,7 @@ const MultipleAnswers: React.FC<MultipleAnswersProps> = ({
         {!isConnected && <NoConnection />}
         <View style={styles.marjaChoiceContainer}>
           {marjaOptions.map((option) => (
-            <View key={option.value} style={styles.marjaChoice}>
+            <Pressable key={option.value} style={styles.marjaChoice} onPress={() => handleCheckboxChange(option.value)}>
               <View style={styles.checkboxContainer}>
                 <Checkbox
                   style={styles.marjaCheckbox}
@@ -84,7 +84,7 @@ const MultipleAnswers: React.FC<MultipleAnswersProps> = ({
                 />
               </View>
               <Text style={styles.marjaLable}>{option.label}</Text>
-            </View>
+            </Pressable>
           ))}
         </View>
         <View style={styles.answersContainer}>
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
-    backgroundColor: "red"
+   
   },
   checkboxContainer: {
     
