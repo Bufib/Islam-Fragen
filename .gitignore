@@ -3,4 +3,5 @@
 
 expo-env.d.ts
 node_modules
-# @end expo-cli
+# @end expo-cligit push -u origin main
+
